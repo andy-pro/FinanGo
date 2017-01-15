@@ -53,9 +53,12 @@ const Menu = ({ viewer }) => (
     contentContainerStyle={styles.contentContainer}
   >
     <MenuLink exactly to="/" message={linksMessages.home} />
+    <MenuLink to="/este" message={linksMessages.este} />
     <MenuLink to="/todos" message={linksMessages.todos} />
     <MenuLink to="/intl" message={linksMessages.intl} />
     <MenuLink to="/offline" message={linksMessages.offline} />
+    <MenuLink to="/broken" message={linksMessages.broken} />
+    <MenuLink to="/notfound" message={linksMessages.notfound} />
     {viewer ?
       <MenuLink to="/me" message={linksMessages.me} />
     :

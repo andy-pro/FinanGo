@@ -36,6 +36,7 @@ const Header = ({
     paddingHorizontal={0.5}
   >
     <HeaderLink exactly to="/" message={linksMessages.home} />
+    <HeaderLink exactly to="/este" message={linksMessages.este} />
     <HeaderLink to="/users" message={linksMessages.users} />
     <HeaderLink to="/todos" message={linksMessages.todos} />
     <HeaderLink to="/fields" message={linksMessages.fields} />

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { CenteredContainer, Text } from '../app/components';
-import { Platform, StyleSheet, Image } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   text: {
@@ -9,13 +9,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomePage = () => (
+const EstePage = () => (
   <CenteredContainer>
-    <Image source={require('./Bananavarieties.jpg')} style={{width: 193, height: 110}}/>
     <Text style={styles.text}>
       {Platform.select({
         android: `
-          Finango App
+          Finango App based on Este.js
           Double tap R on your keyboard to reload
           Shake or press menu button for dev menu
         `,
@@ -29,4 +28,4 @@ const HomePage = () => (
   </CenteredContainer>
 );
 
-export default HomePage;
+export default EstePage;

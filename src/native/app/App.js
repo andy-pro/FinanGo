@@ -14,11 +14,13 @@ import { connect } from 'react-redux';
 
 // Pages
 import HomePage from '../home/HomePage';
+import EstePage from '../este/EstePage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 import OfflinePage from '../offline/OfflinePage';
 import SignInPage from '../auth/SignInPage';
 import TodosPage from '../todos/TodosPage';
+import NotFoundPage from '../notfound/NotFoundPage';
 
 const App = ({ appMenuShown, appShowMenu, appStarted }) => {
   // TODO: Add splash screen.
@@ -34,17 +36,20 @@ const App = ({ appMenuShown, appShowMenu, appStarted }) => {
         onChange={appShowMenu}
       >
         <Page exactly pattern="/" component={HomePage} />
+        <Page pattern="/este" component={EstePage} />
         <Page pattern="/intl" component={IntlPage} />
         <Page pattern="/offline" component={OfflinePage} />
         <Page pattern="/signin" component={SignInPage} />
         <Page pattern="/todos" component={TodosPage} />
+        <Page pattern="/broken" component={NotFoundPage} />
         <Page authorized pattern="/me" component={MePage} />
         {/* Miss does't work in React Native for some reason. */}
         {/* <Miss render={() => <Redirect to="/" />} /> */}
+        {/* <Miss component={NotFoundPage} /> */}
         <Match
           pattern="/"
           render={({ location: { pathname } }) => {
-            const urls = ['/', '/intl', '/offline', '/signin', '/todos', '/me'];
+            const urls = ['/', '/este', '/intl', '/offline', '/signin', '/todos', './broken', '/me'];
             if (urls.indexOf(pathname) !== -1) return null;
             return (
               <Redirect to="/" />

@@ -9,7 +9,7 @@ import React from 'react';
 import favicon from '../../common/app/favicon';
 import start from '../../common/app/start';
 import { Match } from '../../common/app/components';
-import { Miss } from 'react-router';
+import { Redirect, Miss } from 'react-router';
 import { compose } from 'ramda';
 import { connect } from 'react-redux';
 import {
@@ -22,6 +22,7 @@ import {
 // Pages
 import FieldsPage from '../fields/FieldsPage';
 import HomePage from '../home/HomePage';
+import EstePage from '../este/EstePage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 import NotFoundPage from '../notfound/NotFoundPage';
@@ -66,6 +67,7 @@ const App = ({
         >
           <Match exactly pattern="/" component={HomePage} />
           <Match pattern="/users" component={UsersPage} />
+          <Match pattern="/este" component={EstePage} />
           <Match pattern="/todos" component={TodosPage} />
           <Match pattern="/fields" component={FieldsPage} />
           <Match pattern="/intl" component={IntlPage} />

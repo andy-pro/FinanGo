@@ -2,6 +2,18 @@
 import { defineMessages } from 'react-intl';
 
 const LinkMessages = defineMessages({
+  este: {
+    defaultMessage: 'Este',
+    id: 'app.links.este',
+  },
+  broken: {
+    defaultMessage: 'Broken',
+    id: 'app.links.broken',
+  },
+  notfound: {
+    defaultMessage: '404',
+    id: 'app.links.notfound',
+  },
   intl: {
     defaultMessage: 'Intl',
     id: 'app.links.intl',

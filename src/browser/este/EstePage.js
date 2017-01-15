@@ -14,7 +14,7 @@ import {
   ToggleBaseline,
 } from '../app/components';
 
-const HomePage = () => (
+const EstePage = () => (
   <Box>
     <Title message="Este.js" />
     <PageHeader
@@ -33,7 +33,22 @@ const HomePage = () => (
       display="block"
       to="https://github.com/este/este"
     >github.com/este/este</Link>
-
+    <Box marginVertical={1}>
+      <Image
+        alt="50x50 placeholder"
+        height={50}
+        src={require('./50x50.png')}
+        width={50}
+      />
+    </Box>
+    <Box marginVertical={1}>
+      <Image
+        alt="Bananas"
+        src={require('./Bananavarieties.jpg')}
+        width={387}
+        height={221}
+      />
+    </Box>
     <Text size={0}>normal text</Text><br />
     <Text display="block" size={-1}>small text</Text>
     <Text size={5}>text 5</Text><br />
@@ -50,4 +65,4 @@ const HomePage = () => (
   </Box>
 );
 
-export default HomePage;
+export default EstePage;

@@ -49,6 +49,10 @@ export default [
     "defaultMessage": "You have unsaved changes. Are you sure?",
   },
   {
+    "id": "app.links.este",
+    "defaultMessage": "Este",
+  },
+  {
     "id": "app.links.fields",
     "defaultMessage": "Fields",
   },
