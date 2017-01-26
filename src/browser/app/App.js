@@ -3,12 +3,12 @@ import type { State } from '../../common/types';
 import type { Theme } from './themes/types';
 import * as themes from './themes';
 import Footer from './Footer';
-import Header from './Header';
+import Menu from './Menu';
 import Helmet from 'react-helmet';
 import React from 'react';
 import favicon from '../../common/app/favicon';
 import start from '../../common/app/start';
-import { Match } from '../../common/app/components';
+import Match from '../../common/components/Match';
 import { Redirect, Miss } from 'react-router';
 import { compose } from 'ramda';
 import { connect } from 'react-redux';
@@ -20,8 +20,10 @@ import {
 } from './components';
 
 // Pages
-import FieldsPage from '../fields/FieldsPage';
 import HomePage from '../home/HomePage';
+import AddSinglePage from '../transactions/AddSinglePage';
+import AddSinglePage2 from '../transactions/AddSinglePage2';
+import FieldsPage from '../fields/FieldsPage';
 import EstePage from '../este/EstePage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
@@ -61,11 +63,11 @@ const App = ({
             ...favicon.link,
           ]}
         />
-        <Header />
-        <Box
-          flex={1} // make footer sticky
-        >
+        <Menu width={theme.menu.width}/>
+        <Box marginLeft={theme.menu.width} padding={1}>
           <Match exactly pattern="/" component={HomePage} />
+          <Match pattern="/single" component={AddSinglePage} />
+          <Match pattern="/single2" component={AddSinglePage2} />
           <Match pattern="/users" component={UsersPage} />
           <Match pattern="/este" component={EstePage} />
           <Match pattern="/todos" component={TodosPage} />

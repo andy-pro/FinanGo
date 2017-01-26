@@ -27,10 +27,13 @@ const theme: Theme = {
     success: openColor.green5,
     warning: openColor.orange6,
     danger: openColor.red6,
+    lightdanger: openColor.red3,
     black: openColor.gray8,
     white: openColor.white,
     gray: openColor.gray5,
     open: openColor,
+    green: openColor.green7,
+    silver: openColor.gray4,
   },
   border: {
     radius: 2,
@@ -52,6 +55,9 @@ const theme: Theme = {
       big: 960,
       bigger: 1140,
     },
+  },
+  menu: {
+    width: 7
   },
   text: {
     bold: 600,

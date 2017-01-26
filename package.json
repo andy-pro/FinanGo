@@ -1,5 +1,5 @@
 {
-  "name": "Finango",
+  "name": "FinanGo",
   "private": true,
   "//": "Check all github.com/este/este#dev-tasks",
   "scripts": {
@@ -9,7 +9,7 @@
     "jest": "jest",
     "jest:watch": "jest --watch",
     "postinstall": "gulp native && gulp build --production",
-    "start": "gulp",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "gulp test"
   },
   "engines": {
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "autoprefixer": "^6.1.0",
+    "autosuggest-highlight": "^3.1.0",
     "babel-core": "^6.6.0",
     "babel-eslint": "^7.0.0",
     "babel-jest": "^18.0.0",

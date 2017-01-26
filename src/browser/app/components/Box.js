@@ -57,6 +57,7 @@ export type BoxProps = {
   paddingLeft?: number,
   paddingRight?: number,
   paddingTop?: number,
+  position: string,
   verticalAlign?: VerticalAlign,
   width?: number,
   // Custom
@@ -92,6 +93,7 @@ const propToStyle = (prop, value: any, theme) => {
     case 'flexWrap':
     case 'justifyContent':
     case 'order':
+    case 'position':
     case 'verticalAlign':
       return { [prop]: value };
     // Simple rhythm props.

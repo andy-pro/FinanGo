@@ -33,8 +33,8 @@ const store = configureStore({
   platformDeps: { /*FBSDK,*/ uuid, storageEngine: AsyncStorage },
 });
 
-const Finango = () => (
+const FinanGo = () => (
   <Root store={store} />
 );
 
-AppRegistry.registerComponent('Finango', () => Finango);
+AppRegistry.registerComponent('FinanGo', () => FinanGo);

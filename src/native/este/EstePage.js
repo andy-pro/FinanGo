@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
-import { CenteredContainer, Text } from '../app/components';
-import { Platform, StyleSheet } from 'react-native';
+import { CenteredContainer } from '../app/components';
+import { Platform, StyleSheet, Image } from 'react-native';
+import { View, Text } from './../../common/components'
 
 const styles = StyleSheet.create({
   text: {
@@ -10,7 +11,7 @@ const styles = StyleSheet.create({
 });
 
 const EstePage = () => (
-  <CenteredContainer>
+  <View>
     <Text style={styles.text}>
       {Platform.select({
         android: `
@@ -25,7 +26,8 @@ const EstePage = () => (
         `,
       })}
     </Text>
-  </CenteredContainer>
+    <Image source={require('./Bananavarieties.jpg')} style={{width: 193, height: 110}} />
+  </View>
 );
 
 export default EstePage;

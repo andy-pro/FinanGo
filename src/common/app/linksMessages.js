@@ -2,6 +2,22 @@
 import { defineMessages } from 'react-intl';
 
 const LinkMessages = defineMessages({
+  home: {
+    defaultMessage: 'Home',
+    id: 'app.links.home',
+  },
+  single: {
+    defaultMessage: 'Single expense',
+    id: 'app.links.single',
+  },
+  group: {
+    defaultMessage: 'Group expense',
+    id: 'app.links.group',
+  },
+  income: {
+    defaultMessage: 'Income',
+    id: 'app.links.income',
+  },
   este: {
     defaultMessage: 'Este',
     id: 'app.links.este',
@@ -25,10 +41,6 @@ const LinkMessages = defineMessages({
   users: {
     defaultMessage: 'Users',
     id: 'app.links.users',
-  },
-  home: {
-    defaultMessage: 'Home',
-    id: 'app.links.home',
   },
   me: {
     defaultMessage: 'Me',

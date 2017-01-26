@@ -3,6 +3,8 @@ import type { Action, UsersState } from '../types';
 import createUserFirebase from './createUserFirebase';
 import { compose, last, map, prop, sortBy, values } from 'ramda';
 
+import mockData from './../_mockData'
+
 const initialState = {
   // Undefined is absence of evidence, null is evidence of absence.
   online: undefined,
@@ -16,8 +18,9 @@ const reducer = (
   switch (action.type) {
 
     case 'ON_AUTH': {
-      const user = createUserFirebase(action.payload.firebaseUser);
-      return { ...state, viewer: user };
+      // const user = createUserFirebase(action.payload.firebaseUser);
+      // console.log('print from reduser ON_AUTH', action);
+      return { ...state, viewer: mockData[0] };
     }
 
     case 'ON_USERS_PRESENCE': {

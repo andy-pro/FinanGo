@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 
 const HeaderLink = ({ exactly, to, message }) => (
   <Link
+    display='block'
     backgroundColor="primary"
     bold
     color="white"
@@ -26,17 +27,23 @@ type HeaderProps = {
 };
 
 const Header = ({
-  viewer,
+  viewer, width
 }: HeaderProps) => (
   <Box
     backgroundColor="primary"
-    display="flex"
-    flexWrap="wrap"
+    width={width}
+    position='fixed'
+    top={0}
+    left={0}
     marginVertical={0.5}
     paddingHorizontal={0.5}
   >
     <HeaderLink exactly to="/" message={linksMessages.home} />
-    <HeaderLink exactly to="/este" message={linksMessages.este} />
+    <HeaderLink to="/single" message={linksMessages.single} />
+    <HeaderLink to="/single2" message={linksMessages.single} />
+    <HeaderLink to="/group" message={linksMessages.group} />
+    <HeaderLink to="/income" message={linksMessages.income} />
+    <HeaderLink to="/este" message={linksMessages.este} />
     <HeaderLink to="/users" message={linksMessages.users} />
     <HeaderLink to="/todos" message={linksMessages.todos} />
     <HeaderLink to="/fields" message={linksMessages.fields} />

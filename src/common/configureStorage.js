@@ -8,7 +8,7 @@ const paths = [
   ['app', ['baselineShown', 'currentTheme']],
   ['fields'],
   ['intl', ['currentLocale']],
-  ['users', ['online', 'viewer']],
+  // ['users', ['online', 'viewer']],
 ];
 
 const transforms = [];

@@ -3,8 +3,13 @@ import Header from './Header';
 import React from 'react';
 import linksMessages from '../../common/app/linksMessages';
 import { Alert, Container } from './components';
-import { Match } from '../../common/app/components';
 import { injectIntl, intlShape } from 'react-intl';
+import { StyleSheet, View } from 'react-native';
+
+// import { Match } from '../../common/app/components';
+import Match from '@components/Match';
+import RoundButton from '@components/RoundButton'
+import theme from '@themes/initial'
 
 const titles = {
   '/': linksMessages.home,
@@ -17,18 +22,26 @@ const titles = {
   '/me': linksMessages.me,
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.backgroundColor,
+  },
+});
+
 const Page = ({ component: Component, intl, pattern, ...props }) => (
   <Match
     {...props}
     pattern={pattern}
     render={renderProps => (
-      <Container>
+      <View style={styles.container}>
         {titles[pattern] &&
           <Header title={intl.formatMessage(titles[pattern])} />
         }
         <Alert />
         <Component {...renderProps} />
-      </Container>
+        <RoundButton />
+      </View>
     )}
   />
 );
