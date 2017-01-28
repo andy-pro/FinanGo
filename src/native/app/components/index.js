@@ -9,6 +9,7 @@ import Container from './Container';
 import Link from './Link';
 import Text from './Text';
 import TextInput from './TextInput';
+import RoundButton from './RoundButton';
 import {
   FormattedDate,
   FormattedMessage,
@@ -33,4 +34,5 @@ export {
   FormattedTime,
   Text,
   TextInput,
+  RoundButton
 };

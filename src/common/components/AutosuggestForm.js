@@ -2,19 +2,23 @@ import React, { Component } from 'react';
 import {
   View,
   ListView,
-  TouchableHighlight
+  TouchableHighlight,
+  StyleSheet,
 } from './';
+
+import { defaultTheme as theme } from '../app/themes'
+const styles = StyleSheet.create(theme.suggestionsPanel);
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-const AutosuggestForm = ({children, styles, state, onArrow}) => {
+const AutosuggestForm = ({children, state}) => {
 
-  let { suggestions, showList, field, selectedIndex } = state
+  let { showList, suggestions, field } = state
 
   const renderSuggestion = (suggestion) =>
     <TouchableHighlight
       onPress={() => field.onSelect(suggestion)}
-      underlayColor='#ddd'
+      underlayColor='#bbb'
       $ref={c => {
         if (suggestion.selected && c)
           c.scrollIntoViewIfNeeded(false)
@@ -22,49 +26,17 @@ const AutosuggestForm = ({children, styles, state, onArrow}) => {
       {field.renderSuggestion(suggestion)}
     </TouchableHighlight>
 
-  const onKeyDown = e => {
-    const changeSelected = (selectedIndex) => {
-      e.preventDefault()
-      onArrow({
-        selectedIndex,
-        suggestions: suggestions.map((item, index) => {
-          item.selected = index === selectedIndex
-          return item
-        })
-      })
-    }
-    if (showList) {
-      switch (e.key) {
-        case 'Enter':
-          if (selectedIndex >= 0) {
-            e.preventDefault()
-            field.onSelect(suggestions[selectedIndex])
-          }
-          break
-        case 'ArrowDown':
-          if (selectedIndex < suggestions.length - 1) {
-            changeSelected(++selectedIndex)
-          }
-          return
-        case 'ArrowUp':
-          if (selectedIndex > 0) {
-            changeSelected(--selectedIndex)
-          }
-      }
-    }
-  }
-
   return (
-    <View onKeyDown={onKeyDown}
-      style={styles.container}>
+    <View style={styles.root}>
       {children}
       {showList &&
-        <View style={styles.suggestions}>
+        <View style={[styles.suggestions, field.pos]}>
           <ListView
             dataSource={ds.cloneWithRows(suggestions)}
             keyboardShouldPersistTaps='always'
             enableEmptySections={true}
-            renderRow={renderSuggestion} />
+            renderRow={renderSuggestion}
+          />
         </View>
       }
     </View>

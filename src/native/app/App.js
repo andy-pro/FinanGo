@@ -13,7 +13,9 @@ import { compose } from 'ramda';
 import { connect } from 'react-redux';
 
 // Pages
-import HomePage from '../home/HomePage';
+import HomePage from '../../common/home/HomePage';
+import AddSinglePage from '../../common/transactions/AddSinglePage';
+import AddGroupPage from '../transactions/AddGroupPage';
 import EstePage from '../este/EstePage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
@@ -36,6 +38,8 @@ const App = ({ appMenuShown, appShowMenu, appStarted }) => {
         onChange={appShowMenu}
       >
         <Page exactly pattern="/" component={HomePage} />
+        <Page pattern="/single" component={AddSinglePage} />
+        <Page pattern="/group" component={AddGroupPage} />
         <Page pattern="/este" component={EstePage} />
         <Page pattern="/intl" component={IntlPage} />
         <Page pattern="/offline" component={OfflinePage} />
@@ -49,7 +53,7 @@ const App = ({ appMenuShown, appShowMenu, appStarted }) => {
         <Match
           pattern="/"
           render={({ location: { pathname } }) => {
-            const urls = ['/', '/este', '/intl', '/offline', '/signin', '/todos', './broken', '/me'];
+            const urls = ['/', '/single', '/group', '/este', '/intl', '/offline', '/signin', '/todos', '/broken', '/me'];
             if (urls.indexOf(pathname) !== -1) return null;
             return (
               <Redirect to="/" />

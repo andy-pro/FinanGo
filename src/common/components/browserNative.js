@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 
-import createComponent from '../lib/react-native-fela/createComponent'
-
-// import { Image } from 'react-native'
+import createComponent from './fela/createComponent'
 
 const directionMapping = {
   marginHorizontal: ['marginLeft', 'marginRight'],
@@ -23,9 +21,25 @@ const transformDirection = (style) => {
 }
 
 const transformStyle = (theme, style) => {
+  if (style instanceof Array) {
+    // console.log('style is Array', JSON.stringify(style));
+    // style = style.reduce((item, src) => ({...src, ...item}), {})
+    style = {...style[0], ...style[1]}
+    // console.log('after style is Array', JSON.stringify(style));
+  }
   // transform style for Component
-  if (style.flex) {
-    style.display = 'flex'
+  // style.display = 'flex'
+  // if (!style.flexDirection) {
+  //   // style.flexDirection = 'column'
+  // }
+  // if (style.flex) {
+  //   style.display = 'flex'
+  // }
+  if (style.borderWidth) {
+    style.borderStyle = 'solid'
+  }
+  if (style.borderBottomWidth) {
+    style.borderBottomStyle = 'solid'
   }
   transformDirection(style)
   // style.fontFamily = theme.text.fontFamily
@@ -41,6 +55,12 @@ const createStylizedComponent = (rule, tag, passProps) =>
     passProps,
   );
 
+const Form = createStylizedComponent(
+  transformStyle,
+  'form',
+  ['onSubmit', 'onKeyDown']
+)
+
 const View = createStylizedComponent(
   transformStyle,
   'div',
@@ -49,11 +69,17 @@ const View = createStylizedComponent(
 
 const Text = createStylizedComponent(transformStyle, 'span')
 
+const Button = createStylizedComponent(
+  transformStyle,
+  'button',
+  ['onClick']
+)
+
 const TextInput = createStylizedComponent(
   transformStyle,
   'input',
   // ['placeholder', {$cmd: 'assign', $set: ['onChange', 'onChangeText']}, 'value', 'autoFocus', 'onFocus', 'onBlur']
-  ['placeholder', 'onChangeText', 'value', 'autoFocus', 'onFocus', 'onBlur', '$ref']
+  ['required', 'placeholder', 'onChangeText', 'value', 'autoFocus', 'onFocus', 'onBlur', '$ref']
 )
 
 const TouchableHighlight = createStylizedComponent(
@@ -74,8 +100,9 @@ class ListView extends Component {
   }
 
   render() {
+    const {style, onKeyDown} = this.props
     return (
-      <div>
+      <View style={style}>
         {this.props.dataSource.map((item, index) => {
           return (
             <div key={index}>
@@ -83,7 +110,7 @@ class ListView extends Component {
             </div>
           )
         })}
-      </div>
+      </View>
     )
   }
 
@@ -102,11 +129,13 @@ const ScrollView = ({children}) => {
 }
 
 export {
+  Form,
   View,
   Text,
+  Button,
   ListView,
   StyleSheet,
   TextInput,
   ScrollView,
-  TouchableHighlight
+  TouchableHighlight,
 }

@@ -2,6 +2,8 @@
 import type { State } from '../../common/types';
 import type { Theme } from './themes/types';
 import * as themes from './themes';
+import Page from './Page';
+import Header from './Header';
 import Footer from './Footer';
 import Menu from './Menu';
 import Helmet from 'react-helmet';
@@ -20,9 +22,10 @@ import {
 } from './components';
 
 // Pages
-import HomePage from '../home/HomePage';
-import AddSinglePage from '../transactions/AddSinglePage';
-import AddSinglePage2 from '../transactions/AddSinglePage2';
+import HomePage      from '../../common/home/HomePage';
+import AddSinglePage from '../../common/transactions/AddSinglePage';
+
+import AddGroupPage from '../../common/transactions/AddGroupPage';
 import FieldsPage from '../fields/FieldsPage';
 import EstePage from '../este/EstePage';
 import IntlPage from '../intl/IntlPage';
@@ -65,9 +68,10 @@ const App = ({
         />
         <Menu width={theme.menu.width}/>
         <Box marginLeft={theme.menu.width} padding={1}>
-          <Match exactly pattern="/" component={HomePage} />
-          <Match pattern="/single" component={AddSinglePage} />
-          <Match pattern="/single2" component={AddSinglePage2} />
+          <Page exactly pattern="/" component={HomePage} />
+          <Page pattern="/single" component={AddSinglePage} />
+          <Page pattern="/group" component={AddGroupPage} />
+          <Match pattern="/income" component={AddGroupPage} />
           <Match pattern="/users" component={UsersPage} />
           <Match pattern="/este" component={EstePage} />
           <Match pattern="/todos" component={TodosPage} />

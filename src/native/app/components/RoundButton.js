@@ -23,15 +23,21 @@ const styles = StyleSheet.create({
   }
 });
 
-const RoundButton = (props) => {
+const RoundButton = ({ to }, { router }) => {
   return (
     <TouchableHighlight
-      onPress={props.onClick}
+      onPress={
+        () => { router.transitionTo(to) }
+      }
       underlayColor='#084'
       style={styles.button}>
       <Text style={styles.text}>+</Text>
     </TouchableHighlight>
   )
 }
+
+RoundButton.contextTypes = {
+  router: React.PropTypes.object,
+};
 
 export default RoundButton

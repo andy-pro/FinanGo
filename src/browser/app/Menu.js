@@ -40,7 +40,6 @@ const Header = ({
   >
     <HeaderLink exactly to="/" message={linksMessages.home} />
     <HeaderLink to="/single" message={linksMessages.single} />
-    <HeaderLink to="/single2" message={linksMessages.single} />
     <HeaderLink to="/group" message={linksMessages.group} />
     <HeaderLink to="/income" message={linksMessages.income} />
     <HeaderLink to="/este" message={linksMessages.este} />

@@ -1,26 +1,14 @@
 // @flow
 import Header from './Header';
 import React from 'react';
-import linksMessages from '../../common/app/linksMessages';
-import { Alert, Container } from './components';
+import titles from '../../common/app/menuTitles';
+import { Alert, Container, RoundButton } from './components';
 import { injectIntl, intlShape } from 'react-intl';
 import { StyleSheet, View } from 'react-native';
 
 // import { Match } from '../../common/app/components';
 import Match from '@components/Match';
-import RoundButton from '@components/RoundButton'
 import theme from '@themes/initial'
-
-const titles = {
-  '/': linksMessages.home,
-  '/este': linksMessages.este,
-  '/intl': linksMessages.intl,
-  '/offline': linksMessages.offline,
-  '/signin': linksMessages.signIn,
-  '/todos': linksMessages.todos,
-  '/broken': linksMessages.broken,
-  '/me': linksMessages.me,
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -40,7 +28,7 @@ const Page = ({ component: Component, intl, pattern, ...props }) => (
         }
         <Alert />
         <Component {...renderProps} />
-        <RoundButton />
+        {pattern === '/' && <RoundButton to='/single' />}
       </View>
     )}
   />
