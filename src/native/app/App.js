@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 
 // Pages
 import HomePage from '../../common/home/HomePage';
-import AddSinglePage from '../../common/transactions/AddSinglePage';
+import NewTransactionPage from '../../common/transactions/NewTransactionPage';
 import AddGroupPage from '../transactions/AddGroupPage';
 import EstePage from '../este/EstePage';
 import IntlPage from '../intl/IntlPage';
@@ -38,7 +38,7 @@ const App = ({ appMenuShown, appShowMenu, appStarted }) => {
         onChange={appShowMenu}
       >
         <Page exactly pattern="/" component={HomePage} />
-        <Page pattern="/single" component={AddSinglePage} />
+        <Page pattern="/single" component={NewTransactionPage} />
         <Page pattern="/group" component={AddGroupPage} />
         <Page pattern="/este" component={EstePage} />
         <Page pattern="/intl" component={IntlPage} />

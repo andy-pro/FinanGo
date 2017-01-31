@@ -1,10 +1,15 @@
 // @flow
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { addTransaction, delTransaction, undoDelTransaction } from './actions'
 
 import { Form, View, Text, TextInput, StyleSheet, Icon } from '../components';
 import { getSuggestions } from './utils'
+import { removeSpecial, getSlug, slugifyCategory } from '../lib/utils'
 
 import AutosuggestForm from '../components/AutosuggestForm'
+import RenderTransactions from './render'
 
 // import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
@@ -16,12 +21,13 @@ import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 import { defaultTheme as theme } from '../app/themes'
 const styles = StyleSheet.create(theme.transactionForm);
 
-export default class SingleForm extends Component {
+class NewTransactionPage extends Component {
+
+  // props.pattern: /single, /group, /income
 
   constructor(props) {
     super(props);
-    // this.fields = {}
-    // this.state = initialState
+
     this.amountTypes = [
       {title: 'кг'},
       {title: 'г'},
@@ -30,54 +36,55 @@ export default class SingleForm extends Component {
       {title: 'шт'},
       {title: 'м.п.'}
     ]
-    // presets
-    let refName = props.isReactNative ? 'ref' : '$ref'
+
+    const isNative = props.isReactNative
+    let refName = isNative ? 'ref' : '$ref'
     this.refhack = {
+      title: {[refName]: c => this.fields.title.ref = c},
+      category: {[refName]: c => this.fields.category.ref = c},
       amount: {[refName]: c => this.fields.amount.ref = c},
       cost: {[refName]: c => this.fields.cost.ref = c}
     }
 
     this.fields = {
-
       title: {
         name: 'title',
-        pos: {top: 42, maxHeight: 202},
-        getSuggestions: query => getSuggestions(props.categories, query, 1),
+        pos: {top: isNative ? 42 : 36, maxHeight: 202},
+        getSuggestions: query => getSuggestions(this.props.viewer.categories, query, 1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
           // console.log('onSelect title', suggestion);
           this.setState({
             title: suggestion.title,
             category: suggestion.path_str.trim().replace(/\s*\/$/, ''),
-            showList: false
+            showList: false,
           })
           this.fields.amount.ref.focus()
         }
       },
       category: {
         name: 'category',
-        pos: {top: 80, maxHeight: 174},
-        getSuggestions: query => getSuggestions(props.categories, query, -1),
+        pos: {top: isNative ? 80 : 72, maxHeight: 174},
+        getSuggestions: query => getSuggestions(this.props.viewer.categories, query, -1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
-          // console.log('its my click', suggestion, this.fields.title.ref);
           this.setState({
             category: suggestion.path_str + suggestion.title,
-            showList: false
+            showList: false,
           })
           this.fields.amount.ref.focus()
         }
       },
       amount: {
         name: 'amount',
-        pos: {top: 118, maxHeight: 146},
+        pos: {top: isNative ? 118 : 108, maxHeight: 146},
         getSuggestions: query => /\d+\s/.test(query) ? this.amountTypes : [],
         renderSuggestion: this.renderAmount,
         onSelect: suggestion => {
-          // console.log('its my click', suggestion, this.fields.title.ref);
+          this.state.suggestions.forEach(item => item.selected = item === suggestion)
           this.setState({
             amount: this.state.query + suggestion.title,
-            showList: false
+            showList: false,
           })
           this.fields.cost.ref.focus()
         }
@@ -85,7 +92,6 @@ export default class SingleForm extends Component {
       cost: {
         name: 'cost'
       }
-
     }
 
     this.state = this.init()
@@ -101,7 +107,7 @@ export default class SingleForm extends Component {
     focused: 'title',
     field: this.fields.title,
     suggestions: [],
-    showList: false
+    showList: false,
   })
 
   onChange = (query, name) => {
@@ -111,13 +117,24 @@ export default class SingleForm extends Component {
     const field = this.fields[name]
     // console.log('Change: ', name, ' query:', query);
     let suggestions = (query.length && field.getSuggestions) ? field.getSuggestions(query) : []
-    let showList = Boolean(suggestions.length)
+    let len = suggestions.length
+    let showList = Boolean(len)
+    let si = -1
+    if (showList) {
+      if (len === 1) {
+        suggestions[0].selected = true
+        si = 0
+      } else {
+        // -1 if not found
+        si = suggestions.findIndex(item => item.selected)
+      }
+    }
     this.setState({
       query,
       [name]:query,
       field,
       suggestions,
-      selectedIndex: -1,
+      selectedIndex: si,
       focused: name,
       showList
     })
@@ -140,12 +157,24 @@ export default class SingleForm extends Component {
 
   onSubmit = e => {
     e.preventDefault()
-    console.log('formData',
-      this.state.title +
-      this.state.category +
-      this.state.amount +
-      this.state.cost
-    )
+    let keys = Object.keys(this.fields)
+    let fields = {}
+    for (let i = 0, len = keys.length; i < len; i++) {
+      let key = keys[i]
+      let field = this.state[key].trim()
+      if (!field) return this.fields[key].ref.focus()
+      fields[key] = field
+    }
+    this.props.addTransaction({
+      title: removeSpecial(fields.title),
+      category: slugifyCategory(fields.category),
+      cost: fields.cost,
+      amount: fields.amount,
+      userId: this.props.viewer.id,
+      date: new Date().toISOString()
+    })
+    // this.setState(this.init())
+    this.fields.title.ref.focus()
   }
 
   onKeyDown = e => {
@@ -163,10 +192,15 @@ export default class SingleForm extends Component {
     if (showList) {
       switch (e.key) {
         case 'Enter':
-          if (si >= 0) {
+          let s = suggestions.find(item => item.selected)
+          if (s) {
             e.preventDefault()
-            field.onSelect(suggestions[si])
+            field.onSelect(s)
           }
+          // if (si >= 0) {
+          //   e.preventDefault()
+          //   field.onSelect(suggestions[si])
+          // }
           break
         case 'ArrowDown':
           if (si < suggestions.length - 1) changeSelected(++si)
@@ -180,14 +214,26 @@ export default class SingleForm extends Component {
     }
   }
 
+  onDelTransaction = (e, item) => {
+    if (item.willDel) {
+      console.log('%cundelete transaction', 'color:green;font-size:15px', item.id)
+      this.props.undoDelTransaction(item.id)
+    } else {
+      console.log('%cdelete transaction', 'color:red;font-size:15px', item.id)
+      this.props.delTransaction(item.id)
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return nextState.showList !== this.state.showList ||
     nextState.query !== this.state.query ||
-    nextState.selectedIndex !== this.state.selectedIndex
+    nextState.selectedIndex !== this.state.selectedIndex ||
+    nextProps.transactions !== this.props.transactions ||
+    nextProps.viewer !== this.props.viewer
   }
 
   render() {
-    // console.log('%cAutosuggest Form render!!!', 'color:#a00;font-weight:bold;', this.state);
+    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.state);
     // const {suggestions, showList, focused, field} = this.state
     return (
 
@@ -205,6 +251,7 @@ export default class SingleForm extends Component {
               placeholder='Type a transaction title'
               value={this.state.title}
               onChangeText={e => this.onChange(e, 'title')}
+              {...this.refhack.title}
               {...this.propSet1}
             />
           </View>
@@ -214,6 +261,7 @@ export default class SingleForm extends Component {
               placeholder='Type a transaction category'
               value={this.state.category}
               onChangeText={e => this.onChange(e, 'category')}
+              {...this.refhack.category}
               {...this.propSet1}
             />
           </View>
@@ -247,7 +295,12 @@ export default class SingleForm extends Component {
 
         </Form>
 
-        {this.props.children}
+        <RenderTransactions
+          viewer={this.props.viewer}
+          transactions={this.props.transactions}
+          editable={true}
+          onClick={this.onDelTransaction}
+        />
 
       </AutosuggestForm>
 
@@ -288,7 +341,7 @@ export default class SingleForm extends Component {
 
   propSet0 = {
     onBlur: this.onBlur,
-    required: true
+    // required: true
   }
 
   propSet1 = {
@@ -309,3 +362,12 @@ export default class SingleForm extends Component {
   }
 
 }
+
+export default connect(
+  (state) => ({
+    viewer: state.users.viewer,
+    transactions: state.transactions,
+    isReactNative: state.device.isReactNative,
+  }),
+  { addTransaction, delTransaction, undoDelTransaction }
+)(NewTransactionPage);

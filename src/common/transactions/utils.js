@@ -19,6 +19,7 @@ export const getSuggestions = (inputList, query, order) => {
   const inputValue = query.trim().toLowerCase(),
         inputLength = inputValue.length,
         suggestions = [];
+  if (!inputValue) return suggestions
   const createList = (data, path=[]) => {
     data.forEach((item, index) => {
       let title = item.title;

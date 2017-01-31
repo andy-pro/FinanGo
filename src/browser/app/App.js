@@ -23,7 +23,7 @@ import {
 
 // Pages
 import HomePage      from '../../common/home/HomePage';
-import AddSinglePage from '../../common/transactions/AddSinglePage';
+import NewTransactionPage from '../../common/transactions/NewTransactionPage';
 
 import AddGroupPage from '../../common/transactions/AddGroupPage';
 import FieldsPage from '../fields/FieldsPage';
@@ -69,7 +69,7 @@ const App = ({
         <Menu width={theme.menu.width}/>
         <Box marginLeft={theme.menu.width} padding={1}>
           <Page exactly pattern="/" component={HomePage} />
-          <Page pattern="/single" component={AddSinglePage} />
+          <Page pattern="/single" component={NewTransactionPage} />
           <Page pattern="/group" component={AddGroupPage} />
           <Match pattern="/income" component={AddGroupPage} />
           <Match pattern="/users" component={UsersPage} />

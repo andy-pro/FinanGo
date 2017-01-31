@@ -20,45 +20,53 @@ const dis_btn = { name: 'ios-refresh-circle-outline', backgroundColor: '#aaa' }
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 // var ds = new ListView.DataSource({rowHasChanged: 'ququsyaka-buzyu'});
 
-export default renderTransactions = ({ viewer, transactions, editable }) => {
+export default renderTransactions = ({ viewer, transactions, editable, onClick }) => {
+  if (!viewer) {
+    return null
+  }
   const { currency, categories } = viewer
   // console.log('print instance ds', ds.rowHasChanged, ds.cloneWithRows);
   const dataSource = ds.cloneWithRows(transactions)
 
-  const renderRow = item =>
-    <View style={styles.item}>
+  const renderRow = item => {
+    let button = item.didDel ? {...dis_btn} : item.willDel ? {...rfr_btn} : {...del_btn}
+    button.style = {...styles.button}
+    if (!item.didDel) {
+      button.onPress = (e) => onClick(e, item)
+      button.style.cursor = 'pointer'
+    }
+    return (
+      <View style={styles.item}>
 
-      <View>
-        <Text style={styles.title}>{item.title}
-          {item.amount &&
-            <Text style={styles.amount}>
-              {' '}({item.amount})
-            </Text>
-          }
-        </Text>
         <View>
-          <Text style={styles.category}>
-            {item.category && getCategoryBySlug(item.category, categories)}
+          <Text style={styles.title}>{item.title}
+            {item.amount &&
+              <Text style={styles.amount}>
+                {' '}({item.amount})
+              </Text>
+            }
           </Text>
-        </View>
-      </View>
-
-      <View style={styles.row}>
-        <Text style={styles.cost}>
-          {item.cost} {currency}
-        </Text>
-        {editable &&
-          <View style={{marginLeft: 15}}>
-            <Icon.Button
-              {...del_btn}
-              style={styles.button}
-              onPress={() => {  }}
-            />
+          <View>
+            <Text style={styles.category}>
+              {item.category && getCategoryBySlug(item.category, categories)}
+            </Text>
           </View>
-        }
-      </View>
+        </View>
 
-    </View>
+        <View style={styles.row}>
+          <Text style={styles.cost}>
+            {item.cost} {currency}
+          </Text>
+          {editable &&
+            <View style={{marginLeft: 15}}>
+              <Icon.Button {...button} />
+            </View>
+          }
+        </View>
+
+      </View>
+    )
+  }
 
   return (
     <ListView

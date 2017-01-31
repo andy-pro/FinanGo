@@ -117,6 +117,7 @@
     "serialize-javascript": "^1.1.2",
     "sinon": "^1.17.2",
     "sinon-as-promised": "^4.0.0",
+    "slugify": "^1.1.0",
     "style-loader": "^0.13.0",
     "through2": "^2.0.1",
     "unitless-css-property": "^1.0.2",

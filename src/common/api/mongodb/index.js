@@ -1,8 +1,29 @@
 import { normalize, denormalize, convertCategoryPath } from './utils'
 
+const __rootURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
+const __apiKey = 'apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD';
+const __usersURL = __rootURL + 'users';
+const __transactionsURL = __rootURL + 'transactions';
+// const __transactionsURL = __rootURL + 'purchases';
+
+
+export { normalize, denormalize }
+
+export const getTransactionsURL = userId =>
+  __transactionsURL + '?q=' + denormalize({userId}) + '&s={"date":-1}&' + __apiKey
+
+export const addTransactionURL = () =>
+  __transactionsURL + '?' + __apiKey
+
+export const delTransactionURL = id =>
+  __transactionsURL + '/' + id + '?' + __apiKey
+
+
+//=============================================
+
+  const usersURL = rootURL + 'users';
+  const rootURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
 const apiKey = 'apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD';
-const rootURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
-const usersURL = rootURL + 'users';
 const purchasesURL = rootURL + 'purchases';
 const jsonHeaders = {
   'Content-Type': 'application/json;charset=UTF-8'

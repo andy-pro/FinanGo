@@ -14,55 +14,9 @@ export default {
     outline: 0,
     border: 0,
     borderRadius: 4,
-    cursor: 'pointer',
-    height: 28,
+    // cursor: 'pointer',
+    height: 26,
     verticalAlign: 'center'
-  },
-
-  transaction: {
-    root: {
-      // flex: 1,
-      fontFamily: 'Arial, sans-serif',
-      paddingHorizontal: 15
-    },
-    item: {
-      // flex: 1,
-      // flexDirection: 'row',
-      display: 'flex',
-      borderBottomColor: '#ccc',
-      borderBottomWidth: 1,
-      justifyContent: 'space-between',
-      paddingVertical: 5,
-      alignItems: 'center'
-    },
-    title: {
-      fontSize: 16,
-      color: '#555',
-      fontWeight: '600'
-    },
-    amount: {
-      fontSize: 14,
-      color: green0,
-      fontWeight: 'normal'
-    },
-    category: {
-      fontSize: 12,
-      fontStyle: 'italic'
-    },
-    row: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    cost: {
-      fontSize: 15,
-      color: 'red',
-    },
-    button: {
-      // width: 15,
-      // paddingLeft: 12,
-      // paddingRight: -5,
-    }
   },
 
   transactionForm: {
@@ -88,12 +42,12 @@ export default {
       border: '1px solid #bbb',
       outline: 0,
       flex: 1,
-      fontSize: 16,
+      fontSize: 14,
       // flexDirection: 'row',
       // marginVertical: 5,
       // height: 50,
       paddingHorizontal: 10,
-      paddingVertical: 3,
+      paddingVertical: 4,
       marginBottom: 10,
       // marginRight: 5
     },
@@ -104,6 +58,9 @@ export default {
       borderColor: '#ddd',
       paddingVertical: 4,
       paddingHorizontal: 10,
+      ':hover': {
+        backgroundColor: '#cce'
+      }
     },
     selected: {
       backgroundColor: '#cce'
@@ -143,6 +100,52 @@ export default {
       minWidth: 150,
       boxShadow: "2px 2px 10px grey"
     },
+  },
+
+  transaction: {
+    root: {
+      // flex: 1,
+      fontFamily: 'Arial, sans-serif',
+      paddingHorizontal: 15
+    },
+    item: {
+      // flex: 1,
+      // flexDirection: 'row',
+      display: 'flex',
+      borderBottomColor: '#ccc',
+      borderBottomWidth: 1,
+      justifyContent: 'space-between',
+      paddingVertical: 5,
+      alignItems: 'center'
+    },
+    title: {
+      fontSize: 15,
+      color: '#555',
+      fontWeight: '600'
+    },
+    amount: {
+      fontSize: 13,
+      color: green0,
+      fontWeight: 'normal'
+    },
+    category: {
+      fontSize: 12,
+      fontStyle: 'italic'
+    },
+    row: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    cost: {
+      fontSize: 14,
+      color: 'red',
+    },
+    button: {
+      // width: 15,
+      // paddingLeft: 12,
+      // paddingRight: -5,
+    }
   },
 
 }

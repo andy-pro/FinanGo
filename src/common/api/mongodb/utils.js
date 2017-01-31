@@ -11,7 +11,7 @@ const normalize_rules = [
   ['date', item => item.date = item.date.$date]
 ];
 
-var denormalize_rules = [
+const denormalize_rules = [
   /*  rules for denormalize (from client to server):
         id    -> _id: {$oid: "xxxxxxxxxx"}
         userId -> userId: {$oid: "xxxxxxxxxx"}
