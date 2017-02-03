@@ -8,18 +8,18 @@ import {
   Title,
 } from './components';
 
-const Header = ({ title, viewer }) => (
+const Header = ({ title, user }) => (
   <Box>
     <Title message={title} />
     <PageHeader
       heading={title.defaultMessage}
-      description={viewer ? viewer.displayName : ''}
+      description={user ? user.displayName : ''}
     />
   </Box>
 );
 
 export default connect(
   (state) => ({
-    viewer: state.users.viewer,
+    user: state.user,
   }),
 )(Header);

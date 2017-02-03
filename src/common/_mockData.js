@@ -1,8 +1,8 @@
 export default [
   {
     "id" : "5856ffa4da7d1f056c935686",
-    "firstName" : "Andy",
-    "lastName" : "Pro",
+    "firstName" : "Андрей",
+    "lastName" : "Проценко",
     "displayName": "Andy Pro",
     "photoURL": "https://avatars.githubusercontent.com/u/12512653?v=3",
     "currency": "₴",

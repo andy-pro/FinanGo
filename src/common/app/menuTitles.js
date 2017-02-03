@@ -6,6 +6,7 @@ export default {
   '/single': linksMessages.single,
   '/group': linksMessages.group,
   '/income': linksMessages.income,
+  '/refresh': linksMessages.refresh,
   '/intl': linksMessages.intl,
   '/offline': linksMessages.offline,
   '/signin': linksMessages.signIn,

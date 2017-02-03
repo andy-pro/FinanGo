@@ -1,17 +1,17 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableHighlight } from 'react-native';
-import theme from '@commonThemes/default'
+import theme from '@commonThemes/nativeDefault'
 
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
     bottom: 40,
-    right: 40,
+    right: 36,
     borderRadius: 35,
     backgroundColor: theme.headerColor,
     width: 70,
     height: 70,
-    opacity: 0.8,
+    opacity: 0.7,
     paddingTop: 5,
     zIndex: 2
   },

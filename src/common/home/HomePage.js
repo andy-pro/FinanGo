@@ -3,12 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import RenderTransactions from '../transactions/render'
 
-const HomePage = ({ viewer, transactions }) => {
-  if (!viewer) return null
-  // const { currency } = viewer
+const HomePage = ({ user, transactions }) => {
+  if (!user) return null
   return (
     <RenderTransactions
-      viewer={viewer}
+      user={user}
       transactions={transactions}
     />
   );
@@ -16,7 +15,7 @@ const HomePage = ({ viewer, transactions }) => {
 
 export default connect(
   (state) => ({
-    viewer: state.users.viewer,
+    user: state.user,
     transactions: state.transactions,
   }),
   // { getTransactions }

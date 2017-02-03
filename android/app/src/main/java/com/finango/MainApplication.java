@@ -1,5 +1,8 @@
 package com.finango;
 
+import com.i18n.reactnativei18n.ReactNativeI18n;
+import com.oblador.vectoricons.VectorIconsPackage;
+
 import android.app.Application;
 import android.util.Log;
 
@@ -14,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
-
+    
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
     protected boolean getUseDeveloperSupport() {
@@ -24,7 +27,9 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage()
+          new MainReactPackage(),
+          new ReactNativeI18n(),
+          new VectorIconsPackage()
       );
     }
   };
@@ -33,10 +38,11 @@ public class MainApplication extends Application implements ReactApplication {
   public ReactNativeHost getReactNativeHost() {
     return mReactNativeHost;
   }
-
+  
   @Override
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }
+ 
 }

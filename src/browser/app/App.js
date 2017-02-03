@@ -1,6 +1,4 @@
 // @flow
-import type { State } from '../../common/types';
-import type { Theme } from './themes/types';
 import * as themes from './themes';
 import Page from './Page';
 import Header from './Header';
@@ -32,21 +30,10 @@ import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 import NotFoundPage from '../notfound/NotFoundPage';
 import OfflinePage from '../offline/OfflinePage';
-import SignInPage from '../auth/SignInPage';
+// import SignInPage from '../auth/SignInPage';
 import TodosPage from '../todos/TodosPage';
-import UsersPage from '../users/UsersPage';
 
-type AppProps = {
-  currentLocale: string,
-  themeName: string,
-  theme: Theme,
-};
-
-const App = ({
-  currentLocale,
-  theme,
-  themeName,
-}: AppProps) => (
+const App = ({ currentLocale, theme, themeName }) => (
   <ThemeProvider
     key={themeName} // Enforce rerender.
     theme={theme}
@@ -72,13 +59,11 @@ const App = ({
           <Page pattern="/single" component={NewTransactionPage} />
           <Page pattern="/group" component={AddGroupPage} />
           <Match pattern="/income" component={AddGroupPage} />
-          <Match pattern="/users" component={UsersPage} />
           <Match pattern="/este" component={EstePage} />
           <Match pattern="/todos" component={TodosPage} />
           <Match pattern="/fields" component={FieldsPage} />
           <Match pattern="/intl" component={IntlPage} />
           <Match pattern="/offline" component={OfflinePage} />
-          <Match pattern="/signin" component={SignInPage} />
           <Match authorized pattern="/me" component={MePage} />
           <Miss component={NotFoundPage} />
         </Box>
@@ -90,7 +75,7 @@ const App = ({
 
 export default compose(
   connect(
-    (state: State) => ({
+    (state) => ({
       currentLocale: state.intl.currentLocale,
       themeName: state.app.currentTheme,
       theme: themes[state.app.currentTheme] || themes.defaultTheme,

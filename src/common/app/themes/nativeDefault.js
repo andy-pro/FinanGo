@@ -1,6 +1,6 @@
 const green0 = '#18a06a'
 // const green0 = '#31aacc'
-export default {
+const styles = {
 
   headerColor: green0,
 
@@ -84,9 +84,6 @@ export default {
       paddingVertical: 4,
       paddingHorizontal: 10,
     },
-    selected: {
-      backgroundColor: '#cce'
-    },
     suggestion: {
       fontWeight: 'bold',
       fontSize: 13,
@@ -124,3 +121,7 @@ export default {
   },
 
 }
+
+styles.transactionForm.selected = styles.transactionForm.suggestionView
+
+export default styles

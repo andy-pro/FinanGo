@@ -2,26 +2,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './app/Root';
-import configureReporting from '../common/configureReporting';
+// import configureReporting from '../common/configureReporting';
 import configureStore from '../common/configureStore';
 import localforage from 'localforage';
 import uuid from 'uuid';
 
 const initialState = window.__INITIAL_STATE__; // eslint-disable-line no-underscore-dangle
 
-const reportingMiddleware = configureReporting({
-  appVersion: initialState.config.appVersion,
-  sentryUrl: initialState.config.sentryUrl,
-  unhandledRejection: fn => window.addEventListener('unhandledrejection', fn),
-});
+// const reportingMiddleware = configureReporting({
+//   appVersion: initialState.config.appVersion,
+//   sentryUrl: initialState.config.sentryUrl,
+//   unhandledRejection: fn => window.addEventListener('unhandledrejection', fn),
+// });
 
 const store = configureStore({
   initialState,
   platformDeps: { uuid, storageEngine: localforage },
-  platformMiddleware: [reportingMiddleware],
+  // platformMiddleware: [reportingMiddleware],
 });
 
-console.log('store is:', store.getState());
+// console.log('store is:', store.getState());
 
 const appElement = document.getElementById('app');
 

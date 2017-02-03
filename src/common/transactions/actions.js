@@ -4,10 +4,17 @@ import { Observable } from 'rxjs'
 import api from '../api'
 import { jsonHeaders } from '../api/headers'
 
+// /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// export const refreshTransactions = userId => ({
+//   type: 'REFRESH_TRANSACTIONS_EPIC',
+//   // type: 'REFRESH_MOCK_TRANSACTIONS',
+//   userId
+// })
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const getTransactions = userId => ({
-  type: 'GET_TRANSACTIONS_EPIC',
-  // type: 'GET_MOCK_TRANSACTIONS',
+  // type: 'GET_TRANSACTIONS_EPIC',
+  type: 'GET_TRANSACTIONS',
   userId
 })
 
@@ -50,16 +57,22 @@ export const undoDelTransaction = id => ({
   id
 })
 
-const preDelTransactionEpic = action$ =>
-  action$.ofType('WILL_DEL_TRANSACTION_UNI')
-    .flatMap(action =>
-      Observable.timer(3000)
-        .mapTo({ type: 'DEL_TRANSACTION_UNI', id: action.id })
-        .takeUntil(action$.ofType('UNDO_DEL_TRANSACTION_UNI'))
-        // .race(
-        //   action$.ofType('UNDO_DEL_TRANSACTION_UNI').take(1)
-        // )
-  )
+// const preDelTransactionEpic = action$ =>
+//   action$.ofType('WILL_DEL_TRANSACTION_UNI')
+//     .flatMap(action =>
+//       Observable.timer(3000)
+//         .mapTo({ type: 'DEL_TRANSACTION_UNI', id: action.id })
+//         .takeUntil(action$.ofType('UNDO_DEL_TRANSACTION_UNI'))
+//         // .race(
+//         //   action$.ofType('UNDO_DEL_TRANSACTION_UNI').take(1)
+//         // )
+//   )
+
+  const preDelTransactionEpic = action$ => action$.ofType('WILL_DEL_TRANSACTION_UNI')
+    .mergeMap(action => Observable.of({ type: 'DEL_TRANSACTION_UNI', id: action.id })
+      .delay(3000)
+      .takeUntil(action$.ofType('UNDO_DEL_TRANSACTION_UNI').filter(({id}) => id === action.id))
+    )
 
 // const preDelTransactionEpic = action$ =>
 //   action$.ofType('WILL_DEL_TRANSACTION_UNI')

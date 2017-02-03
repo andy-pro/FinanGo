@@ -20,7 +20,6 @@ import EstePage from '../este/EstePage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 import OfflinePage from '../offline/OfflinePage';
-import SignInPage from '../auth/SignInPage';
 import TodosPage from '../todos/TodosPage';
 import NotFoundPage from '../notfound/NotFoundPage';
 
@@ -43,7 +42,6 @@ const App = ({ appMenuShown, appShowMenu, appStarted }) => {
         <Page pattern="/este" component={EstePage} />
         <Page pattern="/intl" component={IntlPage} />
         <Page pattern="/offline" component={OfflinePage} />
-        <Page pattern="/signin" component={SignInPage} />
         <Page pattern="/todos" component={TodosPage} />
         <Page pattern="/broken" component={NotFoundPage} />
         <Page authorized pattern="/me" component={MePage} />
@@ -53,7 +51,7 @@ const App = ({ appMenuShown, appShowMenu, appStarted }) => {
         <Match
           pattern="/"
           render={({ location: { pathname } }) => {
-            const urls = ['/', '/single', '/group', '/este', '/intl', '/offline', '/signin', '/todos', '/broken', '/me'];
+            const urls = ['/', '/single', '/group', '/este', '/intl', '/offline', '/todos', '/broken', '/me'];
             if (urls.indexOf(pathname) !== -1) return null;
             return (
               <Redirect to="/" />

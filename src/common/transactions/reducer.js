@@ -8,14 +8,9 @@ import {
   deleteItemById
 } from '../lib/utils';
 
-import _mockData from '../_mockData.js'
-
 const reducer = ( state = [], action ) => {
 
   switch (action.type) {
-
-    case 'GET_MOCK_TRANSACTIONS':
-      return _mockData[1]
 
     case 'GET_TRANSACTIONS':
       return action.payload

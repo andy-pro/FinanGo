@@ -1,14 +1,10 @@
 // @flow
-import App from './App';
 import React from 'react';
+import App from './App';
 import configureFela from '../../common/configureFela';
 import { BrowserRouter } from 'react-router';
 import { Provider as Fela } from 'react-fela';
 import { Provider as Redux } from 'react-redux';
-
-type Props = {
-  store: Object,
-};
 
 // This should be part of Fela.
 // TODO: https://github.com/rofrischmann/fela/issues/125
@@ -25,7 +21,7 @@ const getFelaMountNode = () => {
 };
 
 // We needs such Root for vanilla hot reloading.
-const Root = ({ store }: Props) => (
+const Root = ({ store }) => (
   <Redux store={store}>
     <Fela mountNode={getFelaMountNode()} renderer={configureFela()}>
       <BrowserRouter>

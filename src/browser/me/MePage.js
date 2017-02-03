@@ -1,8 +1,6 @@
 // @flow
-import type { State, User } from '../../common/types';
 import React from 'react';
-import SignOut from '../auth/SignOut';
-import getUserPhotoUrl from '../../common/users/getUserPhotoUrl';
+import getUserPhotoUrl from '../../common/user/getUserPhotoUrl';
 import linksMessages from '../../common/app/linksMessages';
 import { FormattedMessage } from 'react-intl';
 import { Match, Redirect } from 'react-router';
@@ -36,13 +34,8 @@ const Header = ({ pathname }) => (
   </Box>
 );
 
-type MePageProps = {
-  pathname: string,
-  viewer: User,
-};
-
-const MePage = ({ pathname, viewer }: MePageProps) => (
-  !viewer ?
+const MePage = ({ pathname, user }) => (
+  !user ?
     <Redirect to="/" />
   :
     <Box>
@@ -53,16 +46,17 @@ const MePage = ({ pathname, viewer }: MePageProps) => (
         pattern={pathname}
         render={() => (
           <Box>
-            <Text>{viewer.displayName}</Text>
+            <Text>{user.displayName}</Text>
             <Box marginVertical={1}>
               <Image
-                src={getUserPhotoUrl(viewer)}
+                src={getUserPhotoUrl(user)}
                 height={100}
                 width={100}
-                title={viewer.displayName}
+                title={user.displayName}
               />
             </Box>
-            <SignOut />
+            <Text>{user.firstName}</Text>{' '}<Text>{user.lastName}</Text>
+            <Box><Text>User ID: {user.id}</Text></Box>
           </Box>
         )}
       />
@@ -72,7 +66,7 @@ const MePage = ({ pathname, viewer }: MePageProps) => (
 );
 
 export default connect(
-  (state: State) => ({
-    viewer: state.users.viewer,
+  (state) => ({
+    user: state.user,
   }),
 )(MePage);

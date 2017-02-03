@@ -47,7 +47,7 @@ MenuLink = connect(
   { appShowMenu },
 )(MenuLink);
 
-const Menu = ({ viewer }) => (
+const Menu = ({ user }) => (
   <ScrollView
     automaticallyAdjustContentInsets={false}
     contentContainerStyle={styles.contentContainer}
@@ -62,7 +62,7 @@ const Menu = ({ viewer }) => (
     <MenuLink to="/offline" message={linksMessages.offline} />
     <MenuLink to="/broken" message={linksMessages.broken} />
     <MenuLink to="/notfound" message={linksMessages.notfound} />
-    {viewer ?
+    {user ?
       <MenuLink to="/me" message={linksMessages.me} />
     :
       <MenuLink to="/signin" message={linksMessages.signIn} />
@@ -71,11 +71,11 @@ const Menu = ({ viewer }) => (
 );
 
 Menu.propTypes = {
-  viewer: React.PropTypes.object,
+  user: React.PropTypes.object,
 };
 
 export default connect(
   (state: State) => ({
-    viewer: state.users.viewer,
+    user: state.user,
   }),
 )(Menu);

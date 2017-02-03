@@ -1,6 +1,6 @@
 const green0 = '#18a06a'
 // const green0 = '#31aacc'
-export default {
+const styles = {
 
   headerColor: green0,
 
@@ -57,18 +57,16 @@ export default {
       borderWidth: 1,
       borderColor: '#ddd',
       paddingVertical: 4,
-      paddingHorizontal: 10,
+      paddingLeft: 10,
+      paddingRight: 30,
       ':hover': {
         backgroundColor: '#cce'
-      }
-    },
-    selected: {
-      backgroundColor: '#cce'
+      },
     },
     suggestion: {
       fontWeight: 'bold',
       fontSize: 13,
-      color: '#666'
+      color: '#666',
     },
     suggestionAmount: {
       // textAlign: auto, left, right, center, justify
@@ -98,7 +96,8 @@ export default {
       overflow: 'auto',
       padding: 2,
       minWidth: 150,
-      boxShadow: "2px 2px 10px grey"
+      boxShadow: "2px 2px 10px grey",
+      whiteSpace: 'nowrap'
     },
   },
 
@@ -149,3 +148,10 @@ export default {
   },
 
 }
+
+styles.transactionForm.selected = [
+  styles.transactionForm.suggestionView,
+  { backgroundColor: '#cce' }
+]
+
+export default styles

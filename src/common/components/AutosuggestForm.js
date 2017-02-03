@@ -15,6 +15,8 @@ const AutosuggestForm = ({children, state}) => {
 
   let { showList, suggestions, field } = state
 
+  // showList = true
+
   const renderSuggestion = (suggestion) =>
     <TouchableHighlight
       onPress={() => field.onSelect(suggestion)}

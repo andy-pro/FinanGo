@@ -50,7 +50,7 @@ class NewTransactionPage extends Component {
       title: {
         name: 'title',
         pos: {top: isNative ? 42 : 36, maxHeight: 202},
-        getSuggestions: query => getSuggestions(this.props.viewer.categories, query, 1),
+        getSuggestions: query => getSuggestions(this.props.user.categories, query, 1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
           // console.log('onSelect title', suggestion);
@@ -65,7 +65,7 @@ class NewTransactionPage extends Component {
       category: {
         name: 'category',
         pos: {top: isNative ? 80 : 72, maxHeight: 174},
-        getSuggestions: query => getSuggestions(this.props.viewer.categories, query, -1),
+        getSuggestions: query => getSuggestions(this.props.user.categories, query, -1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
           this.setState({
@@ -170,10 +170,10 @@ class NewTransactionPage extends Component {
       category: slugifyCategory(fields.category),
       cost: fields.cost,
       amount: fields.amount,
-      userId: this.props.viewer.id,
+      userId: this.props.user.id,
       date: new Date().toISOString()
     })
-    // this.setState(this.init())
+    this.setState(this.init())
     this.fields.title.ref.focus()
   }
 
@@ -229,7 +229,7 @@ class NewTransactionPage extends Component {
     nextState.query !== this.state.query ||
     nextState.selectedIndex !== this.state.selectedIndex ||
     nextProps.transactions !== this.props.transactions ||
-    nextProps.viewer !== this.props.viewer
+    nextProps.user !== this.props.user
   }
 
   render() {
@@ -287,7 +287,7 @@ class NewTransactionPage extends Component {
             <Icon.Button
               name="ios-paper-plane-outline"
               backgroundColor="#18a06a"
-              type='submit'
+              onPress={this.onSubmit}
             >
               OK
             </Icon.Button>
@@ -296,7 +296,7 @@ class NewTransactionPage extends Component {
         </Form>
 
         <RenderTransactions
-          viewer={this.props.viewer}
+          user={this.props.user}
           transactions={this.props.transactions}
           editable={true}
           onClick={this.onDelTransaction}
@@ -335,7 +335,7 @@ class NewTransactionPage extends Component {
   }
 
   renderItem = (item, selected) =>
-    <View style={selected ? {...styles.suggestionView, ...styles.selected} : styles.suggestionView}>
+    <View style={selected ? styles.selected : styles.suggestionView}>
       {item}
     </View>
 
@@ -365,7 +365,7 @@ class NewTransactionPage extends Component {
 
 export default connect(
   (state) => ({
-    viewer: state.users.viewer,
+    user: state.user,
     transactions: state.transactions,
     isReactNative: state.device.isReactNative,
   }),

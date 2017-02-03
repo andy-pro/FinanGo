@@ -6,7 +6,7 @@ import messages from '../lib/redux-firebase/messages';
 import { Observable } from 'rxjs/Observable';
 import { ValidationError } from '../lib/validation';
 
-export const onAuth = (firebaseUser: ?Object): Action => ({
+export const onAuth = firebaseUser => ({
   type: 'ON_AUTH',
   payload: { firebaseUser },
 });

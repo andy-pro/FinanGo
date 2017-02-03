@@ -1,7 +1,7 @@
 // @flow weak
 import chroma from 'chroma-js';
 import { Platform } from 'react-native';
-import common from '@commonThemes/default'
+import common from '@commonThemes/nativeDefault'
 
 export default {
   ...common,

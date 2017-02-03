@@ -1,32 +1,25 @@
-// @flow
-import type { Strict, Styled } from '../themes/types';
-import type { TextProps } from './Text';
 import React from 'react';
 import Text from './Text';
 import styled from './styled';
 import { Link as ReactRouterLink } from 'react-router';
 
-type LinkProps = TextProps & {
-  download?: boolean,
-  exactly?: boolean,
-  target?: string,
-  to: string,
-};
-
 const createLink = (tag, passProps) => styled((theme, {
   color = 'primary',
 }) => ({
-  $extends: [Text, ({
-    color,
-  }: Strict<TextProps>)],
+  $extends: [Text, ({ color })],
   textDecoration: 'none',
   ':hover': {
     textDecoration: 'underline',
   },
+  cursor: 'pointer'
 }), tag, passProps);
 
 const AnchorLink = createLink('a', [
   'download', 'href', 'target',
+]);
+
+const ButtonLink = createLink('div', [
+  'onClick',
 ]);
 
 const RouterLink = createLink(ReactRouterLink, [
@@ -36,7 +29,13 @@ const RouterLink = createLink(ReactRouterLink, [
 const isExternalLink = to => to.includes('://');
 const routerLinkActiveStyle = { textDecoration: 'underline' };
 
-const Link: Styled<LinkProps> = props => (
+const Link = props => (
+  typeof props.to === 'function' ?
+    <ButtonLink
+      {...props}
+      onClick={props.to}
+    />
+  :
   isExternalLink(props.to) ?
     <AnchorLink
       {...props}

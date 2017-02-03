@@ -1,22 +1,21 @@
 // @flow
-import type { State } from '../../../common/types';
 import React from 'react';
 import { Match as ReactRouterMatch, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
-const haveAccess = (viewer, authorized) => authorized ? viewer : true;
+const haveAccess = (user, authorized) => authorized ? user : true;
 
 const Match = ({
   authorized,
   component: Component,
   render,
-  viewer,
+  user,
   ...props
 }) => (
   <ReactRouterMatch
     {...props}
     render={renderProps => (
-      haveAccess(viewer, authorized) ?
+      haveAccess(user, authorized) ?
         render ? render(renderProps) : <Component {...renderProps} />
       :
         <Redirect
@@ -29,15 +28,8 @@ const Match = ({
   />
 );
 
-Match.propTypes = {
-  authorized: React.PropTypes.bool,
-  component: React.PropTypes.func,
-  render: React.PropTypes.func,
-  viewer: React.PropTypes.object,
-};
-
 export default connect(
-  (state: State) => ({
-    viewer: state.users.viewer,
+  (state) => ({
+    user: state.user,
   }),
 )(Match);

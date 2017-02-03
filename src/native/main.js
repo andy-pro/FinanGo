@@ -1,7 +1,7 @@
 // @flow
 // import FBSDK from 'react-native-fbsdk';
 import React from 'react';
-import ReactNativeI18n from 'react-native-i18n';
+// import ReactNativeI18n from 'react-native-i18n';
 import Root from './app/Root';
 import configureStore from '../common/configureStore';
 import initialState from './initialState';
@@ -10,7 +10,9 @@ import { AppRegistry, AsyncStorage, Platform } from 'react-native';
 
 const getDefaultDeviceLocale = () => {
   const { defaultLocale, locales } = initialState.intl;
-  const deviceLocale = ReactNativeI18n.locale.split('-')[0];
+  // const deviceLocale = ReactNativeI18n.locale.split('-')[0];
+  const deviceLocale = 'en'
+  // console.log('dev loc', deviceLocale); // 'en'
   const isSupported = locales.indexOf(deviceLocale) !== -1;
   return isSupported ? deviceLocale : defaultLocale;
 };

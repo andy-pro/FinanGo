@@ -1,6 +1,6 @@
 import defaultTheme
-// from './nativeDefault';
-from './browserDefault';
+from './nativeDefault';
+// from './browserDefault';
 
 export {
   defaultTheme

@@ -1,8 +1,8 @@
 // @flow
 import type { State } from '../../common/types';
 import React from 'react';
-import SignOut from '../auth/SignOut';
-import getUserPhotoUrl from '../../common/users/getUserPhotoUrl';
+// import SignOut from '../auth/SignOut';
+import getUserPhotoUrl from '../../common/user/getUserPhotoUrl';
 import { CenteredContainer, Text } from '../app/components';
 import { Image, StyleSheet, View } from 'react-native';
 import { Redirect } from 'react-router';
@@ -16,28 +16,27 @@ const styles = StyleSheet.create({
   },
 });
 
-const MePage = ({ viewer }) => (
-  !viewer ?
+const MePage = ({ user }) => (
+  !user ?
     <Redirect to="/" />
   :
     <CenteredContainer>
       <View>
-        <Text>{viewer.displayName}</Text>
+        <Text>{user.displayName}</Text>
       </View>
       <Image
-        source={{ uri: getUserPhotoUrl(viewer) }}
+        source={{ uri: getUserPhotoUrl(user) }}
         style={styles.image}
       />
-      <SignOut />
     </CenteredContainer>
 );
 
 MePage.propTypes = {
-  viewer: React.PropTypes.object,
+  user: React.PropTypes.object,
 };
 
 export default connect(
   (state: State) => ({
-    viewer: state.users.viewer,
+    user: state.user,
   }),
 )(MePage);

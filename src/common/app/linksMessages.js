@@ -18,6 +18,10 @@ const LinkMessages = defineMessages({
     defaultMessage: 'Income',
     id: 'app.links.income',
   },
+  refresh: {
+    defaultMessage: 'Refresh',
+    id: 'app.links.refresh',
+  },
   este: {
     defaultMessage: 'Este',
     id: 'app.links.este',

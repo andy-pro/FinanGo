@@ -2,7 +2,9 @@
 import type { Action, Deps } from '../types';
 import { Observable } from 'rxjs/Observable';
 import { REHYDRATE } from 'redux-persist/constants';
-import { onAuth, signInDone, signInFail } from '../auth/actions';
+// import { onAuth, signInDone, signInFail } from '../auth/actions';
+
+import mockData from '../_mockData'
 
 export const appError = (error: Object): Action => ({
   type: 'APP_ERROR',
@@ -45,6 +47,7 @@ const appStartEpic = (action$: any) =>
   action$.ofType(REHYDRATE)
     .map(appStarted);
 
+/*
 const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
   const { firebase, firebaseAuth, getState } = deps;
 
@@ -103,8 +106,21 @@ const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
       ),
     );
 };
+*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+const appStartedFinanGoEpic = action$ =>
+  action$.ofType('APP_STARTED')
+    .mergeMap(action => Observable.of({ type: 'USER_LOADED', payload: mockData[0] }))
+
+const userLoadedEpic = action$ =>
+  action$.ofType('USER_LOADED')
+    .mergeMap(action => Observable.of({ type: 'GET_TRANSACTIONS', payload: mockData[1] }))
 
 export const epics = [
   appStartEpic,
-  appStartedFirebaseEpic,
+  // appStartedFirebaseEpic,
+  appStartedFinanGoEpic,
+  userLoadedEpic,
 ];

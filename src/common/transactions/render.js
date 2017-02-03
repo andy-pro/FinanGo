@@ -20,20 +20,26 @@ const dis_btn = { name: 'ios-refresh-circle-outline', backgroundColor: '#aaa' }
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 // var ds = new ListView.DataSource({rowHasChanged: 'ququsyaka-buzyu'});
 
-export default renderTransactions = ({ viewer, transactions, editable, onClick }) => {
-  if (!viewer) {
-    return null
-  }
-  const { currency, categories } = viewer
+export default renderTransactions = ({ user, transactions, editable, onClick }) => {
+  if (!user) return null
+
+  const { currency, categories } = user
   // console.log('print instance ds', ds.rowHasChanged, ds.cloneWithRows);
   const dataSource = ds.cloneWithRows(transactions)
 
   const renderRow = item => {
     let button = item.didDel ? {...dis_btn} : item.willDel ? {...rfr_btn} : {...del_btn}
-    button.style = {...styles.button}
+    // let button = item.didDel ? dis_btn : item.willDel ? rfr_btn : del_btn
+    // button.style = {...styles.button}
+    button.style = styles.button
+    // console.log('onPress', button.onPress);
+    // console.log('onPress', {...rfr_btn});
     if (!item.didDel) {
       button.onPress = (e) => onClick(e, item)
       button.style.cursor = 'pointer'
+    } else {
+      // button.onPress = undefined
+      button.style.cursor = 'default'
     }
     return (
       <View style={styles.item}>

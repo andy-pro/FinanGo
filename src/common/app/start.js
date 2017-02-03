@@ -4,7 +4,6 @@ import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { connect } from 'react-redux';
 import { appStart, appStop } from './actions';
-import { getTransactions } from './../transactions/actions';
 
 const start = (WrappedComponent: Function) => {
   class Start extends React.Component {
@@ -25,17 +24,6 @@ const start = (WrappedComponent: Function) => {
       const { appStop } = this.props;
       // App is rerended on hot reload, therefore we need a proper cleanup.
       appStop();
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-      // console.log('nextProps', nextProps);
-      const viewer = nextProps.viewer
-      if (viewer && !this.props.viewer) {
-        console.log('GET_TRANSACTIONS, USER_ID:', viewer.id);
-        this.props.getTransactions(viewer.id)
-        return false
-      }
-      return true
     }
 
     render() {
@@ -60,9 +48,8 @@ const start = (WrappedComponent: Function) => {
   return connect(
     (state: State) => ({
       intl: state.intl,
-      viewer: state.users.viewer,
     }),
-    { appStart, appStop, getTransactions },
+    { appStart, appStop },
   )(Start);
 };
 

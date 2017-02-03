@@ -1,7 +1,7 @@
 // @flow
 import type { State } from '../../../common/types';
 import React from 'react';
-import errorToMessage from '../../../common/app/errorToMessage';
+// import errorToMessage from '../../../common/app/errorToMessage';
 import theme from '../themes/initial';
 import { Animated, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { FormattedMessage } from './';
@@ -115,7 +115,8 @@ class Alert extends React.Component {
     const { error } = this.props;
     if (!error) return null;
 
-    const errorMessage = errorToMessage(error);
+    // const errorMessage = errorToMessage(error);
+    const errorMessage = null;
     if (!errorMessage || !errorMessage.message) return null;
 
     const alertStyle = this.getAlertStyle();
