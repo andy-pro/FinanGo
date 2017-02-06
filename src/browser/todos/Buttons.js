@@ -1,9 +1,9 @@
 // @flow
 import type { State } from '../../common/types';
 import React from 'react';
-import buttonsMessages from '../../common/todos/buttonsMessages';
+// import buttonsMessages from '../../common/todos/buttonsMessages';
 import { Box, Button } from '../app/components';
-import { FormattedMessage } from 'react-intl';
+// import { FormattedMessage } from 'react-intl';
 import { addHundredTodos, clearAllTodos } from '../../common/todos/actions';
 import { compose, isEmpty } from 'ramda';
 import { connect } from 'react-redux';
@@ -30,14 +30,14 @@ const Buttons = ({
       marginHorizontal={0.25}
       onClick={clearAllTodos}
     >
-      <FormattedMessage {...buttonsMessages.clearAll} />
+      Clear All
     </Button>
     <Button
       primary
       marginHorizontal={0.25}
       onClick={addHundredTodos}
     >
-      <FormattedMessage {...buttonsMessages.add100} />
+      Add 100 Todos
     </Button>
   </Box>
 );

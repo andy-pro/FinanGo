@@ -2,7 +2,7 @@ export default function user(state=null, action) {
   switch (action.type) {
     case 'USER_LOADED':
       // return get_user_data(action.payload[0]);
-      return action.payload
+      return action.payload.user
     default:
       return state;
   }

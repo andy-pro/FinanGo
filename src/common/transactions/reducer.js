@@ -12,6 +12,9 @@ const reducer = ( state = [], action ) => {
 
   switch (action.type) {
 
+    case 'USER_LOADED':
+      return action.payload.transactions
+
     case 'GET_TRANSACTIONS':
       return action.payload
 
@@ -19,17 +22,18 @@ const reducer = ( state = [], action ) => {
       // return pushItem(state, action.payload)
       return unshiftItem(state, action.payload)
 
-    case 'TRANSACTION_DELETED':
-      return deleteItemById(state, action.payload.id)
 
-    case 'WILL_DEL_TRANSACTION_UNI':
+    case 'DEL_TRANSACTION':
+      return updateItemById(state, action.id, {didDel: true});
+
+    case 'TRANSACTION_DELETED':
+      return deleteItemById(state, action.id)
+
+    case 'WILL_DEL_TRANSACTION':
       return updateItemById(state, action.id, {willDel: true});
 
-    case 'UNDO_DEL_TRANSACTION_UNI':
+    case 'UNDO_DEL_TRANSACTION':
       return updateItemById(state, action.id, {willDel: false});
-
-    case 'DEL_TRANSACTION_UNI':
-      return updateItemById(state, action.id, {didDel: true});
 
     default:
       return state;

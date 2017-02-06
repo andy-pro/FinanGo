@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import linksMessages from '../../common/app/linksMessages';
-import messages from '../../common/notfound/messages';
-import { FormattedMessage, injectIntl } from 'react-intl';
+// import linksMessages from '../../common/app/linksMessages';
+// import messages from '../../common/notfound/messages';
+// import { FormattedMessage, injectIntl } from 'react-intl';
 import {
   Box,
   Link,
@@ -10,21 +10,17 @@ import {
   Title,
 } from '../app/components';
 
-type NotFoundPageProps = {
-  intl: $IntlShape,
-};
-
-const NotFoundPage = ({ intl }: NotFoundPageProps) => (
+const NotFoundPage = () => (
   <Box>
-    <Title message={linksMessages.notFound} />
+    <Title message='Not found' />
     <PageHeader
-      heading={intl.formatMessage(messages.h1)}
-      description={intl.formatMessage(messages.p)}
+      heading='Not found'
+      description='broken or removed'
     />
     <Link exactly to="/">
-      <FormattedMessage {...messages.continue} />
+      back to home
     </Link>
   </Box>
 );
 
-export default injectIntl(NotFoundPage);
+export default NotFoundPage

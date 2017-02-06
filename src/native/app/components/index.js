@@ -10,14 +10,15 @@ import Link from './Link';
 import Text from './Text';
 import TextInput from './TextInput';
 import RoundButton from './RoundButton';
-import {
-  FormattedDate,
-  FormattedMessage,
-  FormattedNumber,
-  FormattedPlural,
-  FormattedRelative,
-  FormattedTime,
-} from './formatted';
+// import intlMessage from './intlMessage';
+// import {
+//   FormattedDate,
+//   FormattedMessage,
+//   FormattedNumber,
+//   FormattedPlural,
+//   FormattedRelative,
+//   FormattedTime,
+// } from './formatted';
 
 export {
   Alert,
@@ -26,13 +27,14 @@ export {
   Checkbox,
   Container,
   Link,
-  FormattedDate,
-  FormattedMessage,
-  FormattedNumber,
-  FormattedPlural,
-  FormattedRelative,
-  FormattedTime,
+  // FormattedDate,
+  // FormattedMessage,
+  // FormattedNumber,
+  // FormattedPlural,
+  // FormattedRelative,
+  // FormattedTime,
   Text,
   TextInput,
-  RoundButton
+  RoundButton,
+  // intlMessage,
 };

@@ -1,5 +1,4 @@
 // @flow
-import type { State } from '../../common/types';
 import React from 'react';
 import theme from '../app/themes/initial';
 import { ScrollView, StyleSheet } from 'react-native';
@@ -7,8 +6,8 @@ import { connect } from 'react-redux';
 import { setCurrentLocale } from '../../common/intl/actions';
 import {
   CenteredContainer,
-  FormattedDate,
-  FormattedRelative,
+  // FormattedDate,
+  // FormattedRelative,
   Text,
 } from '../app/components';
 
@@ -37,31 +36,13 @@ const IntlPage = ({ currentLocale, locales, setCurrentLocale }) => {
             onPress={() => setCurrentLocale(locale)}
           >{locale}</Text>,
         )}
-        <FormattedDate
-          day="numeric"
-          month="short"
-          style={{ margin: theme.fontSize }}
-          value={Date.now()}
-          year="numeric"
-        />
-        <FormattedRelative
-          initialNow={componentRenderedAt}
-          updateInterval={1000 * 1}
-          value={componentRenderedAt}
-        />
       </CenteredContainer>
     </ScrollView>
   );
 };
 
-IntlPage.propTypes = {
-  currentLocale: React.PropTypes.string.isRequired,
-  locales: React.PropTypes.arrayOf(React.PropTypes.string),
-  setCurrentLocale: React.PropTypes.func.isRequired,
-};
-
 export default connect(
-  (state: State) => ({
+  (state) => ({
     currentLocale: state.intl.currentLocale,
     locales: state.intl.locales,
   }),

@@ -1,14 +1,6 @@
 // @flow
 import React from 'react';
 import { Box, Text, Link } from './components';
-import { FormattedMessage, defineMessages } from 'react-intl';
-
-const messages = defineMessages({
-  madeByHtml: {
-    defaultMessage: 'Made with love by',
-    id: 'footer.madeByHtml',
-  },
-});
 
 const Footer = () => (
   <Box
@@ -16,9 +8,7 @@ const Footer = () => (
     marginTop={1}
     paddingVertical={1}
   >
-    <Text size={-1}>
-      <FormattedMessage {...messages.madeByHtml} />
-    </Text>
+    <Text size={-1}>Made with love by</Text>
     {'\u00a0'}
     <Link size={-1} to="https://twitter.com/steida">
       steida

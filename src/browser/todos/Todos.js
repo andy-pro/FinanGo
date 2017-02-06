@@ -1,12 +1,12 @@
 // @flow
-import type { State, Todo } from '../../common/types';
+// import type { State, Todo } from '../../common/types';
 import React from 'react';
-import todosMessages from '../../common/todos/todosMessages';
+// import todosMessages from '../../common/todos/todosMessages';
 import { Box, Button, Text } from '../app/components';
 import { compose, isEmpty, prop, reverse, sortBy, values } from 'ramda';
 import { connect } from 'react-redux';
 import { deleteTodo, toggleTodoCompleted } from '../../common/todos/actions';
-import { injectIntl } from 'react-intl';
+// import { injectIntl } from 'react-intl';
 
 const itemStyle = {
   inline: true,
@@ -36,24 +36,17 @@ const TodosItem = ({
   </Box>
 );
 
-type TodosProps = {
-  deleteTodo: typeof deleteTodo,
-  intl: $IntlShape,
-  todos: Object,
-  toggleTodoCompleted: typeof toggleTodoCompleted,
-};
-
 const Todos = ({
   deleteTodo,
   intl,
   todos,
   toggleTodoCompleted,
-}: TodosProps) => {
+}) => {
   if (isEmpty(todos)) {
     return (
       <Box>
         <Text>
-          {intl.formatMessage(todosMessages.empty)}
+          Empty
         </Text>
       </Box>
     );
@@ -61,7 +54,7 @@ const Todos = ({
 
   // It's ok and recommended to sort things in view, but for the bigger data
   // leverage reactjs/reselect or bvaughn/react-virtualized.
-  const sortedTodos: Array<Todo> = compose(
+  const sortedTodos = compose(
     reverse,
     sortBy(prop('createdAt')),
     values,
@@ -83,10 +76,9 @@ const Todos = ({
 
 export default compose(
   connect(
-    (state: State) => ({
+    (state) => ({
       todos: state.todos.all,
     }),
     { deleteTodo, toggleTodoCompleted },
   ),
-  injectIntl,
 )(Todos);

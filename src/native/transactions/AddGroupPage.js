@@ -1,14 +1,26 @@
 // @flow
 import React from 'react';
-import { View, Text } from 'react-native'
+import { View, Text, Alert, NativeModules, Platform, Button } from 'react-native'
 import { connect } from 'react-redux';
 
-const AddSinglePage = ({ user, transactions, isReactNative }) => {
+import { appError } from '../../common/app/actions'
+
+const AddDroupPage = ({ user, transactions, isReactNative, appError }) => {
 
   return (
     <View style={{padding:10, flex: 1}}>
       <View style={{backgroundColor: 'powderblue'}}>
         <Text>QUQUQUQUQUQUQUQU</Text>
+        <Button
+          onPress={() => {
+            // Alert.alert('Set Error', 'error')
+            appError({
+              message: 'Zdrasti'
+            })
+          }}
+          title="Set error"
+          color="#841515"
+        />
       </View>
       <View style={{flex: 1, backgroundColor: 'skyblue',
         borderColor: 'red',
@@ -24,5 +36,5 @@ export default connect(
     transactions: state.transactions,
     isReactNative: state.device.isReactNative,
   }),
-  // { getTransactions }
-)(AddSinglePage);
+  { appError }
+)(AddDroupPage);

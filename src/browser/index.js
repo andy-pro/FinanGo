@@ -1,48 +1,43 @@
 // @flow
-/* eslint-disable react/require-extension */
-// Bootstrap environment
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Root from './app/Root';
+// import configureReporting from '../common/configureReporting';
+import configureStore from '../common/configureStore';
+import localforage from 'localforage';
+import uuid from 'uuid';
 
-const onWindowIntl = () => {
-  require('babel-polyfill');
+const initialState = window.__INITIAL_STATE__; // eslint-disable-line no-underscore-dangle
 
-  // App locales are defined in src/server/config.js
-  const { addLocaleData } = require('react-intl');
-  const cs = require('react-intl/locale-data/cs');
-  const de = require('react-intl/locale-data/de');
-  const en = require('react-intl/locale-data/en');
-  const es = require('react-intl/locale-data/es');
-  const fr = require('react-intl/locale-data/fr');
-  const pt = require('react-intl/locale-data/pt');
-  const ro = require('react-intl/locale-data/ro');
+// const reportingMiddleware = configureReporting({
+//   appVersion: initialState.config.appVersion,
+//   sentryUrl: initialState.config.sentryUrl,
+//   unhandledRejection: fn => window.addEventListener('unhandledrejection', fn),
+// });
 
-  [cs, de, en, es, fr, pt, ro].forEach(locale => addLocaleData(locale));
+const store = configureStore({
+  initialState,
+  platformDeps: { uuid, storageEngine: localforage },
+  // platformMiddleware: [reportingMiddleware],
+});
 
-  require('./main');
-};
+// console.log('store is:', store.getState());
 
-// github.com/andyearnshaw/Intl.js/#intljs-and-browserifywebpack
-if (!window.Intl) {
-  require.ensure([
-    'intl',
-    'intl/locale-data/jsonp/cs.js',
-    'intl/locale-data/jsonp/de.js',
-    'intl/locale-data/jsonp/en.js',
-    'intl/locale-data/jsonp/es.js',
-    'intl/locale-data/jsonp/fr.js',
-    'intl/locale-data/jsonp/pt.js',
-    'intl/locale-data/jsonp/ro.js',
-  ], (require) => {
-    require('intl');
-    require('intl/locale-data/jsonp/cs.js');
-    require('intl/locale-data/jsonp/de.js');
-    require('intl/locale-data/jsonp/en.js');
-    require('intl/locale-data/jsonp/es.js');
-    require('intl/locale-data/jsonp/fr.js');
-    require('intl/locale-data/jsonp/pt.js');
-    require('intl/locale-data/jsonp/ro.js');
+const appElement = document.getElementById('app');
 
-    onWindowIntl();
+// Initial render.
+ReactDOM.render(
+  <Root store={store} />
+, appElement);
+
+// Hot reload render.
+// gist.github.com/gaearon/06bd9e2223556cb0d841#file-native-js
+if (module.hot && typeof module.hot.accept === 'function') {
+  module.hot.accept('./app/Root', () => {
+    const NextRoot = require('./app/Root').default;
+
+    ReactDOM.render(
+      <NextRoot store={store} />
+    , appElement);
   });
-} else {
-  onWindowIntl();
 }

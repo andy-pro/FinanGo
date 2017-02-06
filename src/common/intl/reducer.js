@@ -1,6 +1,3 @@
-// @flow
-import type { Action, IntlState } from '../types';
-
 const initialState = {
   currentLocale: null,
   defaultLocale: null,
@@ -9,10 +6,7 @@ const initialState = {
   messages: null,
 };
 
-const reducer = (
-  state: IntlState = initialState,
-  action?: Action,
-): IntlState => {
+const reducer = (state = initialState, action) => {
   // Because it's called from the createInitialState.
   if (!action) return state;
 

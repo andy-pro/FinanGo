@@ -1,102 +1,104 @@
-import { ajax } from 'rxjs/observable/dom/ajax'
 import { Observable } from 'rxjs'
+import * as api from '../api'
+import initialState from '../initialState'
+import mockData from '../_mockData'
 
-import api from '../api'
-import { jsonHeaders } from '../api/headers'
-
-// /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// export const refreshTransactions = userId => ({
-//   type: 'REFRESH_TRANSACTIONS_EPIC',
-//   // type: 'REFRESH_MOCK_TRANSACTIONS',
-//   userId
-// })
+const { storage, locally } = initialState.config
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-export const getTransactions = userId => ({
-  // type: 'GET_TRANSACTIONS_EPIC',
-  type: 'GET_TRANSACTIONS',
-  userId
-})
+export const getUserData = action => {
+  switch (storage) {
+    case 'localfake':
+      return Observable.of({
+        type: 'USER_LOADED',
+        payload: mockData
+      })
+    default:
+      return api.getUserData.map(result => {
+        const { categories, ...user } = result[0]
+        return {
+          type: 'USER_LOADED',
+          payload: {
+            user,
+            categories,
+            transactions: result[1]
+          }
+        }
+      })
+  }
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+export const getTransactions = () => {
+  switch (storage) {
+    case 'localfake':
+      return {
+        type: 'GET_TRANSACTIONS',
+        payload: mockData.transactions
+      }
+    default:
+      return {
+        type: 'GET_TRANSACTIONS_EPIC'
+      }
+  }
+}
 
 const getTransactionsEpic = action$ =>
-  action$.ofType('GET_TRANSACTIONS_EPIC').switchMap((action) =>
-    ajax({ url: api.getTransactionsURL(action.userId) })
-      .map(result => _response('GET_TRANSACTIONS', result)))
+  action$.ofType('GET_TRANSACTIONS_EPIC')
+    .switchMap(action =>
+      api.getTransactions()
+        .map(payload => ({
+          type: 'GET_TRANSACTIONS',
+          payload
+        }))
+    )
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-export const addTransaction = transaction => ({
-  type: 'ADD_TRANSACTION_EPIC',
-  transaction
+export const addTransaction = payload => ({
+  type: locally ? 'TRANSACTION_ADDED' : 'ADD_TRANSACTION_EPIC',
+  payload
 })
 
 const addTransactionEpic = action$ =>
-  action$.ofType('ADD_TRANSACTION_EPIC').mergeMap(action =>
-    ajax(_add(action.transaction))
-      .map(result => _response('TRANSACTION_ADDED', result)))
+  action$.ofType('ADD_TRANSACTION_EPIC')
+    .mergeMap(action =>
+      api.addTransaction(action.payload)
+        .map(payload => ({
+          type: 'TRANSACTION_ADDED',
+          payload
+        }))
+    )
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-export const delTransaction2 = id => ({
-  type: 'DEL_TRANSACTION_EPIC',
-  id
-})
-
-const delTransactionEpic2 = action$ =>
-  action$.ofType('DEL_TRANSACTION_EPIC').mergeMap(action =>
-    ajax(_delete(action.id))
-      .map(result => _response('TRANSACTION_DELETED', result)))
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// type-modifier UNI - for epic and regular reducer
 export const delTransaction = id => ({
-  type: 'WILL_DEL_TRANSACTION_UNI',
+  type: 'WILL_DEL_TRANSACTION',
   id
 })
 
 export const undoDelTransaction = id => ({
-  type: 'UNDO_DEL_TRANSACTION_UNI',
+  type: 'UNDO_DEL_TRANSACTION',
   id
 })
 
-// const preDelTransactionEpic = action$ =>
-//   action$.ofType('WILL_DEL_TRANSACTION_UNI')
-//     .flatMap(action =>
-//       Observable.timer(3000)
-//         .mapTo({ type: 'DEL_TRANSACTION_UNI', id: action.id })
-//         .takeUntil(action$.ofType('UNDO_DEL_TRANSACTION_UNI'))
-//         // .race(
-//         //   action$.ofType('UNDO_DEL_TRANSACTION_UNI').take(1)
-//         // )
-//   )
-
-  const preDelTransactionEpic = action$ => action$.ofType('WILL_DEL_TRANSACTION_UNI')
-    .mergeMap(action => Observable.of({ type: 'DEL_TRANSACTION_UNI', id: action.id })
-      .delay(3000)
-      .takeUntil(action$.ofType('UNDO_DEL_TRANSACTION_UNI').filter(({id}) => id === action.id))
-    )
-
-// const preDelTransactionEpic = action$ =>
-//   action$.ofType('WILL_DEL_TRANSACTION_UNI')
-//     .flatMap( action =>
-//       Observable.of({
-//         type: 'DEL_TRANSACTION_UNI',
-//         id: action.id
-//       })
-//       .delay(3000)
-//       // .map(fetchUserFulfilled)
-//       .takeUntil(action$.ofType('UNDO_DEL_TRANSACTION_UNI'))
-//     )
+const preDelTransactionEpic = action$ => action$.ofType('WILL_DEL_TRANSACTION')
+  .mergeMap(action =>
+    Observable.of({
+      type: locally ? 'TRANSACTION_DELETED' : 'DEL_TRANSACTION',
+      id: action.id
+    })
+    .delay(3000)
+    .takeUntil(action$.ofType('UNDO_DEL_TRANSACTION').filter(({id}) => id === action.id))
+  )
 
 const delTransactionEpic = action$ =>
-  action$.ofType('DEL_TRANSACTION_UNI').mergeMap(action =>
-    ajax(_delete(action.id))
-      .map(result => _response('TRANSACTION_DELETED', result)))
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-
-
-
-
+  action$.ofType('DEL_TRANSACTION')
+    .mergeMap(action =>
+      api.delTransaction(action.id)
+      .map(id => ({
+        type: 'TRANSACTION_DELETED',
+        id
+      }))
+    )
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -106,21 +108,3 @@ export const epics = [
   preDelTransactionEpic,
   delTransactionEpic,
 ];
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-const _response = (type, result) => ({
-  type,
-  payload: api.normalize(result.response)
-})
-
-const _add = item => ({
-  url: api.addTransactionURL(item),
-  method: 'POST',
-  headers: jsonHeaders,
-  body: api.denormalize(item)
-})
-
-const _delete = id => ({
-  url: api.delTransactionURL(id),
-  method: 'DELETE'
-})

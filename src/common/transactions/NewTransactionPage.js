@@ -14,12 +14,16 @@ import RenderTransactions from './render'
 // import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 
+import initialState from '../initialState'
+
 // import Icon from 'react-native-vector-icons/Ionicons';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // const myIcon = (<Icon name="rocket" size={30} color="#900" />)
 
 import { defaultTheme as theme } from '../app/themes'
 const styles = StyleSheet.create(theme.transactionForm);
+
+const { locally } = initialState.config
 
 class NewTransactionPage extends Component {
 
@@ -50,7 +54,7 @@ class NewTransactionPage extends Component {
       title: {
         name: 'title',
         pos: {top: isNative ? 42 : 36, maxHeight: 202},
-        getSuggestions: query => getSuggestions(this.props.user.categories, query, 1),
+        getSuggestions: query => getSuggestions(this.props.categories, query, 1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
           // console.log('onSelect title', suggestion);
@@ -65,7 +69,7 @@ class NewTransactionPage extends Component {
       category: {
         name: 'category',
         pos: {top: isNative ? 80 : 72, maxHeight: 174},
-        getSuggestions: query => getSuggestions(this.props.user.categories, query, -1),
+        getSuggestions: query => getSuggestions(this.props.categories, query, -1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
           this.setState({
@@ -165,14 +169,17 @@ class NewTransactionPage extends Component {
       if (!field) return this.fields[key].ref.focus()
       fields[key] = field
     }
-    this.props.addTransaction({
+    let dt = new Date()
+    let transaction = {
       title: removeSpecial(fields.title),
       category: slugifyCategory(fields.category),
       cost: fields.cost,
       amount: fields.amount,
-      userId: this.props.user.id,
-      date: new Date().toISOString()
-    })
+      date: dt.toISOString()
+    }
+    if (locally) transaction.id = dt.valueOf()
+    else transaction.userId = this.props.user.id
+    this.props.addTransaction(transaction)
     this.setState(this.init())
     this.fields.title.ref.focus()
   }
@@ -297,6 +304,7 @@ class NewTransactionPage extends Component {
 
         <RenderTransactions
           user={this.props.user}
+          categories={this.props.categories}
           transactions={this.props.transactions}
           editable={true}
           onClick={this.onDelTransaction}
@@ -366,6 +374,7 @@ class NewTransactionPage extends Component {
 export default connect(
   (state) => ({
     user: state.user,
+    categories: state.categories,
     transactions: state.transactions,
     isReactNative: state.device.isReactNative,
   }),

@@ -13,6 +13,7 @@ import todos from './todos/reducer';
 // import users from './users/reducer';
 import user from './user/reducer';
 import { fieldsReducer as fields } from './lib/redux-fields';
+import categories from './categories/reducer';
 import transactions from './transactions/reducer';
 
 const configureStore = (options) => {
@@ -32,6 +33,7 @@ const configureStore = (options) => {
     todos,
     user,
     // users,
+    categories,
     transactions,
   })
 

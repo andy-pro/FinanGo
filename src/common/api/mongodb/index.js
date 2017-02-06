@@ -1,23 +1,30 @@
 import { normalize, denormalize, convertCategoryPath } from './utils'
 
-const __rootURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
-const __apiKey = 'apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD';
-const __usersURL = __rootURL + 'users';
-const __transactionsURL = __rootURL + 'transactions';
-// const __transactionsURL = __rootURL + 'purchases';
+// const __dbURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
+// const __apiKey = 'apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD';
+// "id" : "5856ffa4da7d1f056c935686"
+// for test:
+// https://api.mlab.com/api/1/databases/shop/collections/users/5856ffa4da7d1f056c935686?apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD
 
+import initialState from '../../initialState'
+
+const {apiKey: __apiKey, databaseURL: __dbURL } = initialState.config.mongolab
+const __usersURL = __dbURL + 'users';
+const __transactionsURL = __dbURL + 'transactions';
 
 export { normalize, denormalize }
 
-export const getTransactionsURL = userId =>
-  __transactionsURL + '?q=' + denormalize({userId}) + '&s={"date":-1}&' + __apiKey
+export const getUserURL = id =>
+  __usersURL + '/' + id + '?' + __apiKey
+
+export const getTransactionsURL = (userId, order) =>
+  __transactionsURL + '?q=' + denormalize({userId}) + '&s={"date":' + order + '}&' + __apiKey
 
 export const addTransactionURL = () =>
   __transactionsURL + '?' + __apiKey
 
 export const delTransactionURL = id =>
   __transactionsURL + '/' + id + '?' + __apiKey
-
 
 //=============================================
 

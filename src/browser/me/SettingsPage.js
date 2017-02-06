@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import linksMessages from '../../common/app/linksMessages';
-import { FormattedMessage } from 'react-intl';
+// import linksMessages from '../../common/app/linksMessages';
+// import { FormattedMessage } from 'react-intl';
 import {
   Box,
   Paragraph,
@@ -10,9 +10,9 @@ import {
 
 const SettingsPage = () => (
   <Box>
-    <Title message={linksMessages.settings} />
+    <Title message='Settings' />
     <Paragraph>
-      <FormattedMessage {...linksMessages.settings} />
+      Settings
     </Paragraph>
   </Box>
 );

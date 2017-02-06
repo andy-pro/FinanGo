@@ -105,7 +105,7 @@ class ListView extends Component {
       <View style={style}>
         {this.props.dataSource.map((item, index) => {
           return (
-            <div key={index}>
+            <div key={item.id || index}>
               {this.props.renderRow(item)}
             </div>
           )

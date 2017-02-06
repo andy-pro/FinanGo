@@ -1,54 +1,67 @@
-// @flow
-import type { Action, Deps } from '../types';
-import { Observable } from 'rxjs/Observable';
 import { REHYDRATE } from 'redux-persist/constants';
-// import { onAuth, signInDone, signInFail } from '../auth/actions';
+import { getUserData } from '../transactions/actions'
 
-import mockData from '../_mockData'
-
-export const appError = (error: Object): Action => ({
+export const appError = (error: Object) => ({
   type: 'APP_ERROR',
   payload: { error },
 });
 
-export const appOnline = (online: boolean): Action => ({
+export const appOnline = (online: boolean) => ({
   type: 'APP_ONLINE',
   payload: { online },
 });
 
-export const appShowMenu = (menuShown: boolean): Action => ({
+export const appShowMenu = (menuShown: boolean) => ({
   type: 'APP_SHOW_MENU',
   payload: { menuShown },
 });
 
 // Called on componentDidMount aka only at the client (browser or native).
-export const appStart = (): Action => ({
+export const appStart = () => ({
   type: 'APP_START',
 });
 
-export const appStarted = (): Action => ({
+export const appStarted = () => ({
   type: 'APP_STARTED',
 });
 
-export const appStop = (): Action => ({
+export const appStop = () => ({
   type: 'APP_STOP',
 });
 
-export const toggleBaseline = (): Action => ({
+export const toggleBaseline = () => ({
   type: 'TOGGLE_BASELINE',
 });
 
-export const setTheme = (theme: string): Action => ({
+export const setTheme = (theme) => ({
   type: 'SET_THEME',
   payload: { theme },
 });
 
-const appStartEpic = (action$: any) =>
+const appStartEpic = (action$) =>
   action$.ofType(REHYDRATE)
     .map(appStarted);
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+const appStartedFinanGoEpic = action$ =>
+  action$.ofType('APP_STARTED')
+    .switchMap(getUserData)
+
+//
+// const userLoadedEpic = action$ =>
+//   action$.ofType('USER_LOADED')
+//     .mergeMap(action => Observable.of({ type: 'GET_TRANSACTIONS', payload: mockData[1] }))
+
+export const epics = [
+  appStartEpic,
+  // appStartedFirebaseEpic,
+  appStartedFinanGoEpic,
+  // userLoadedEpic,
+];
+
 /*
-const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
+const appStartedFirebaseEpic = (action$, deps) => {
   const { firebase, firebaseAuth, getState } = deps;
 
   const appOnline$ = Observable.create((observer) => {
@@ -107,20 +120,3 @@ const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
     );
 };
 */
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-const appStartedFinanGoEpic = action$ =>
-  action$.ofType('APP_STARTED')
-    .mergeMap(action => Observable.of({ type: 'USER_LOADED', payload: mockData[0] }))
-
-const userLoadedEpic = action$ =>
-  action$.ofType('USER_LOADED')
-    .mergeMap(action => Observable.of({ type: 'GET_TRANSACTIONS', payload: mockData[1] }))
-
-export const epics = [
-  appStartEpic,
-  // appStartedFirebaseEpic,
-  appStartedFinanGoEpic,
-  userLoadedEpic,
-];

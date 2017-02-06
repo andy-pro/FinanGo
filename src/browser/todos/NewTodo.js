@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
-import newTodoMessages from '../../common/todos/newTodoMessages';
+// import newTodoMessages from '../../common/todos/newTodoMessages';
 import { Form, Input } from '../app/components';
 import { addTodo } from '../../common/todos/actions';
 import { compose } from 'ramda';
 import { connect } from 'react-redux';
 import { fields } from '../../common/lib/redux-fields';
-import { injectIntl } from 'react-intl';
+// import { injectIntl } from 'react-intl';
 
 type NewTodoProps = {|
   addTodo: typeof addTodo,
@@ -14,7 +14,7 @@ type NewTodoProps = {|
   intl: $IntlShape,
 |};
 
-const NewTodo = ({ addTodo, fields, intl }: NewTodoProps) => (
+const NewTodo = ({ addTodo, fields }: NewTodoProps) => (
   <Form
     onSubmit={() => {
       const title = fields.title.value.trim();
@@ -26,7 +26,7 @@ const NewTodo = ({ addTodo, fields, intl }: NewTodoProps) => (
     <Input
       field={fields.title}
       maxLength={100}
-      label={intl.formatMessage(newTodoMessages.placeholder)}
+      label='new todo'
       placeholder="..."
       size={2}
     />
@@ -38,7 +38,6 @@ export default compose(
     null,
     { addTodo },
   ),
-  injectIntl,
   fields({
     path: 'newTodo',
     fields: ['title'],

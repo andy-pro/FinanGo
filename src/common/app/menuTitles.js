@@ -1,16 +1,14 @@
-import linksMessages from './linksMessages';
-
 export default {
-  '/': linksMessages.home,
-  '/este': linksMessages.este,
-  '/single': linksMessages.single,
-  '/group': linksMessages.group,
-  '/income': linksMessages.income,
-  '/refresh': linksMessages.refresh,
-  '/intl': linksMessages.intl,
-  '/offline': linksMessages.offline,
-  '/signin': linksMessages.signIn,
-  '/todos': linksMessages.todos,
-  '/broken': linksMessages.broken,
-  '/me': linksMessages.me,
+  '/': 'links.home',
+  '/single': 'links.single',
+  '/group': 'links.group',
+  '/income': 'links.income',
+  '/refresh': 'links.refresh',
+  '/este': 'links.este',
+  '/todos': 'links.todos',
+  '/fields': 'links.fields',
+  '/intl': 'links.intl',
+  '/offline': 'links.offline',
+  '/me': 'links.me',
+  '/settings': 'links.settings',
 }

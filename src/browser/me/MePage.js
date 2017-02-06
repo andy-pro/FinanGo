@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import getUserPhotoUrl from '../../common/user/getUserPhotoUrl';
-import linksMessages from '../../common/app/linksMessages';
-import { FormattedMessage } from 'react-intl';
+// import linksMessages from '../../common/app/linksMessages';
+// import { FormattedMessage } from 'react-intl';
 import { Match, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import {
@@ -23,13 +23,13 @@ const Header = ({ pathname }) => (
     marginHorizontal={-0.5}
   >
     <Link exactly to={pathname} paddingHorizontal={0.5}>
-      <FormattedMessage {...linksMessages.me} />
+      Me
     </Link>
     <Link to={`${pathname}/profile`} paddingHorizontal={0.5}>
-      <FormattedMessage {...linksMessages.profile} />
+      Profile
     </Link>
     <Link to={`${pathname}/settings`} paddingHorizontal={0.5}>
-      <FormattedMessage {...linksMessages.settings} />
+      Settings
     </Link>
   </Box>
 );
@@ -39,7 +39,7 @@ const MePage = ({ pathname, user }) => (
     <Redirect to="/" />
   :
     <Box>
-      <Title message={linksMessages.me} />
+      <Title message='Me' />
       <Header pathname={pathname} />
       <Match
         exactly

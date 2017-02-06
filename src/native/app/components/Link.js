@@ -31,16 +31,4 @@ Link.contextTypes = {
   router: React.PropTypes.object,
 };
 
-Link.propTypes = {
-  activeStyle: React.PropTypes.any,
-  children: React.PropTypes.node.isRequired,
-  exactly: React.PropTypes.bool,
-  onPress: React.PropTypes.func,
-  style: React.PropTypes.any,
-  to: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.object,
-  ]),
-};
-
 export default Link;

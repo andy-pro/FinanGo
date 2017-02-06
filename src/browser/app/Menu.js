@@ -4,64 +4,70 @@ import React from 'react';
 
 import { getTransactions } from '../../common/transactions/actions';
 
-import linksMessages from '../../common/app/linksMessages';
+// import linksMessages from '../../common/app/linksMessages';
 
 import { Box, Link } from '../app/components';
-import { FormattedMessage } from 'react-intl';
-import { compose } from 'ramda';
+// import { FormattedMessage } from 'react-intl';
+// import { compose } from 'ramda';
 import { connect } from 'react-redux';
 
-const HeaderLink = ({ exactly, to, message }) => (
-  <Link
-    display='block'
-    backgroundColor="primary"
-    bold
-    color="white"
-    exactly={exactly}
-    paddingHorizontal={0.5}
-    paddingVertical={0.5}
-    to={to}
-  >
-    <FormattedMessage {...message} />
-  </Link>
-);
+import messages from '../messages'
+import menuTitles from '../../common/app/menuTitles'
 
-const Header = ({ user, width, getTransactions }) => {
+const HeaderLink = ({ exactly, to }) => {
+  let message
+  if (to instanceof Array) {
+    message = to[0]
+    to = to[1]
+  } else message = to
+  message = messages[menuTitles[message]]
+  return (
+    <Link
+      display='block'
+      backgroundColor="primary"
+      bold
+      color="white"
+      exactly={exactly}
+      paddingHorizontal={0.5}
+      paddingVertical={0.5}
+      to={to}
+    >
+      {message}
+    </Link>
+  );
+}
 
-  const refresh = () =>
-    getTransactions(user.id)
+const Header = ({ getTransactions }) => {
 
   return (
     <Box
       backgroundColor="primary"
-      width={width}
       position='fixed'
       top={0}
       left={0}
       marginVertical={0.5}
       paddingHorizontal={0.5}
     >
-      <HeaderLink exactly to="/" message={linksMessages.home} />
-      <HeaderLink to="/single" message={linksMessages.single} />
-      <HeaderLink to="/group" message={linksMessages.group} />
-      <HeaderLink to="/income" message={linksMessages.income} />
-      <HeaderLink to={refresh} message={linksMessages.refresh} />
-      <HeaderLink to="/este" message={linksMessages.este} />
-      <HeaderLink to="/todos" message={linksMessages.todos} />
-      <HeaderLink to="/fields" message={linksMessages.fields} />
-      <HeaderLink to="/intl" message={linksMessages.intl} />
-      <HeaderLink to="/offline" message={linksMessages.offline} />
-      <HeaderLink to="/me" message={linksMessages.me} />
-      {!user &&
-        <HeaderLink to="/signin" message={linksMessages.signIn} />
-      }
+      <HeaderLink exactly to="/" />
+      <HeaderLink to="/single" />
+      <HeaderLink to="/group" />
+      <HeaderLink to="/income" />
+      <HeaderLink to={['/refresh', getTransactions]} />
+      <HeaderLink to="/este" />
+      <HeaderLink to="/todos" />
+      <HeaderLink to="/fields" />
+      <HeaderLink to="/intl" />
+      <HeaderLink to="/offline" />
+      <HeaderLink to="/me" />
     </Box>
   );
 }
 
-export default compose(
-  connect(
-    ({ user }) => ({ user }),
-    { getTransactions }
-  ),
+export default connect(
+  (state) => ({
+    currentLocale: state.intl.currentLocale,
+    // themeName: state.app.currentTheme,
+    // theme: themes[state.app.currentTheme] || themes.defaultTheme,
+  }),
+  { getTransactions }
 )(Header);

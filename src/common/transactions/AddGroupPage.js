@@ -2,7 +2,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import linksMessages from '../app/linksMessages';
 import { View, Text } from '../components'
 import {
   Box,
@@ -24,7 +23,7 @@ const AddGroupPage = ({viewer, transactions, isReactNative}) => {
     return (
       <Box>
 
-        <Title message={linksMessages.group} />
+        <Title message='Group' />
         <PageHeader
           heading="Group expense"
           description="Add group expense transaction"

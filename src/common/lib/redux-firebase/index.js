@@ -1,8 +1,8 @@
 // @flow
 import firebase from './firebase';
-import firebaseMessages from './messages';
+// import firebaseMessages from './messages';
 
 export {
   firebase,
-  firebaseMessages,
+  // firebaseMessages,
 };

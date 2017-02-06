@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import buttonsMessages from '../../common/app/buttonsMessages';
-import linksMessages from '../../common/app/linksMessages';
-import { FormattedMessage } from 'react-intl';
+// import buttonsMessages from '../../common/app/buttonsMessages';
+// import linksMessages from '../../common/app/linksMessages';
+// import { FormattedMessage } from 'react-intl';
 import { compose } from 'ramda';
 import { fields } from '../../common/lib/redux-fields';
 import {
@@ -26,7 +26,7 @@ const FieldsPage = ({ fields }) => {
 
   return (
     <Box>
-      <Title message={linksMessages.fields} />
+      <Title message='Fields' />
       <PageHeader
         heading="redux-fields"
         description="Simple and universal Redux forms"
@@ -40,8 +40,6 @@ const FieldsPage = ({ fields }) => {
           label="Name"
           maxLength={100}
           placeholder="Jane Doe"
-          // That's how we can render field error.
-          // error="Name is required"
         />
         <Input
           field={fields.description}
@@ -87,7 +85,7 @@ const FieldsPage = ({ fields }) => {
           size={1}
         />
         <Button primary onClick={onSubmit}>
-          <FormattedMessage {...buttonsMessages.submit} />
+          Submit
         </Button>
       </Form>
     </Box>

@@ -1,14 +1,17 @@
 // @flow
 import Header from './Header';
 import React from 'react';
+import messages from '../messages';
 import titles from '../../common/app/menuTitles';
-import { Alert, Container, RoundButton } from './components';
-import { injectIntl, intlShape } from 'react-intl';
+// import { Alert, Container, RoundButton } from './components';
+import { Alert, RoundButton } from './components';
+// import { injectIntl, intlShape } from 'react-intl';
 import { StyleSheet, View } from 'react-native';
 
 // import { Match } from '../../common/app/components';
-import Match from '@components/Match';
-import theme from '@themes/initial'
+// import Match from '@components/Match';
+import { Match } from '../../common/components';
+import theme from './themes/initial'
 
 const styles = StyleSheet.create({
   container: {
@@ -17,14 +20,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const Page = ({ component: Component, intl, pattern, ...props }) => (
+const Page = ({ component: Component, pattern, ...props }) => (
   <Match
     {...props}
     pattern={pattern}
     render={renderProps => (
       <View style={styles.container}>
         {titles[pattern] &&
-          <Header title={intl.formatMessage(titles[pattern])} />
+          <Header title={messages[titles[pattern]]} />
         }
         <Alert />
         <Component {...renderProps} />
@@ -34,10 +37,4 @@ const Page = ({ component: Component, intl, pattern, ...props }) => (
   />
 );
 
-Page.propTypes = {
-  component: React.PropTypes.func.isRequired,
-  intl: intlShape.isRequired,
-  pattern: React.PropTypes.string.isRequired,
-};
-
-export default injectIntl(Page);
+export default Page;

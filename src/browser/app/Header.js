@@ -12,7 +12,7 @@ const Header = ({ title, user }) => (
   <Box>
     <Title message={title} />
     <PageHeader
-      heading={title.defaultMessage}
+      heading={title}
       description={user ? user.displayName : ''}
     />
   </Box>

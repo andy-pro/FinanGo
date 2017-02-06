@@ -20,10 +20,10 @@ const dis_btn = { name: 'ios-refresh-circle-outline', backgroundColor: '#aaa' }
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 // var ds = new ListView.DataSource({rowHasChanged: 'ququsyaka-buzyu'});
 
-export default renderTransactions = ({ user, transactions, editable, onClick }) => {
+export default renderTransactions = ({ user, categories, transactions, editable, onClick }) => {
   if (!user) return null
 
-  const { currency, categories } = user
+  const { currency } = user
   // console.log('print instance ds', ds.rowHasChanged, ds.cloneWithRows);
   const dataSource = ds.cloneWithRows(transactions)
 

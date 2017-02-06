@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import linksMessages from '../../common/app/linksMessages';
-import { FormattedMessage } from 'react-intl';
+// import linksMessages from '../../common/app/linksMessages';
+// import { FormattedMessage } from 'react-intl';
 import {
   Box,
   Paragraph,
@@ -10,9 +10,9 @@ import {
 
 const ProfilePage = () => (
   <Box>
-    <Title message={linksMessages.profile} />
+    <Title message='Profile' />
     <Paragraph>
-      <FormattedMessage {...linksMessages.profile} />
+      Profile
     </Paragraph>
   </Box>
 );

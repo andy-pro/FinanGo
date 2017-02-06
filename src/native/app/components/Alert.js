@@ -1,10 +1,9 @@
 // @flow
-import type { State } from '../../../common/types';
 import React from 'react';
 // import errorToMessage from '../../../common/app/errorToMessage';
 import theme from '../themes/initial';
-import { Animated, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
-import { FormattedMessage } from './';
+import { Animated, StyleSheet, TouchableWithoutFeedback, View, Text } from 'react-native';
+// import { FormattedMessage } from './';
 import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
@@ -26,24 +25,12 @@ const styles = StyleSheet.create({
   message: {
     color: theme.bright(theme.inverseTextColor),
     fontWeight: 'bold',
-    margin: theme.fontSize * 0.75,
+    margin: theme.fontSize * 0.85,
     textAlign: 'center',
   },
 });
 
-type LocalState = {
-  alertHeight: number,
-  animation: any,
-};
-
 class Alert extends React.Component {
-
-  static propTypes = {
-    brand: React.PropTypes.string,
-    duration: React.PropTypes.number.isRequired,
-    error: React.PropTypes.instanceOf(Error),
-    hideTimeout: React.PropTypes.number.isRequired,
-  };
 
   static defaultProps = {
     brand: theme.brandDanger,
@@ -51,7 +38,7 @@ class Alert extends React.Component {
     hideTimeout: 4000,
   };
 
-  state: LocalState = {
+  state = {
     alertHeight: 0,
     animation: new Animated.Value(0),
   };
@@ -100,8 +87,6 @@ class Alert extends React.Component {
       .start();
   }
 
-  hideTimer: number;
-
   show() {
     const { hideTimeout } = this.props;
     this.animateTo(1, 0);
@@ -116,7 +101,7 @@ class Alert extends React.Component {
     if (!error) return null;
 
     // const errorMessage = errorToMessage(error);
-    const errorMessage = null;
+    const errorMessage = error;
     if (!errorMessage || !errorMessage.message) return null;
 
     const alertStyle = this.getAlertStyle();
@@ -129,11 +114,9 @@ class Alert extends React.Component {
             style={[styles.alert, alertStyle]}
             onLayout={e => this.onAlertLayout(e)}
           >
-            <FormattedMessage
-              {...errorMessage.message}
-              values={errorMessage.values || {}}
-              style={styles.message}
-            />
+            <Text style={styles.message}>
+              {errorMessage.message}
+            </Text>
           </View>
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -143,7 +126,7 @@ class Alert extends React.Component {
 }
 
 export default connect(
-  (state: State) => ({
+  (state) => ({
     error: state.app.error,
   }),
 )(Alert);

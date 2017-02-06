@@ -1,7 +1,4 @@
-// @flow
-import type { Action } from '../types';
-
-export const setCurrentLocale = (locale: string): Action => ({
+export const setCurrentLocale = (locale) => ({
   type: 'SET_CURRENT_LOCALE',
   payload: { locale },
 });
