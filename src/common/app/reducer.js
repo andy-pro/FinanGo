@@ -1,5 +1,6 @@
 // @flow
 import type { Action, AppState } from '../types';
+import * as dt from '../__lib/dateUtils'
 
 const initialState = {
   baselineShown: false,
@@ -8,6 +9,7 @@ const initialState = {
   menuShown: false,
   online: false,
   started: false,
+  date: dt.getCurrentDate(),
 };
 
 const reducer = (
@@ -36,6 +38,9 @@ const reducer = (
 
     case 'APP_STARTED':
       return { ...state, started: true };
+
+    case 'MONTH_CHANGED':
+      return { ...state, date: action.payload };
 
     case 'TOGGLE_BASELINE':
       return { ...state, baselineShown: !state.baselineShown };

@@ -5,6 +5,7 @@ export default {
   '/income': 'links.income',
   '/refresh': 'links.refresh',
   '/este': 'links.este',
+  '/categories': 'links.categories',
   '/todos': 'links.todos',
   '/fields': 'links.fields',
   '/intl': 'links.intl',

@@ -1,9 +1,7 @@
 // @flow
-import Header from './Header';
 import React from 'react';
-import titles from '../../common/app/menuTitles';
-import messages from '../messages'
-import { View, Text, Match } from '../../common/components';
+import Header from './Header';
+import { View, Text, Match } from '../../common/__components';
 
 export default Page = ({ component: Component, pattern, ...props }) => (
   <Match
@@ -11,9 +9,7 @@ export default Page = ({ component: Component, pattern, ...props }) => (
     pattern={pattern}
     render={renderProps => ( // renderProps: isExact, location, params, pathname, pattern
       <View>
-        {titles[pattern] &&
-          <Header title={messages[titles[pattern] + '.title']} />
-        }
+        <Header pattern={pattern} />
         <Component {...renderProps} />
       </View>
     )}

@@ -51,9 +51,9 @@ const theme: Theme = {
   container: {
     maxWidths: {
       small: 540,
-      medium: 720,
-      big: 960,
-      bigger: 1140,
+      medium: 600,
+      big: 680,
+      bigger: 768,
     },
   },
   menu: {

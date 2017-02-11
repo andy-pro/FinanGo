@@ -1,41 +1,24 @@
 // @flow
 import configureMiddleware from './configureMiddleware';
+import configureReducer from './configureReducer';
 import configureStorage from './configureStorage';
-import { applyMiddleware, createStore, combineReducers, compose } from 'redux';
+import { applyMiddleware, createStore, compose } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
 
-import app from './app/reducer';
-// import auth from './auth/reducer';
-import config from './config/reducer';
-import device from './device/reducer';
-import intl from './intl/reducer';
-import todos from './todos/reducer';
-// import users from './users/reducer';
-import user from './user/reducer';
-import { fieldsReducer as fields } from './lib/redux-fields';
-import categories from './categories/reducer';
-import transactions from './transactions/reducer';
+type Options = {
+  initialState: Object,
+  platformDeps?: Object,
+  platformMiddleware?: Array<Function>,
+};
 
-const configureStore = (options) => {
+const configureStore = (options: Options) => {
   const {
     initialState,
     platformDeps = {},
     platformMiddleware = [],
   } = options;
 
-  const reducer = combineReducers({
-    app,
-    // auth,
-    config,
-    device,
-    fields,
-    intl,
-    todos,
-    user,
-    // users,
-    categories,
-    transactions,
-  })
+  const reducer = configureReducer(initialState);
 
   const middleware = configureMiddleware(
     initialState,
@@ -60,13 +43,13 @@ const configureStore = (options) => {
     persistStore(store, config);
   }
 
-/*  // Enable hot reloading for reducers.
+  // Enable hot reloading for reducers.
   if (module.hot && typeof module.hot.accept === 'function') {
     if (initialState.device.isReactNative) {
       // React Native for some reason needs accept without the explicit path.
       // facebook.github.io/react-native/blog/2016/03/24/introducing-hot-reloading.html
       module.hot.accept(() => {
-        // const configureReducer = require('./configureReducer').default;
+        const configureReducer = require('./configureReducer').default;
 
         store.replaceReducer(configureReducer(initialState));
       });
@@ -79,7 +62,6 @@ const configureStore = (options) => {
       });
     }
   }
-*/
 
   return store;
 };

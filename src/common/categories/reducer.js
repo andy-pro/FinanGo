@@ -1,9 +1,13 @@
 import {
-  unshiftItem,
-  pushItem,
-  updateItemById,
-  deleteItemById
-} from '../lib/utils';
+  // unshiftItem,
+  // pushItem,
+  // updateItemById,
+  // deleteItemById,
+  // getCategoryByPath
+  addCategoryToPath,
+  updateCategoryByPath,
+  delCategoryByPath,
+} from '../__lib/utils';
 
 const reducer = ( state = [], action ) => {
 
@@ -11,6 +15,15 @@ const reducer = ( state = [], action ) => {
 
     case 'USER_LOADED':
       return action.payload.categories
+
+    case 'ADD_CATEGORY_LOCAL':
+      return addCategoryToPath(state, action.payload)
+
+    case 'UPDATE_CATEGORY_LOCAL':
+      return updateCategoryByPath(state, action.payload)
+
+    case 'DEL_CATEGORY_LOCAL':
+      return delCategoryByPath(state, action.payload)
 
     default:
       return state;

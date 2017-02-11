@@ -2,13 +2,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { addTransaction, delTransaction, undoDelTransaction } from './actions'
+import { clearTransactions, addTransaction } from './actions'
+import { setMonthToNow } from '../app/actions'
 
-import { Form, View, Text, TextInput, StyleSheet, Icon } from '../components';
-import { getSuggestions } from './utils'
-import { removeSpecial, getSlug, slugifyCategory } from '../lib/utils'
+import { Form, View, Text, TextInput, StyleSheet, Icon } from '../__components';
+import AutosuggestForm from '../__components/AutosuggestForm';
+import { defaultTheme as theme } from '../__themes'
+import getSuggestions from './getSuggestions'
+import { getTimeId } from '../__lib/dateUtils'
+import { removeSpecial, getSlug, slugifyCategory, getValue } from '../__lib/utils'
 
-import AutosuggestForm from '../components/AutosuggestForm'
 import RenderTransactions from './render'
 
 // import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
@@ -16,11 +19,6 @@ import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 
 import initialState from '../initialState'
 
-// import Icon from 'react-native-vector-icons/Ionicons';
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// const myIcon = (<Icon name="rocket" size={30} color="#900" />)
-
-import { defaultTheme as theme } from '../app/themes'
 const styles = StyleSheet.create(theme.transactionForm);
 
 const { locally } = initialState.config
@@ -100,7 +98,14 @@ class NewTransactionPage extends Component {
 
     this.state = this.init()
 
+    if (props.pattern === '/group') {
+      this.initGroup()
+    }
+
   }
+
+  initGroup = () =>
+    this.groupId = getTimeId().id
 
   init = () => ({
     query: '',
@@ -108,16 +113,25 @@ class NewTransactionPage extends Component {
     category: '',
     amount: '',
     cost: '',
-    focused: 'title',
+    groupTitle: '',
     field: this.fields.title,
     suggestions: [],
     showList: false,
   })
 
-  onChange = (query, name) => {
-    if (typeof query === 'object') {
-      query = query.target.value
+  componentWillMount() {
+    if (this.groupId && this.props.user && this.props.transactions.length) {
+      this.props.clearTransactions()
     }
+  }
+
+  // componentWillUnmount(props) {
+  //   console.log('unmount', props);
+  //   // this.props.setMonthToNow()
+  // }
+
+  onChange = (query, name) => {
+    query = getValue(query)
     const field = this.fields[name]
     // console.log('Change: ', name, ' query:', query);
     let suggestions = (query.length && field.getSuggestions) ? field.getSuggestions(query) : []
@@ -139,25 +153,13 @@ class NewTransactionPage extends Component {
       field,
       suggestions,
       selectedIndex: si,
-      focused: name,
+      // focused: name,
       showList
     })
   }
 
-  onFocus = (e) => {
-    // console.log('focus', this.state.field.name, e, this.refs);
-    if (this.state.showList) {
-      // this.setState({ showList: false })
-    }
-  }
-
-  onBlur = () => {
-    // console.log('blur', this.state.focused);
-    if (this.state.showList) {
-      // this.setState({ focused: false })
-      setTimeout( () => this.setState({ showList: false }) )
-    }
-  }
+  onGroupTitleChange = (query) =>
+    this.setState({ groupTitle: getValue(query) })
 
   onSubmit = e => {
     e.preventDefault()
@@ -169,16 +171,36 @@ class NewTransactionPage extends Component {
       if (!field) return this.fields[key].ref.focus()
       fields[key] = field
     }
-    let dt = new Date()
     let transaction = {
       title: removeSpecial(fields.title),
       category: slugifyCategory(fields.category),
       cost: fields.cost,
       amount: fields.amount,
-      date: dt.toISOString()
     }
-    if (locally) transaction.id = dt.valueOf()
+    if (this.groupId) {
+      transaction.groupId = this.groupId
+    }
+    this.addTransaction(transaction)
+  }
+
+  onGroupSubmit = e => {
+    e.preventDefault()
+    let { groupTitle } = this.state
+    if (!groupTitle) return
+    this.addTransaction({
+      title: removeSpecial(groupTitle),
+      groupId: this.groupId,
+      groupMaster: 1
+    })
+    this.initGroup()
+  }
+
+  addTransaction = (transaction) => {
+    let dt = getTimeId()
+    transaction.date = dt.iso
+    if (locally) transaction.id = dt.id
     else transaction.userId = this.props.user.id
+
     this.props.addTransaction(transaction)
     this.setState(this.init())
     this.fields.title.ref.focus()
@@ -221,30 +243,40 @@ class NewTransactionPage extends Component {
     }
   }
 
-  onDelTransaction = (e, item) => {
-    if (item.willDel) {
-      console.log('%cundelete transaction', 'color:green;font-size:15px', item.id)
-      this.props.undoDelTransaction(item.id)
-    } else {
-      console.log('%cdelete transaction', 'color:red;font-size:15px', item.id)
-      this.props.delTransaction(item.id)
+  onFocus = (e) => {
+    // console.log('focus', this.state.field.name, e, this.refs);
+    if (this.state.showList) {
+      // this.setState({ showList: false })
+    }
+  }
+
+  onBlur = () => {
+    // console.log('blur', this.state.focused);
+    if (this.state.showList) {
+      // this.setState({ focused: false })
+      setTimeout( () => this.setState({ showList: false }) )
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return nextState.showList !== this.state.showList ||
     nextState.query !== this.state.query ||
+    nextState.groupTitle !== this.state.groupTitle ||
     nextState.selectedIndex !== this.state.selectedIndex ||
     nextProps.transactions !== this.props.transactions ||
     nextProps.user !== this.props.user
   }
 
   render() {
-    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.state);
-    // const {suggestions, showList, focused, field} = this.state
+    console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', 'pattern', this.props.pattern, this.state);
+    const { suggestions, showList, field } = this.state
     return (
 
-      <AutosuggestForm state={this.state}>
+      <AutosuggestForm
+        showList={showList}
+        suggestions={suggestions}
+        field={field}
+      >
 
         <Form
           style={styles.controls}
@@ -287,6 +319,8 @@ class NewTransactionPage extends Component {
               value={this.state.cost}
               onChangeText={e => this.onChange(e, 'cost')}
               returnKeyType='done'
+              type='number'
+              step='0.01'
               {...this.refhack.cost}
               {...this.propSet2}
             />
@@ -302,13 +336,32 @@ class NewTransactionPage extends Component {
 
         </Form>
 
-        <RenderTransactions
-          user={this.props.user}
-          categories={this.props.categories}
-          transactions={this.props.transactions}
-          editable={true}
-          onClick={this.onDelTransaction}
-        />
+        {this.groupId &&
+          <Form
+            style={styles.controls}
+            onSubmit={this.onGroupSubmit}
+          >
+            <View style={styles.formRow}>
+              <TextInput
+                placeholder='Group title'
+                value={this.state.groupTitle}
+                onChangeText={this.onGroupTitleChange}
+                returnKeyType='done'
+                {...this.refhack.groupTitle}
+                {...this.propSet2}
+              />
+              <Icon.Button
+                name="ios-list-outline"
+                backgroundColor="#a6d"
+                onPress={this.onGroupSubmit}
+              >
+                {this.groupId} Save group
+              </Icon.Button>
+            </View>
+          </Form>
+        }
+
+        <RenderTransactions editable={true} />
 
       </AutosuggestForm>
 
@@ -378,5 +431,5 @@ export default connect(
     transactions: state.transactions,
     isReactNative: state.device.isReactNative,
   }),
-  { addTransaction, delTransaction, undoDelTransaction }
+  { clearTransactions, addTransaction, setMonthToNow }
 )(NewTransactionPage);

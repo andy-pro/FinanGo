@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { View, Text } from '../components'
+import { View, Text } from '../__components'
 import {
   Box,
   Button,

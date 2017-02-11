@@ -5,7 +5,7 @@ import { Form, Input } from '../app/components';
 import { addTodo } from '../../common/todos/actions';
 import { compose } from 'ramda';
 import { connect } from 'react-redux';
-import { fields } from '../../common/lib/redux-fields';
+import { fields } from '../../common/__lib/redux-fields';
 // import { injectIntl } from 'react-intl';
 
 type NewTodoProps = {|

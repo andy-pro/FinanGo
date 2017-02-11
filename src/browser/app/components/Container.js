@@ -6,6 +6,7 @@ const Container = styled(theme => ({
   flexDirection: 'column',
   margin: 'auto',
   maxWidth: theme.container.maxWidths.big,
+  // minWidth: 540,
   minHeight: '100vh', // make footer sticky
   paddingLeft: theme.typography.rhythm(1),
   paddingRight: theme.typography.rhythm(1),

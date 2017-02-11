@@ -6,7 +6,7 @@ import {
   pushItem,
   updateItemById,
   deleteItemById
-} from '../lib/utils';
+} from '../__lib/utils';
 
 const reducer = ( state = [], action ) => {
 
@@ -14,6 +14,9 @@ const reducer = ( state = [], action ) => {
 
     case 'USER_LOADED':
       return action.payload.transactions
+
+    case 'CLEAR_TRANSACTIONS':
+      return []
 
     case 'GET_TRANSACTIONS':
       return action.payload

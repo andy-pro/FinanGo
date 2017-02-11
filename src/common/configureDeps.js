@@ -7,7 +7,7 @@
 // import 'firebase/database';
 
 // import firebase from 'firebase';
-import validate from './validate';
+// import validate from './validate';
 
 // Ensure only one Firebase instance. I don't know how costly new instance is
 // and how to dispose of it. Yes, firebase.initializeApp is weird API.
@@ -37,7 +37,7 @@ const configureDeps = (initialState, platformDeps) => ({
   // ...createFirebaseDeps(initialState.config.firebase),
   getUid: () => platformDeps.uuid.v4(),
   now: () => Date.now(),
-  validate,
+  // validate,
 });
 
 export default configureDeps;

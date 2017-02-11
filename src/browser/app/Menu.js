@@ -1,18 +1,18 @@
 // @flow
-import type { State, User } from '../../common/types';
 import React from 'react';
-
-import { getTransactions } from '../../common/transactions/actions';
-
-// import linksMessages from '../../common/app/linksMessages';
-
-import { Box, Link } from '../app/components';
-// import { FormattedMessage } from 'react-intl';
-// import { compose } from 'ramda';
 import { connect } from 'react-redux';
 
+import type { State, User } from '../../common/types';
+
+import { getTransactions } from '../../common/transactions/actions';
+import { Link } from '../app/components';
+import { View, StyleSheet } from '../../common/__components'
 import messages from '../messages'
 import menuTitles from '../../common/app/menuTitles'
+
+import { defaultTheme as theme } from '../../common/__themes'
+
+const styles = StyleSheet.create(theme);
 
 const HeaderLink = ({ exactly, to }) => {
   let message
@@ -24,12 +24,11 @@ const HeaderLink = ({ exactly, to }) => {
   return (
     <Link
       display='block'
-      backgroundColor="primary"
       bold
       color="white"
       exactly={exactly}
-      paddingHorizontal={0.5}
-      paddingVertical={0.5}
+      paddingHorizontal={0.7}
+      paddingVertical={0.3}
       to={to}
     >
       {message}
@@ -37,35 +36,30 @@ const HeaderLink = ({ exactly, to }) => {
   );
 }
 
-const Header = ({ getTransactions }) => {
+const Header = ({ date, currentLocale, getTransactions }) => {
 
   return (
-    <Box
-      backgroundColor="primary"
-      position='fixed'
-      top={0}
-      left={0}
-      marginVertical={0.5}
-      paddingHorizontal={0.5}
-    >
+    <View style={styles.menu}>
       <HeaderLink exactly to="/" />
       <HeaderLink to="/single" />
       <HeaderLink to="/group" />
       <HeaderLink to="/income" />
-      <HeaderLink to={['/refresh', getTransactions]} />
+      <HeaderLink to={[ '/refresh', () => getTransactions(date) ]} />
+      <HeaderLink to="/categories" />
       <HeaderLink to="/este" />
       <HeaderLink to="/todos" />
       <HeaderLink to="/fields" />
       <HeaderLink to="/intl" />
       <HeaderLink to="/offline" />
       <HeaderLink to="/me" />
-    </Box>
+    </View>
   );
 }
 
 export default connect(
   (state) => ({
     currentLocale: state.intl.currentLocale,
+    date: state.app.date,
     // themeName: state.app.currentTheme,
     // theme: themes[state.app.currentTheme] || themes.defaultTheme,
   }),

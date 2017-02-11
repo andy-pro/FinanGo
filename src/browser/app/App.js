@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import * as themes from './themes';
 import Page from './Page';
-import Header from './Header';
-import Footer from './Footer';
+// import Header from './Header';
+// import Footer from './Footer';
 import Menu from './Menu';
 import Helmet from 'react-helmet';
 import favicon from '../../common/app/favicon';
 // import start from '../../common/app/start';
-import Match from '../../common/components/Match';
+// import { Match } from '../../common/__components';
 import { Redirect, Miss } from 'react-router';
 
 import { appStart, appStop } from '../../common/app/actions';
@@ -29,14 +29,15 @@ import HomePage from '../../common/home/HomePage';
 import NewTransactionPage from '../../common/transactions/NewTransactionPage';
 
 import AddGroupPage from '../../common/transactions/AddGroupPage';
-import FieldsPage from '../fields/FieldsPage';
+import CategoriesPage from '../../common/categories/CategoriesPage';
 import EstePage from '../este/EstePage';
+import TodosPage from '../todos/TodosPage';
+import FieldsPage from '../fields/FieldsPage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 import NotFoundPage from '../notfound/NotFoundPage';
 import OfflinePage from '../offline/OfflinePage';
 // import SignInPage from '../auth/SignInPage';
-import TodosPage from '../todos/TodosPage';
 
 // const App = ({ currentLocale, theme, themeName }) => (
 class App extends Component {
@@ -77,21 +78,21 @@ class App extends Component {
                 ...favicon.link,
               ]}
             />
-            <Menu width={theme.menu.width}/>
-            <Box marginLeft={theme.menu.width} padding={1}>
+            <Menu />
+            <Box marginLeft={6} padding={1}>
               <Page exactly pattern="/" component={HomePage} />
               <Page pattern="/single" component={NewTransactionPage} />
               <Page pattern="/group" component={NewTransactionPage} />
               <Page pattern="/income" component={NewTransactionPage} />
-              <Match pattern="/este" component={EstePage} />
-              <Match pattern="/todos" component={TodosPage} />
-              <Match pattern="/fields" component={FieldsPage} />
-              <Match pattern="/intl" component={IntlPage} />
-              <Match pattern="/offline" component={OfflinePage} />
-              <Match authorized pattern="/me" component={MePage} />
+              <Page pattern="/categories" component={CategoriesPage} />
+              <Page pattern="/este" component={EstePage} />
+              <Page pattern="/todos" component={TodosPage} />
+              <Page pattern="/fields" component={FieldsPage} />
+              <Page pattern="/intl" component={IntlPage} />
+              <Page pattern="/offline" component={OfflinePage} />
+              <Page authorized pattern="/me" component={MePage} />
               <Miss component={NotFoundPage} />
             </Box>
-            <Footer />
           </Container>
         </Baseline>
       </ThemeProvider>

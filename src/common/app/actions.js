@@ -1,5 +1,9 @@
 import { REHYDRATE } from 'redux-persist/constants';
-import { getUserData } from '../transactions/actions'
+
+// import { getNewestUserData } from '../transactions/actions'
+
+import { getUserData } from '../user/actions'
+import * as dt from '../__lib/dateUtils'
 
 export const appError = (error: Object) => ({
   type: 'APP_ERROR',
@@ -29,6 +33,16 @@ export const appStop = () => ({
   type: 'APP_STOP',
 });
 
+export const changeMonth = date => ({
+  type: 'MONTH_CHANGED',
+  payload: date
+});
+
+export const setMonthToNow = () => ({
+  type: 'MONTH_CHANGED',
+  payload: dt.getCurrentDate()
+});
+
 export const toggleBaseline = () => ({
   type: 'TOGGLE_BASELINE',
 });
@@ -46,6 +60,7 @@ const appStartEpic = (action$) =>
 
 const appStartedFinanGoEpic = action$ =>
   action$.ofType('APP_STARTED')
+    // .switchMap(getNewestUserData)
     .switchMap(getUserData)
 
 //

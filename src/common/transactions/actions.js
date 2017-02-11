@@ -1,35 +1,17 @@
 import { Observable } from 'rxjs'
-import * as api from '../api'
+import * as api from '../__api'
 import initialState from '../initialState'
 import mockData from '../_mockData'
 
 const { storage, locally } = initialState.config
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-export const getUserData = action => {
-  switch (storage) {
-    case 'localfake':
-      return Observable.of({
-        type: 'USER_LOADED',
-        payload: mockData
-      })
-    default:
-      return api.getUserData.map(result => {
-        const { categories, ...user } = result[0]
-        return {
-          type: 'USER_LOADED',
-          payload: {
-            user,
-            categories,
-            transactions: result[1]
-          }
-        }
-      })
-  }
-}
+export const clearTransactions = () => ({
+  type: 'CLEAR_TRANSACTIONS'
+})
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-export const getTransactions = () => {
+const getTransactions = (date) => {
   switch (storage) {
     case 'localfake':
       return {
@@ -38,20 +20,27 @@ export const getTransactions = () => {
       }
     default:
       return {
-        type: 'GET_TRANSACTIONS_EPIC'
+        type: 'GET_TRANSACTIONS_EPIC',
+        payload: date
       }
   }
 }
 
+export { getTransactions }
+
 const getTransactionsEpic = action$ =>
   action$.ofType('GET_TRANSACTIONS_EPIC')
     .switchMap(action =>
-      api.getTransactions()
+      api.getTransactions(action.payload)
         .map(payload => ({
           type: 'GET_TRANSACTIONS',
           payload
         }))
     )
+
+const monthChangedEpic = action$ =>
+  action$.ofType('MONTH_CHANGED')
+    .map(action => getTransactions(action.payload))
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const addTransaction = payload => ({
@@ -104,6 +93,7 @@ const delTransactionEpic = action$ =>
 
 export const epics = [
   getTransactionsEpic,
+  monthChangedEpic,
   addTransactionEpic,
   preDelTransactionEpic,
   delTransactionEpic,
