@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { clearTransactions, addTransaction } from './actions'
-import { setMonthToNow } from '../app/actions'
+// import { setMonthToNow } from '../app/actions'
 
-import { Form, View, Text, TextInput, StyleSheet, Icon } from '../__components';
+import { Form, View, Text, TextInput, Icon } from '../__components';
 import AutosuggestForm from '../__components/AutosuggestForm';
-import { defaultTheme as theme } from '../__themes'
+
 import getSuggestions from './getSuggestions'
 import { getTimeId } from '../__lib/dateUtils'
 import { removeSpecial, getSlug, slugifyCategory, getValue } from '../__lib/utils'
@@ -19,7 +19,7 @@ import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 
 import initialState from '../initialState'
 
-const styles = StyleSheet.create(theme.transactionForm);
+import { colors, mainStyles, transactions as styles, suggestions as suggStyles } from '../__themes'
 
 const { locally } = initialState.config
 
@@ -79,7 +79,7 @@ class NewTransactionPage extends Component {
       },
       amount: {
         name: 'amount',
-        pos: {top: isNative ? 118 : 108, maxHeight: 146},
+        pos: isNative ? {top: 118, maxHeight: 146} : {top: 108},
         getSuggestions: query => /\d+\s/.test(query) ? this.amountTypes : [],
         renderSuggestion: this.renderAmount,
         onSelect: suggestion => {
@@ -121,6 +121,7 @@ class NewTransactionPage extends Component {
 
   componentWillMount() {
     if (this.groupId && this.props.user && this.props.transactions.length) {
+      // clear array of transactions in edit group mode
       this.props.clearTransactions()
     }
   }
@@ -129,6 +130,28 @@ class NewTransactionPage extends Component {
   //   console.log('unmount', props);
   //   // this.props.setMonthToNow()
   // }
+
+  // onFocus = (e) => {
+  //   // console.log('focus', this.state.field.name, e, this.refs);
+  //   if (this.state.showList) {
+  //     // this.setState({ showList: false })
+  //   }
+  // }
+
+  onBlur = () => {
+    if (this.state.showList) {
+      setTimeout( () => this.setState({ showList: false }) )
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.showList !== this.state.showList ||
+    nextState.query !== this.state.query ||
+    // nextState.groupTitle !== this.state.groupTitle ||
+    nextState.selectedIndex !== this.state.selectedIndex ||
+    nextProps.transactions !== this.props.transactions ||
+    nextProps.user !== this.props.user
+  }
 
   onChange = (query, name) => {
     query = getValue(query)
@@ -159,7 +182,10 @@ class NewTransactionPage extends Component {
   }
 
   onGroupTitleChange = (query) =>
-    this.setState({ groupTitle: getValue(query) })
+    this.setState({
+      query,
+      groupTitle: getValue(query)
+    })
 
   onSubmit = e => {
     e.preventDefault()
@@ -226,10 +252,6 @@ class NewTransactionPage extends Component {
             e.preventDefault()
             field.onSelect(s)
           }
-          // if (si >= 0) {
-          //   e.preventDefault()
-          //   field.onSelect(suggestions[si])
-          // }
           break
         case 'ArrowDown':
           if (si < suggestions.length - 1) changeSelected(++si)
@@ -243,32 +265,9 @@ class NewTransactionPage extends Component {
     }
   }
 
-  onFocus = (e) => {
-    // console.log('focus', this.state.field.name, e, this.refs);
-    if (this.state.showList) {
-      // this.setState({ showList: false })
-    }
-  }
-
-  onBlur = () => {
-    // console.log('blur', this.state.focused);
-    if (this.state.showList) {
-      // this.setState({ focused: false })
-      setTimeout( () => this.setState({ showList: false }) )
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextState.showList !== this.state.showList ||
-    nextState.query !== this.state.query ||
-    nextState.groupTitle !== this.state.groupTitle ||
-    nextState.selectedIndex !== this.state.selectedIndex ||
-    nextProps.transactions !== this.props.transactions ||
-    nextProps.user !== this.props.user
-  }
-
   render() {
-    console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', 'pattern', this.props.pattern, this.state);
+    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', 'pattern', this.props.pattern, this.state);
+    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', 'pattern', this.props.pattern, this.props.transactions.length);
     const { suggestions, showList, field } = this.state
     return (
 
@@ -276,15 +275,16 @@ class NewTransactionPage extends Component {
         showList={showList}
         suggestions={suggestions}
         field={field}
+        style={suggStyles}
       >
 
         <Form
-          style={styles.controls}
+          style={mainStyles.form}
           onKeyDown={this.onKeyDown}
           onSubmit={this.onSubmit}
         >
 
-          <View style={styles.formRow}>
+          <View style={mainStyles.row}>
             <TextInput
               autoFocus
               placeholder='Type a transaction title'
@@ -295,7 +295,7 @@ class NewTransactionPage extends Component {
             />
           </View>
 
-          <View style={styles.formRow}>
+          <View style={mainStyles.row}>
             <TextInput
               placeholder='Type a transaction category'
               value={this.state.category}
@@ -305,7 +305,7 @@ class NewTransactionPage extends Component {
             />
           </View>
 
-          <View style={styles.formRow}>
+          <View style={mainStyles.row}>
             <TextInput
               placeholder='Amount'
               value={this.state.amount}
@@ -327,7 +327,7 @@ class NewTransactionPage extends Component {
 
             <Icon.Button
               name="ios-paper-plane-outline"
-              backgroundColor="#18a06a"
+              backgroundColor={colors.header}
               onPress={this.onSubmit}
             >
               OK
@@ -338,10 +338,10 @@ class NewTransactionPage extends Component {
 
         {this.groupId &&
           <Form
-            style={styles.controls}
+            style={mainStyles.form}
             onSubmit={this.onGroupSubmit}
           >
-            <View style={styles.formRow}>
+            <View style={mainStyles.row}>
               <TextInput
                 placeholder='Group title'
                 value={this.state.groupTitle}
@@ -351,17 +351,22 @@ class NewTransactionPage extends Component {
                 {...this.propSet2}
               />
               <Icon.Button
-                name="ios-list-outline"
+                name="ios-list-box-outline"
                 backgroundColor="#a6d"
                 onPress={this.onGroupSubmit}
               >
-                {this.groupId} Save group
+                OK
               </Icon.Button>
             </View>
           </Form>
         }
 
-        <RenderTransactions editable={true} />
+        <View style={mainStyles.divider} />
+
+        <RenderTransactions
+          editable={true}
+          editModeGroupId={this.groupId || 0}
+        />
 
       </AutosuggestForm>
 
@@ -372,12 +377,12 @@ class NewTransactionPage extends Component {
     const matches = [[0, this.state.query.length]];
     const parts = AutosuggestHighlightParse(category.title, matches);
     const item =
-      <Text style={styles.suggestion}>
+      <Text style={suggStyles.text}>
         {category.path_str}
         {
           parts.map((part, index) =>
             <Text
-              style={part.highlight ? styles.highlight : null}
+              style={part.highlight ? suggStyles.highlight : null}
               key={index}>
               {part.text}
             </Text>
@@ -389,14 +394,14 @@ class NewTransactionPage extends Component {
 
   renderAmount = amountType => {
     const item =
-      <Text style={styles.suggestion}>
+      <Text style={suggStyles.text}>
         {amountType.title}
       </Text>
     return this.renderItem(item, amountType.selected)
   }
 
   renderItem = (item, selected) =>
-    <View style={selected ? styles.selected : styles.suggestionView}>
+    <View style={selected ? suggStyles.selected : suggStyles.view}>
       {item}
     </View>
 
@@ -407,16 +412,16 @@ class NewTransactionPage extends Component {
 
   propSet1 = {
     ...this.propSet0,
-    style: styles.input,
+    style: mainStyles.input,
     keyboardType: 'default',
     returnKeyType: 'next',
     autoCapitalize: 'sentences',
-    autoCorrect: true
+    // autoCorrect: true  // true is default
   }
 
   propSet2 = {
     ...this.propSet0,
-    style: [styles.input, {marginRight: 10}],
+    style: [mainStyles.input, {marginRight: 10}],
     keyboardType: 'numeric',
     autoCapitalize: 'none',
     autoCorrect: false
@@ -431,5 +436,5 @@ export default connect(
     transactions: state.transactions,
     isReactNative: state.device.isReactNative,
   }),
-  { clearTransactions, addTransaction, setMonthToNow }
+  { clearTransactions, addTransaction }
 )(NewTransactionPage);

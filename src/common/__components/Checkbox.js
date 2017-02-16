@@ -17,7 +17,7 @@ const Checkbox = ({ checked, onPress, style, label, disabled }) => {
           type="checkbox"
           value={label}
           checked={checked}
-          onChange={onPress}
+          onChange={e => onPress(e.target.checked)}
           disabled={disabled}
         />
         {label}

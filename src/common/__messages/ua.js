@@ -6,6 +6,7 @@ export default {
   'links.income': 'Прибуток',
   'links.refresh': 'Оновити',
   'links.categories': 'Категорії',
+  'links.categories.edit': 'Ред. категорії',
   'links.este': 'Este',
   'links.todos': 'Тудушки',
   'links.fields': 'Fields',
@@ -19,6 +20,7 @@ export default {
   'links.group.title': 'Група витрат',
   'links.income.title': 'Прибуток',
   'links.categories.title': 'Категорії',
+  'links.categories.edit.title': 'Ред. категорії',
 
   "transactions.transaction": "Транзакція",
   "transactions.delete": "Видалити",

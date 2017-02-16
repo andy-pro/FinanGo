@@ -53,7 +53,7 @@ const Menu = ({ user }) => (
     <MenuLink to="/group" message={messages['links.group']} />
     <MenuLink to="/income" message={messages['links.income']} />
     <MenuLink to="/refresh" message={messages['links.refresh']} />
-    <MenuLink to="/todos" message={messages['links.todos']} />
+    <MenuLink to="/categories" message={messages['links.categories']} />
     <MenuLink to="/fields" message={messages['links.fields']} />
     <MenuLink to="/me" message={messages['links.me']} />
     <MenuLink to="/intl" message={messages['links.intl']} />

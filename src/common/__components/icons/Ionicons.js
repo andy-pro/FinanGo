@@ -3,14 +3,15 @@ import createIconSet from './createIconSet';
 const glyphMap = {
   'ios-paper-plane-outline': require('./io/ios-paper-plane-outline').default,
   'ios-refresh-circle-outline': require('./io/ios-refresh-circle-outline').default,
-  'ios-list-outline': require('./io/ios-list-outline').default,
+  'ios-list-box-outline': require('./io/ios-list-outline').default,
   'ios-trash-outline': require('./io/ios-trash-outline').default,
   'ios-arrow-forward': require('./io/ios-arrow-forward').default,
   'ios-arrow-back': require('./io/ios-arrow-back').default,
-  'android-color-palette': require('./io/android-color-palette').default,
-  'android-create': require('./io/android-create').default,
-  'android-add-circle': require('./io/android-add-circle').default,
-  'android-remove-circle': require('./io/android-remove-circle').default,
+  'ios-color-palette-outline': require('./io/android-color-palette').default,
+  'ios-create-outline': require('./io/android-create').default,
+  'ios-add-circle-outline': require('./io/android-add-circle').default,
+  'ios-remove-circle-outline': require('./io/android-remove-circle').default,
+  'ios-eye-outline': require('./io/ios-eye').default,
 }
 
 export default createIconSet(glyphMap);

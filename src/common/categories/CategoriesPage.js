@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import chroma from 'chroma-js';
 
-import { View, Text, StyleSheet } from '../__components';
-import { defaultTheme as theme } from '../__themes'
+import { View, Text, ScrollView, Alert } from '../__components';
 
 import { splitOnce, getCategoryByPath } from '../__lib/utils'
 
 import CategoryMenu from './menu'
 
-const styles = StyleSheet.create(theme.categories);
+import { mainStyles, categories as styles } from '../__themes'
+// import { mainStyles } from '../__themes'
 
 const ROOT_PATH = 'categories'
 
@@ -26,102 +26,111 @@ class Categories extends Component {
 
   state = this.init()
 
-  onClickList = (event) => {
-    let titleEl = event.target,
-        path = titleEl.dataset.path || '',
-        show = Boolean(path);
+  onClickList = (path) => {
 
-    // console.log('colors', chroma.colors);
+    let show = Boolean(path);
+
+    // console.log('cat path:', path);
 
     if (show !== this.state.showMenu || path != this.category.path) {
       let category = path ? getCategoryByPath(this.props.categories, path) : {}
       let [ parentPath, index ] = splitOnce(path, '.', true)
       this.category = {
         categories: this.props.categories,
-        // rootEl: this.refs.rootEl,
-        // titleEl,
-        // title: titleEl.textContent,
         title: category.title,
         color: category.color,
         path,
-        // parentPath: path.replace(/\.\d+$/, ''),
         parentPath,
         index,
         isChild: Boolean(path && path !== ROOT_PATH)
       }
-      console.log('click list:', this.category);
+      // console.log('click list:', this.category);
       this.setState({showMenu: show})
     }
   }
 
 
   render() {
-    console.log('%cCategories render', 'color:#048;font-weight:bold', this.props);
+    // console.log('%cCategories render', 'color:#048;font-weight:bold', this.props);
 
-    let categories = this.props.categories
+    let {categories, mapv} = this.props
+
+    createList = (data, _path, clr) => {
+      return (
+        <View style={styles.sub}>
+          {data.map((item, i) => {
+            let path = _path + '.' + i
+
+            try {
+              if (clr) {
+                clr = chroma(clr).brighten(0.2).hex()
+              }
+            } catch (e) {
+              clr = null
+            }
+            let backgroundColor =  item.color ? item.color : clr ? clr : null
+            let _style = { backgroundColor }
+            if (!backgroundColor) {
+              _style = {
+                backgroundColor: '#777',
+                color: 'white'
+              }
+            }
+            return (
+              <View
+                key={item.slug}
+                style={mapv ? styles.row : styles.list}
+              >
+
+              <View style={styles.row}>
+                <Text
+                  style={[ styles.item, _style ]}
+                  onPress={this.onClickList.bind(this, path)}
+                >
+                  {item.title}
+                </Text>
+              </View>
+
+              { item.sub && item.sub.length && createList(item.sub, path + '.sub', item.color || clr) }
+
+              </View>
+            )
+          })}
+        </View>
+      )
+    }
 
     return (
-      <View style={styles.container}>
+      <View style={mainStyles.root}>
 
         <CategoryMenu
           category={this.category}
           enable={this.state.showMenu}
         />
-
-        <View
-          style={styles.list}
-          onPress={this.onClickList}
-        >
-          <View
-            data-path={ROOT_PATH}
-            style={styles.header}
-          >
-            Categories
-          </View>
-          {categories && createList(categories, ROOT_PATH)}
-        </View>
+        <View style={mainStyles.divider}></View>
+        <ScrollView style={styles.container}>
+          <ScrollView horizontal={mapv}>
+            <View>
+              <Text
+                onPress={this.onClickList.bind(this, ROOT_PATH)}
+                style={styles.header}
+              >
+                Categories
+              </Text>
+              {categories && createList(categories, ROOT_PATH)}
+            </View>
+          </ScrollView>
+        </ScrollView>
 
       </View>
     )
   }
 
-}
 
+}
 export default connect(
-  ({ categories }) => ({ categories })
+  ({app, categories}) => ({
+    categories,
+    mapv: app.categoryMapView,
+  })
 )(Categories)
-
-
-const createList = (data, _path, clr) => {
-  return (
-    <View style={{marginLeft: 20}}>
-      {data.map((item, i) => {
-        let path = _path + '.' + i
-
-        try {
-          if (clr) {
-            clr = chroma(clr).brighten(0.1).hex()
-          }
-        } catch (e) {
-
-        } finally {
-
-        }
-
-        return (
-          <View key={item.slug}>
-            <Text data-path={path}
-              style={[
-                styles.item,
-                {backgroundColor: item.color ? item.color : clr ? clr : null}
-              ]}
-            >
-              {item.title}
-            </Text>
-            {(item.sub && item.sub.length) ? createList(item.sub, path + '.sub', item.color || clr) : ''}
-          </View>
-        )
-      })}
-    </View>
-  )
-}

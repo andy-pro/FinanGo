@@ -20,25 +20,14 @@ const transformDirection = (style) => {
 
 export const transformStyle = (theme, style) => {
   if (style instanceof Array) {
-    // console.log('style is Array', JSON.stringify(style));
-    // style = style.reduce((item, src) => ({...src, ...item}), {})
-    style = {...style[0], ...style[1]}
-    // console.log('after style is Array', JSON.stringify(style));
+    style = Object.assign({}, ...style)
   }
-  // transform style for Component
-  // style.display = 'flex'
-  // if (!style.flexDirection) {
-  //   // style.flexDirection = 'column'
-  // }
-  // if (style.flex) {
-  //   style.display = 'flex'
-  // }
-  if (style.borderWidth) {
-    style.borderStyle = 'solid'
-  }
-  if (style.borderBottomWidth) {
-    style.borderBottomStyle = 'solid'
-  }
+  if (style.borderWidth) style.borderStyle = 'solid'
+  if (style.borderBottomWidth) style.borderBottomStyle = 'solid'
+  if (style.borderTopWidth) style.borderTopStyle = 'solid'
+  if (style.borderLeftWidth) style.borderLeftStyle = 'solid'
+  if (style.borderRightWidth) style.borderRightStyle = 'solid'
+
   transformDirection(style)
   // style.fontFamily = theme.text.fontFamily
   return style

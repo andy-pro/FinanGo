@@ -1,8 +1,9 @@
 // @flow weak
 import configureDeps from './configureDeps';
 import configureEpics from './configureEpics';
-import createLoggerMiddleware from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
+
+import createLoggerMiddleware from 'redux-logger';
 
 // Like redux-thunk, but with just one argument.
 const injectMiddleware = deps => ({ dispatch, getState }) => next => action =>
@@ -22,9 +23,14 @@ const configureMiddleware = (initialState, platformDeps, platformMiddleware) => 
     ...platformMiddleware,
   ];
 
-  const enableLogger = process.env.NODE_ENV !== 'production' && (
-    process.env.IS_BROWSER || initialState.device.isReactNative
-  );
+
+/*
+*/
+  const enableLogger = process.env.NODE_ENV !== 'production' && process.env.IS_BROWSER
+
+  // const enableLogger = process.env.NODE_ENV !== 'production' && (
+  //   process.env.IS_BROWSER || initialState.device.isReactNative
+  // );
 
   // Logger must be the last middleware in chain.
   if (enableLogger) {
@@ -33,6 +39,7 @@ const configureMiddleware = (initialState, platformDeps, platformMiddleware) => 
     });
     middleware.push(logger);
   }
+
 
   if (module.hot && typeof module.hot.accept === 'function') {
     if (initialState.device.isReactNative) {

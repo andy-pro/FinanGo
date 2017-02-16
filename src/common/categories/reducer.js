@@ -1,9 +1,4 @@
 import {
-  // unshiftItem,
-  // pushItem,
-  // updateItemById,
-  // deleteItemById,
-  // getCategoryByPath
   addCategoryToPath,
   updateCategoryByPath,
   delCategoryByPath,
@@ -14,6 +9,7 @@ const reducer = ( state = [], action ) => {
   switch (action.type) {
 
     case 'USER_LOADED':
+    case 'CATEGORY_UPDATED':
       return action.payload.categories
 
     case 'ADD_CATEGORY_LOCAL':

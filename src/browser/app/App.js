@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import messages from '../messages'
 
 import {
-  Baseline,
+  // Baseline,
   Box,
   Container,
   ThemeProvider,
@@ -30,7 +30,6 @@ import NewTransactionPage from '../../common/transactions/NewTransactionPage';
 
 import AddGroupPage from '../../common/transactions/AddGroupPage';
 import CategoriesPage from '../../common/categories/CategoriesPage';
-import EstePage from '../este/EstePage';
 import TodosPage from '../todos/TodosPage';
 import FieldsPage from '../fields/FieldsPage';
 import IntlPage from '../intl/IntlPage';
@@ -41,6 +40,10 @@ import OfflinePage from '../offline/OfflinePage';
 
 // const App = ({ currentLocale, theme, themeName }) => (
 class App extends Component {
+
+  // static contextTypes = {
+  //   router: React.PropTypes.object, // Redux store.
+  // }
 
   componentDidMount() {
     const { appStart } = this.props;
@@ -57,44 +60,41 @@ class App extends Component {
   render() {
     const { currentLocale, theme, themeName } = this.props
     messages.setLanguage(currentLocale);
-    console.log('%cApp render', 'color:blue;font-weight:bold', 'locale:', currentLocale)
+    // console.log('%cApp render', 'color:blue;font-weight:bold', 'locale:', currentLocale, this.props)
     return (
       <ThemeProvider
         key={themeName} // Enforce rerender.
         theme={theme}
       >
-        <Baseline lineHeight={theme.typography.lineHeight}>
-          <Container>
-            <Helmet
-              htmlAttributes={{ lang: currentLocale }}
-              meta={[
-                // v4-alpha.getbootstrap.com/getting-started/introduction/#starter-template
-                { charset: 'utf-8' },
-                { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' },
-                { 'http-equiv': 'x-ua-compatible', content: 'ie=edge' },
-                ...favicon.meta,
-              ]}
-              link={[
-                ...favicon.link,
-              ]}
-            />
-            <Menu />
-            <Box marginLeft={6} padding={1}>
-              <Page exactly pattern="/" component={HomePage} />
-              <Page pattern="/single" component={NewTransactionPage} />
-              <Page pattern="/group" component={NewTransactionPage} />
-              <Page pattern="/income" component={NewTransactionPage} />
-              <Page pattern="/categories" component={CategoriesPage} />
-              <Page pattern="/este" component={EstePage} />
-              <Page pattern="/todos" component={TodosPage} />
-              <Page pattern="/fields" component={FieldsPage} />
-              <Page pattern="/intl" component={IntlPage} />
-              <Page pattern="/offline" component={OfflinePage} />
-              <Page authorized pattern="/me" component={MePage} />
-              <Miss component={NotFoundPage} />
-            </Box>
-          </Container>
-        </Baseline>
+        <Container>
+          <Helmet
+            htmlAttributes={{ lang: currentLocale }}
+            meta={[
+              // v4-alpha.getbootstrap.com/getting-started/introduction/#starter-template
+              { charset: 'utf-8' },
+              { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' },
+              { 'http-equiv': 'x-ua-compatible', content: 'ie=edge' },
+              ...favicon.meta,
+            ]}
+            link={[
+              ...favicon.link,
+            ]}
+          />
+          <Menu />
+          <Box marginLeft={6} padding={1}>
+            <Page pattern="/" exactly component={HomePage} />
+            <Page pattern="/single" component={NewTransactionPage} />
+            <Page pattern="/group" component={NewTransactionPage} />
+            <Page pattern="/income" component={NewTransactionPage} />
+            <Page pattern="/categories" exactly component={CategoriesPage} />
+            <Page pattern="/todos" component={TodosPage} />
+            <Page pattern="/fields" component={FieldsPage} />
+            <Page pattern="/intl" component={IntlPage} />
+            <Page pattern="/offline" component={OfflinePage} />
+            <Page authorized pattern="/me" component={MePage} />
+            <Miss component={NotFoundPage} />
+          </Box>
+        </Container>
       </ThemeProvider>
     );
   }

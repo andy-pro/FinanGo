@@ -2,26 +2,26 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { changeMonth } from '../app/actions'
 
-import { Text, Icon } from './index'
+import { View, Text, Icon } from './index'
 import * as dt from '../__lib/dateUtils'
 
-const DatePicker = ({ date, changeMonth }) => (
-  <Text>
+const DatePicker = ({ date, changeMonth, icon, style }) => (
+  <View style={style.container}>
     <Icon.Button
+      { ...icon }
       name='ios-arrow-back'
-      backgroundColor='#ddd'
       onPress={() => changeMonth(dt.monthBack(date))}
     />
-    <Text> {dt.fmtDate(date)} </Text>
+  <Text style={style.text}> {dt.fmtDate(date)} </Text>
     <Icon.Button
+      { ...icon }
       name='ios-arrow-forward'
-      backgroundColor='#ddd'
       onPress={() => {
         let newDate = dt.monthForward(date)
         if (date !== newDate) changeMonth(newDate)
       }}
     />
-  </Text>
+</View>
 )
 
 export default connect(

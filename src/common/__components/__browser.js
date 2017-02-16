@@ -36,7 +36,7 @@ const TextInput = createStylizedComponent(
   transformStyle,
   'input',
   // ['placeholder', {$cmd: 'assign', $set: ['onChange', 'onChangeText']}, 'value', 'autoFocus', 'onFocus', 'onBlur']
-  ['required', 'placeholder', 'onChangeText', 'value', 'autoFocus', 'onFocus', 'onBlur', '$ref', 'disabled', 'type', 'step']
+  ['required', 'placeholder', 'onChangeText', 'value', 'autoFocus', 'onFocus', 'onBlur', '$ref', 'editable', 'type', 'step']
 )
 
 const TouchableHighlight = createStylizedComponent(
@@ -73,20 +73,25 @@ class ListView extends Component {
 
 }
 
-const StyleSheet = {
-  create: styles => styles
-}
+// const StyleSheet = {
+//   create: styles => styles
+// }
 
-const ScrollView = ({children}) => {
-  return (
-    <div>
-      {children}
-    </div>
-  )
-}
+const ScrollView = createStylizedComponent(
+  transformStyle,
+  'div'
+  // ['data-path', 'onKeyDown', 'onPress']
+)
 
 const Alert = {
-  alert: msg => alert(msg)
+  alert: (hdr, msg, btns) => {
+    if (!btns) {
+      if (msg) {
+        hdr = hdr + '\n' + msg
+      }
+      alert(hdr)
+    }
+  }
 }
 
 
@@ -96,7 +101,7 @@ export {
   Text,
   Button,
   ListView,
-  StyleSheet,
+  // StyleSheet,
   TextInput,
   ScrollView,
   TouchableHighlight,

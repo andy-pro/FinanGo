@@ -1,14 +1,14 @@
 <NotepadPlus>
     <Session activeView="0">
-        <mainView activeIndex="2">
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="4724" startPos="0" endPos="0" selMode="0" lang="Properties" encoding="-1" filename="C:\Users\Andy\.gradle\gradle.properties" backupFilePath="" originalFileLastModifTimestamp="1483877889" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="4724" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="C:\Users\Andy\.gradle\add_to_android-app-build.gradle.txt" backupFilePath="" originalFileLastModifTimestamp="1484378112" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="4724" startPos="396" endPos="396" selMode="0" lang="Normal Text" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\settings.gradle" backupFilePath="" originalFileLastModifTimestamp="1486155473" />
-            <File firstVisibleLine="51" xOffset="0" scrollWidth="4724" startPos="2684" endPos="2684" selMode="0" lang="Normal Text" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\app\build.gradle" backupFilePath="" originalFileLastModifTimestamp="1486155509" />
+        <mainView activeIndex="1">
+            <File firstVisibleLine="3" xOffset="0" scrollWidth="952" startPos="1185" endPos="1185" selMode="0" lang="Normal Text" encoding="-1" filename="C:\Windows\System32\drivers\etc\hosts" backupFilePath="" originalFileLastModifTimestamp="1481659989" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="952" startPos="396" endPos="396" selMode="0" lang="Normal Text" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\settings.gradle" backupFilePath="" originalFileLastModifTimestamp="1486155473" />
+            <File firstVisibleLine="52" xOffset="0" scrollWidth="952" startPos="2684" endPos="2684" selMode="0" lang="Normal Text" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\app\build.gradle" backupFilePath="" originalFileLastModifTimestamp="1486155509" />
             <File firstVisibleLine="0" xOffset="0" scrollWidth="952" startPos="961" endPos="961" selMode="0" lang="Java" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\app\src\main\java\com\finango\MainApplication.java" backupFilePath="" originalFileLastModifTimestamp="1486155799" />
             <File firstVisibleLine="0" xOffset="0" scrollWidth="952" startPos="114" endPos="114" selMode="0" lang="Java" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\app\src\main\java\com\finango\MainActivity.java" backupFilePath="" originalFileLastModifTimestamp="1486102105" />
             <File firstVisibleLine="0" xOffset="0" scrollWidth="952" startPos="68" endPos="68" selMode="0" lang="XML" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\app\src\main\res\values\strings.xml" backupFilePath="" originalFileLastModifTimestamp="1486102176" />
             <File firstVisibleLine="0" xOffset="0" scrollWidth="952" startPos="390" endPos="390" selMode="0" lang="XML" encoding="-1" filename="C:\WWW\react-native\FinanGo\android\app\src\main\AndroidManifest.xml" backupFilePath="" originalFileLastModifTimestamp="1486102251" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="952" startPos="714" endPos="691" selMode="0" lang="Normal Text" encoding="-1" filename="C:\Users\Andy\.gradle\add_to_android-app-build.gradle.txt" backupFilePath="" originalFileLastModifTimestamp="1484378112" />
         </mainView>
         <subView activeIndex="0" />
     </Session>

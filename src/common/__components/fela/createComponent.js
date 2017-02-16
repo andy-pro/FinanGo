@@ -17,10 +17,7 @@ function createComponent(rule) {
   var passThroughProps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   var FelaComponent = function FelaComponent(_ref, _ref2) {
-if (_ref.placeholder) {
 
-  // console.log('REF', _ref);
-}
     var renderer = _ref2.renderer,
         theme = _ref2.theme || {};
 
@@ -41,6 +38,9 @@ if (_ref.placeholder) {
     var componentProps = passThroughProps.reduce(function (output, prop) {
       // console.log('QWERT', prop, ruleProps);
       switch (prop) {
+        case 'editable':
+          output.disabled = ruleProps.editable;
+          break;
         case 'onChangeText':
           output.onChange = ruleProps.onChangeText;
           break;

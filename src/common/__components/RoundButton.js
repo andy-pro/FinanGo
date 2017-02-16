@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableHighlight } from 'react-native';
-import theme from '@commonThemes/nativeDefault'
+import { colors } from '../__themes'
 
 const styles = StyleSheet.create({
   button: {
@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     bottom: 40,
     right: 36,
     borderRadius: 35,
-    backgroundColor: theme.headerColor,
+    backgroundColor: colors.header,
     width: 70,
     height: 70,
     opacity: 0.7,
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    color: 'white',
+    color: '#fff',
     fontSize: 40,
     textShadowColor: 'black'
   }

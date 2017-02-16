@@ -6,13 +6,11 @@ import type { State, User } from '../../common/types';
 
 import { getTransactions } from '../../common/transactions/actions';
 import { Link } from '../app/components';
-import { View, StyleSheet } from '../../common/__components'
+import { View } from '../../common/__components'
 import messages from '../messages'
 import menuTitles from '../../common/app/menuTitles'
 
-import { defaultTheme as theme } from '../../common/__themes'
-
-const styles = StyleSheet.create(theme);
+import { mainStyles } from '../../common/__themes'
 
 const HeaderLink = ({ exactly, to }) => {
   let message
@@ -39,14 +37,13 @@ const HeaderLink = ({ exactly, to }) => {
 const Header = ({ date, currentLocale, getTransactions }) => {
 
   return (
-    <View style={styles.menu}>
+    <View style={mainStyles.menu}>
       <HeaderLink exactly to="/" />
       <HeaderLink to="/single" />
       <HeaderLink to="/group" />
       <HeaderLink to="/income" />
       <HeaderLink to={[ '/refresh', () => getTransactions(date) ]} />
       <HeaderLink to="/categories" />
-      <HeaderLink to="/este" />
       <HeaderLink to="/todos" />
       <HeaderLink to="/fields" />
       <HeaderLink to="/intl" />

@@ -29,28 +29,41 @@ const getTransactions = filter => {
   return ajax({ url }).map(norm)
 }
 
+export { getTransactions }
 
 export const getUserData = Observable.forkJoin(__getUser, getTransactions())
 
 // export const getUserData = () => ajax({ url: userURL }).map(norm)
 
 export const addTransaction = transaction =>
-  ajax(__add_req(transaction)).map(norm)
+  ajax({
+    url: api.addTransactionURL(transaction),
+    method: 'POST',
+    headers: jsonHeaders,
+    body: denorm(transaction)
+  }).map(norm)
 
 export const delTransaction = id =>
-  ajax(__del_req(id)).map(r => norm(r).id)
+  ajax({
+    url: api.delTransactionURL(id),
+    method: 'DELETE'
+  }).map(r => norm(r).id)
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-const __add_req = item => ({
-  url: api.addTransactionURL(item),
-  method: 'POST',
+export const addCategory = category =>
+  ajax(__req_category(category, api.addCategoryBody)).map(norm)
+
+export const updateCategory = category =>
+  ajax(__req_category(category, api.updateCategoryBody)).map(norm)
+
+export const delCategory = category =>
+  ajax(__req_category(category, api.delCategoryBody)).map(norm)
+
+const __req_category = (body, conv) => ({
+  url: api.getUserURL(userId),
+  method: 'PUT',
   headers: jsonHeaders,
-  body: denorm(item)
+  body: JSON.stringify(conv(body))
 })
 
-const __del_req = id => ({
-  url: api.delTransactionURL(id),
-  method: 'DELETE'
-})
-
-export { getTransactions }
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

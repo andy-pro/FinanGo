@@ -17,7 +17,10 @@ const initialState = {
       "storageBucket": "project-808488257248094054.appspot.com"
     },
     "user": {
+      // andy pro
       "id" : "5856ffa4da7d1f056c935686",
+      // faddey
+      // "id" : "58a33d33793e920948fb163c",
     },
     "sentryUrl": "https://f297cec9c9654088b8ccf1ea9136c458@app.getsentry.com/77415"
   },

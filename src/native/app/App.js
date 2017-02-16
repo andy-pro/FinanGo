@@ -22,13 +22,12 @@ import messages from '../messages'
 // Pages
 import HomePage from '../../common/home/HomePage';
 import NewTransactionPage from '../../common/transactions/NewTransactionPage';
-import AddGroupPage from '../transactions/AddGroupPage';
-import EstePage from '../este/EstePage';
+import CategoriesPage from '../../common/categories/CategoriesPage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
-import OfflinePage from '../offline/OfflinePage';
-import TodosPage from '../todos/TodosPage';
-import NotFoundPage from '../notfound/NotFoundPage';
+// import OfflinePage from '../offline/OfflinePage';
+// import TodosPage from '../todos/TodosPage';
+// import NotFoundPage from '../notfound/NotFoundPage';
 
 class App extends Component {
 // const App = ({ appMenuShown, appShowMenu, appStarted }) => {
@@ -60,12 +59,9 @@ class App extends Component {
         >
           <Page exactly pattern="/" component={HomePage} />
           <Page pattern="/single" component={NewTransactionPage} />
-          <Page pattern="/group" component={AddGroupPage} />
-          <Page pattern="/este" component={EstePage} />
+          <Page pattern="/group" component={NewTransactionPage} />
+          <Page pattern="/categories" component={CategoriesPage} />
           <Page pattern="/intl" component={IntlPage} />
-          <Page pattern="/offline" component={OfflinePage} />
-          <Page pattern="/todos" component={TodosPage} />
-          <Page pattern="/broken" component={NotFoundPage} />
           <Page authorized pattern="/me" component={MePage} />
           {/* Miss does't work in React Native for some reason. */}
           {/* <Miss render={() => <Redirect to="/" />} /> */}
@@ -73,7 +69,7 @@ class App extends Component {
           <Match
             pattern="/"
             render={({ location: { pathname } }) => {
-              const urls = ['/', '/single', '/group', '/este', '/intl', '/offline', '/todos', '/broken', '/me'];
+              const urls = ['/', '/single', '/group', '/categories', '/intl', '/me'];
               if (urls.indexOf(pathname) !== -1) return null;
               return (
                 <Redirect to="/" />

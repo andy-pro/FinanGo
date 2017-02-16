@@ -10,6 +10,7 @@ const initialState = {
   online: false,
   started: false,
   date: dt.getCurrentDate(),
+  categoryMapView: false,
 };
 
 const reducer = (
@@ -47,6 +48,9 @@ const reducer = (
 
     case 'SET_THEME':
       return { ...state, currentTheme: action.payload.theme };
+
+    case 'CHANGE_CATEGORY_VIEW':
+      return { ...state, categoryMapView: !state.categoryMapView };
 
     default:
       return state;

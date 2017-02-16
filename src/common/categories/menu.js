@@ -3,14 +3,10 @@ import { connect } from 'react-redux'
 import chroma from 'chroma-js'
 import { addCategory, updateCategory, delCategory } from './actions'
 import { removeSpecial, getSlug, findDuplicate, testColor } from '../__lib/utils'
-import { Form, View, Text, TextInput, StyleSheet, Icon, Checkbox, Alert } from '../__components';
-import { defaultTheme as theme } from '../__themes'
+import { Form, View, TextInput, Icon, Checkbox, Alert } from '../__components';
 
-const styles = StyleSheet.create(theme.transactionForm);
-
-// import { getElementSize } from '../lib/utils'
-
-// let $newItem, $newTitle, $preserve;
+import { mainStyles, iconBtn as iconBtnStyle } from '../__themes'
+// import { iconBtn as iconBtnStyle } from '../__themes'
 
 class CategoryMenu extends Component {
 
@@ -21,73 +17,53 @@ class CategoryMenu extends Component {
     preserve: false
   }
 
-  //
-  // componentDidMount() {
-  //   console.log('menu did mount!');
-  //   // this.setupMenu()
-  // }
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log('menu did update!');
-  //   // this.setupMenu()
-  // }
-  //
-  // componentWillMount() {
-  //   console.log('menu will mount!', this.refs);
-  //
-  // }
-  //
-  //
-
   componentWillUpdate(nextProps, nextState) {
     // console.log('menu will update!', this.refs, this.props, nextProps, this.props === nextProps);
-    // this.style = setMenuPos(this.refs.menu, this.props.category)
     const { isChild, title, color } = nextProps.category
     this.state.add = ''
     this.state.title = isChild ? title : ''
     this.state.color = (isChild && color) ? color : ''
     this.state.preserve = false
+    // this.colorDidChange = false
     // console.log('click', this.state);
   }
 
   onChange = (query, field) => {
     if (typeof query === 'object')
-      query = field === 'preserve' ? query.target.checked : query.target.value
+      query = query.target.value
     this.setState({ [field]: query })
   }
+
+  onAddSubmit   = e => this.onSubmit(e, 'add')
+  onTitleSubmit = e => this.onSubmit(e, 'title')
+  onColorSubmit = e => this.onSubmit(e, 'color', false)
 
   onSubmit = (e, field, required=true) => {
     e.preventDefault()
     let value = this.state[field].trim()
-    if (required && (!value || value === this.props.category[field])) {
-      return
-    }
-    const { category } = this.props
-    let action, parentPath, path, data = {}
+    const { category, enable } = this.props;
+    let { path, parentPath, isChild } = category
+    if (!enable) return
+    if (required && (!value || value === category[field])) return
+    let action, data = {}
 
     switch (field) {
       case 'add':
-        path = category.path + (category.isChild ? '.sub' : '')
+        path = path + (isChild ? '.sub' : '')
         parentPath = path
         action = this.props.addCategory
         // data.color = ?
         // console.log('add', JSON.stringify(category));
         break
       case 'title':
-        path = category.path
-        parentPath = category.parentPath
+        if (!isChild) return
         action = this.props.updateCategory
         break
       case 'color':
-        path = category.path
-        // if (testColor(value)) {
-        //   value = '#' + value
-        // }
-        try {
-          value = chroma(value).name()
-        } catch (e) {
-          return Alert.alert('Unknown color')
-        } finally {
-
+        if (!isChild) return
+        if (value) {
+          value = checkColor(value)
+          if (!value) return
         }
         action = this.props.updateCategory
         data.color = value
@@ -96,7 +72,7 @@ class CategoryMenu extends Component {
     if (field === 'add' || field === 'title') {
       let _value = removeSpecial(value)
       if (value !== _value) {
-        return Alert.alert('Unacceptable symbols /\\|?&<>')
+        return Alert.alert('Error!', 'Unacceptable symbols /|?&<>')
       }
       let slug = getSlug(value)
       if (findDuplicate(category.categories, slug, parentPath)) {
@@ -104,6 +80,14 @@ class CategoryMenu extends Component {
       }
       data.title = value
       data.slug = slug
+      /*
+      let color = this.state.color
+      if (color) {
+        color = checkColor(color)
+        if (!color) return
+        data.color = color
+      }
+      */
     }
 
     action({
@@ -112,92 +96,93 @@ class CategoryMenu extends Component {
     })
   }
 
+  onDelete = () => this.props.delCategory(this.props.category)
 
-  onDelete = () => {
-    this.props.delCategory(this.props.category)
-  }
+  onPreserveChange = () => this.setState({ preserve: !this.state.preserve })
 
   render() {
     const { category, enable } = this.props;
     const { isChild } = category
-    console.log('menu render', category, this.state);
+    // console.log('menu render', category, this.state);
 
     return (
-        <View>
+        <View style={mainStyles.form}>
 
           <Form
-            style={styles.formRow}
-            onSubmit={e => this.onSubmit(e, 'add')}
+            style={mainStyles.row}
+            onSubmit={this.onAddSubmit}
           >
             <TextInput
               required
               placeholder={isChild ? 'New subcategory' : 'New category'}
-              disabled={!enable}
+              editable={!enable}
               value={this.state.add}
               onChangeText={e => this.onChange(e, 'add')}
-              style={[styles.input, {marginRight: 10}]}
               { ...this.propSet0 }
             />
             <Icon.Button
-              name='android-add-circle'
+              name='ios-add-circle-outline'
               backgroundColor={enable ? '#18a06a' : '#ddd'}
+              onPress={this.onAddSubmit}
+              style={iconBtnStyle}
             />
           </Form>
 
           <Form
-            style={styles.formRow}
-            onSubmit={e => this.onSubmit(e, 'title')}
+            style={mainStyles.row}
+            onSubmit={this.onTitleSubmit}
           >
             <TextInput
               required
               placeholder={'Rename'}
-              disabled={!isChild}
+              editable={!isChild}
               value={this.state.title}
               onChangeText={e => this.onChange(e, 'title')}
-              style={[styles.input, {marginRight: 10}]}
               { ...this.propSet0 }
             />
             <Icon.Button
-              name='android-create'
+              name='ios-create-outline'
               backgroundColor={isChild ? '#18a06a' : '#ddd'}
+              onPress={this.onTitleSubmit}
+              style={iconBtnStyle}
             />
           </Form>
 
-          <View style={styles.formRow}>
+          <Form
+            style={mainStyles.row}
+            onSubmit={this.onColorSubmit}
+          >
+            <TextInput
+              placeholder={'Color'}
+              editable={!isChild}
+              value={this.state.color}
+              onChangeText={e => this.onChange(e, 'color')}
+              { ...this.propSet0 }
+            />
+            <Icon.Button
+              name='ios-color-palette-outline'
+              backgroundColor={isChild ? checkColor(this.state.color, '#ddd') : '#ddd'}
+              onPress={this.onColorSubmit}
+              style={iconBtnStyle}
+            />
+          </Form>
+
+          <View style={mainStyles.row}>
             <Checkbox
               label='Preserve references'
               disabled={!isChild}
               checked={this.state.preserve}
-              onPress={e => this.onChange(e, 'preserve')}
-              style={styles.checkbox}
+              onPress={this.onPreserveChange}
+              style={mainStyles.checkbox}
             />
+
             <Icon.Button
-              name='android-remove-circle'
+              name='ios-remove-circle-outline'
               backgroundColor={isChild ? '#d66' : '#ddd'}
               onPress={this.onDelete}
+              style={iconBtnStyle}
             />
           </View>
-
-          <Form
-            style={styles.formRow}
-            onSubmit={e => this.onSubmit(e, 'color', false)}
-          >
-            <TextInput
-              placeholder={'Color'}
-              disabled={!isChild}
-              value={this.state.color}
-              onChangeText={e => this.onChange(e, 'color')}
-              style={[styles.input, {
-                marginRight: 10,
-                backgroundColor: previewColor(this.state.color)
-              }]}
-              { ...this.propSet0 }
-            />
-            <Icon.Button
-              name='android-color-palette'
-              backgroundColor={isChild ? '#c6c' : '#ddd'}
-            />
-          </Form>
 
         </View>
 
@@ -207,20 +192,34 @@ class CategoryMenu extends Component {
   propSet0 = {
     // onBlur: this.onBlur,
     // required: true,
-    // style: [styles.input, {marginRight: 10}],
+    style: [mainStyles.input, {marginRight: 10}],
     keyboardType: 'default',
-    returnKeyType: 'next',
+    returnKeyType: 'done',
     autoCapitalize: 'sentences',
-    autoCorrect: true
+    // autoCorrect: true  // true is default
   }
 
 }
 
 export default connect(
-  null,
+  ({app}) => ({categoryMapView: app.categoryMapView}),
   { addCategory, updateCategory, delCategory }
 )(CategoryMenu);
 
+//
+// const previewColor = (v, defv) =>
+//   testColor(v) ? '#'+ v : defv
 
-const previewColor = v =>
-  testColor(v) ? '#'+ v : v
+const checkColor = (v, defv) => {
+  try {
+    v = chroma(v).name()
+    return v
+  } catch (e) {
+    if (defv) {
+      return defv
+    } else {
+      Alert.alert('Unknown color')
+      return false
+    }
+  }
+}

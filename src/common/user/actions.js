@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs'
 import * as api from '../__api'
 import initialState from '../initialState'
-import mockData from '../_mockData'
+import mockData from '../configureMockData'
 
 const { storage, locally } = initialState.config
 

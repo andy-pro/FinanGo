@@ -4,7 +4,7 @@ import React from 'react';
 // import ReactNativeI18n from 'react-native-i18n';
 import Root from './app/Root';
 import configureStore from '../common/configureStore';
-import initialState from './initialState';
+import initialState from '../common/initialState';
 import uuid from 'react-native-uuid';
 import { AppRegistry, AsyncStorage, Platform } from 'react-native';
 

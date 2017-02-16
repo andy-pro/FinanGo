@@ -3,16 +3,16 @@ import {
   View,
   ListView,
   TouchableHighlight,
-  StyleSheet,
+  // StyleSheet,
 // } from './index';
 } from './';
 
-import { defaultTheme as theme } from '../__themes'
-const styles = StyleSheet.create(theme.suggestionsPanel);
+// import theme from '../__themes'
+// const styles = StyleSheet.create(theme.suggestions);
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-const AutosuggestForm = ({children, showList, suggestions, field }) => {
+const AutosuggestForm = ({children, showList, suggestions, field, style }) => {
 
   // let { showList, suggestions, field } = state
 
@@ -30,10 +30,10 @@ const AutosuggestForm = ({children, showList, suggestions, field }) => {
     </TouchableHighlight>
 
   return (
-    <View style={styles.root}>
+    <View style={style.root}>
       {children}
       {showList &&
-        <View style={[styles.suggestions, field.pos]}>
+        <View style={[style.list, field.pos]}>
           <ListView
             dataSource={ds.cloneWithRows(suggestions)}
             keyboardShouldPersistTaps='always'

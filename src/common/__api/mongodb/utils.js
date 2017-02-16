@@ -45,6 +45,7 @@ export const denormalize = function(data, stringify=true) {
   return stringify ? JSON.stringify(data) : data
 }
 
+/*
 export const convertCategoryPath = function(path, sub='') {
   path = isNaN(parseInt(path)) ? '' : '.' + path.split(',').join('.sub.');
   if (!path) {
@@ -52,3 +53,4 @@ export const convertCategoryPath = function(path, sub='') {
   }
   return 'categories' + path + sub;
 }
+*/

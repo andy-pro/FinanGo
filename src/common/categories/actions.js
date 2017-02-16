@@ -1,18 +1,14 @@
-import { Observable } from 'rxjs'
 import * as api from '../__api'
 import initialState from '../initialState'
-// import mockData from '../_mockData'
 
-const { storage, locally } = initialState.config
+const { locally } = initialState.config
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+export const changeViewMode = () => ({
+  type: 'CHANGE_CATEGORY_VIEW',
+})
 
-// export const addCategory = (category) => ({
-//   type: types.PROMISE,
-//   payload: types.CATEGORY_ADDED,
-//   promise: api.addCategory(category)
-// })
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const addCategory = payload => ({
   type: locally ? 'ADD_CATEGORY_LOCAL' : 'ADD_CATEGORY_EPIC',
   payload
@@ -28,16 +24,26 @@ export const delCategory = payload => ({
   payload
 })
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+const categoryEpic = action$ =>
+  action$.filter(({ type }) => type.endsWith('_CATEGORY_EPIC'))
+    .mergeMap(({ type, payload }) => {
+      let dw
+      switch (type) {
+        case 'ADD_CATEGORY_EPIC':
+          dw = api.addCategory; break;
+        case 'UPDATE_CATEGORY_EPIC':
+          dw = api.updateCategory; break;
+        case 'DEL_CATEGORY_EPIC':
+          dw = api.delCategory;
+      }
+      return dw(payload)
+        .map(payload => ({
+          type: 'CATEGORY_UPDATED',
+          payload
+        }))
+      })
 
-//
-// export const updateCategory = (category) => ({
-//   type: types.PROMISE,
-//   payload: types.CATEGORY_UPDATED,
-//   promise: api.updateCategory(category)
-// })
-
-// export const delCategory = (category) => ({
-//   type: types.PROMISE,
-//   payload: types.CATEGORY_UPDATED,
-//   promise: api.delCategory(category)
-// })
+export const epics = [
+  categoryEpic,
+];

@@ -1,7 +1,2 @@
-import defaultTheme
-// from './nativeDefault';
-from './browser/default';
-
-export {
-  defaultTheme
-}
+export * from './browser/default';
+// export * from './native/default';

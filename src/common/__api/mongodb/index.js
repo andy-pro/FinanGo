@@ -1,4 +1,4 @@
-import { normalize, denormalize, convertCategoryPath } from './utils'
+import { normalize, denormalize /*, convertCategoryPath*/ } from './utils'
 import * as dt from '../../__lib/dateUtils'
 
 // const __dbURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
@@ -19,8 +19,8 @@ const __transactionsURL = __dbURL + 'transactions';
 
 export { normalize, denormalize }
 
-export const getUserURL = id =>
-  __usersURL + '/' + id + '?' + __apiKey
+export const getUserURL = userId =>
+  `${__usersURL}/${userId}?${__apiKey}`
 
 export const getTransactionsURL = (userId, filter, order=-1) => {
   let q = denormalize({userId}, false)
@@ -40,15 +40,54 @@ export const getTransactionsURL = (userId, filter, order=-1) => {
 //   __transactionsURL + '?q=' + denormalize({userId}) + '&s={"date":' + order + '}&' + __apiKey
 
 export const addTransactionURL = () =>
-  __transactionsURL + '?' + __apiKey
+  `${__transactionsURL}?${__apiKey}`
 
 export const delTransactionURL = id =>
-  __transactionsURL + '/' + id + '?' + __apiKey
+  `${__transactionsURL}/${id}?${__apiKey}`
 
-//=============================================
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+export const addCategoryBody = category => ({
+  $addToSet: { [category.path]: category.data }
+})
+/*
+{
+  $addToSet: {
+    [category.path] : {
+      title: category.title,
+      slug: category.slug,
+      color: category.color
+    }
+  }
+}
+*/
 
-  const usersURL = rootURL + 'users';
-  const rootURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
+export const updateCategoryBody = category => ({
+  $set: setBodyFields(category)
+})
+/*
+{
+  $set: {
+    [category.path + '.title']: category.title,
+    [category.path + '.slug']: category.slug,
+    [category.path + '.color']: category.color
+  }
+}
+*/
+const setBodyFields = ({data, path}) =>
+  Object.keys(data).reduce((src, field) => {
+    src[path + '.' + field] = data[field]
+    return src
+  }, {})
+
+export const delCategoryBody = category => ({
+  $pull: { [category.parentPath]: {title: category.title} }
+})
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*
+const usersURL = rootURL + 'users';
+const rootURL = 'https://api.mlab.com/api/1/databases/shop/collections/';
 const apiKey = 'apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD';
 const purchasesURL = rootURL + 'purchases';
 const jsonHeaders = {
@@ -168,3 +207,5 @@ export const delCategory2 = (category) =>
       }
     })
   })
+
+*/

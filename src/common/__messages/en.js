@@ -6,6 +6,7 @@ export default {
   'links.income': 'Income',
   'links.refresh': 'Refresh',
   'links.categories': 'Categories',
+  'links.categories.edit': 'Edit categories',
   'links.este': 'Este',
   'links.todos': 'Todos',
   'links.fields': 'Fields',
@@ -19,6 +20,7 @@ export default {
   'links.group.title': 'Group expense',
   'links.income.title': 'Income expense',
   'links.categories.title': 'Categories',
+  'links.categories.edit.title': 'Edit categories',
 
   "transactions.transaction": "Transaction",
   "transactions.delete": "Delete",

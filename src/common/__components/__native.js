@@ -1,4 +1,5 @@
 import Match from './Match'
+// import Modal from './Modal'
 import DatePicker from './DatePicker'
 import { Checkbox } from '../../native/app/components'
 import { View as Form } from 'react-native';
@@ -10,7 +11,7 @@ import {
   Text,
   Button,
   ListView,
-  StyleSheet,
+  // StyleSheet,
   TextInput,
   ScrollView,
   TouchableHighlight,
@@ -23,7 +24,7 @@ export {
   Text,
   Button,
   ListView,
-  StyleSheet,
+  // StyleSheet,
   TextInput,
   ScrollView,
   TouchableHighlight,
@@ -32,5 +33,6 @@ export {
   DatePicker,
   Checkbox,
   Alert,
+  // Modal,
   // AutosuggestForm,
 }

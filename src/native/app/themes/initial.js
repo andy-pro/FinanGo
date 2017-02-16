@@ -1,10 +1,10 @@
 // @flow weak
 import chroma from 'chroma-js';
 import { Platform } from 'react-native';
-import common from '@commonThemes/nativeDefault'
+// import {defaultTheme as common} from '../../../common/__themes'
 
 export default {
-  ...common,
+  // ...common,
   fontSize: Platform.select({
     android: 18,
     ios: 16,

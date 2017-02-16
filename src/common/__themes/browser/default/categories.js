@@ -2,7 +2,9 @@ import * as CONST from './_const'
 
 const categories = {
   container: {
-    paddingHorizontal: 15,
+    // paddingHorizontal: 15,
+    maxHeight: 450,
+    overflow: 'auto',
   },
   header: {
     fontWeight: 'bold',
@@ -10,18 +12,25 @@ const categories = {
     color: '#484',
     cursor: 'pointer',
     backgroundColor: '#eee',
-    padding: 4
+    paddingVertical: 4,
+    paddingHorizontal: 15,
+    display: 'block',
+    marginBottom: 6,
   },
   list: {
-    maxHeight: 460,
-    overflow: 'auto'
+  },
+  sub: {
+    marginLeft: 15
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   item: {
     fontSize: 14,
-    marginLeft: 12,
-    paddingVertical: 1,
+    paddingVertical: 2,
     paddingHorizontal: 6,
-    marginVertical: 1,
+    marginVertical: 2,
     display: 'inline-block',
     borderRadius: 5,
     cursor: 'pointer',

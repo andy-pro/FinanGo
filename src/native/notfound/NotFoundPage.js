@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import messages from '../../common/notfound/messages';
+import messages from '../../common/__messages';
 import theme from '../app/themes/initial';
 import { CenteredContainer, FormattedMessage, Link } from '../app/components';
 import { StyleSheet } from 'react-native';

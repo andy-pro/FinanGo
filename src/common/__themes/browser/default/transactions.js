@@ -1,11 +1,7 @@
 import * as CONST from './_const'
 
-const transaction = {
-  root: {
-    // flex: 1,
-    fontFamily: 'Arial, sans-serif',
-    paddingHorizontal: 15
-  },
+const transactions = {
+
   item: {
     // flex: 1,
     // flexDirection: 'row',
@@ -13,7 +9,9 @@ const transaction = {
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     justifyContent: 'space-between',
-    paddingVertical: 5,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    // padding: 10,
     alignItems: 'center',
     cursor: 'pointer',
   },
@@ -26,25 +24,27 @@ const transaction = {
     color: CONST._main_,
     fontWeight: '600',
     fontSize: 18,
-    paddingLeft: 10
   },
-  groupBox: {
-    marginTop: 20,
-    // backgroundColor: '#aaa',
-    // paddingLeft: 10
-    // paddingVertical: 3,
-    // paddingHorizontal: 10,
-    // borderRadius: 6
+  group: {
+    backgroundColor: '#f3f3f3',
+  },
+  groupMaster: {
+    backgroundColor: '#e0f0d8',
+    paddingVertical: 5,
+  },
+  groupInfo: {
+    paddingLeft: 10,
   },
   amount: {
     fontSize: 13,
     color: CONST._main_,
-    fontWeight: 'normal'
+    fontWeight: 'normal',
+    marginLeft: 10,
   },
   category: {
     fontSize: 12,
     fontStyle: 'italic',
-    marginVertical: 5,
+    marginVertical: 4,
     display: 'inline-block'
   },
   row: {
@@ -75,16 +75,18 @@ const transaction = {
     marginLeft: 10
   },
   summary: {
-    fontSize: 13,
-    backgroundColor: '#faa',
+    fontSize: 14,
+    backgroundColor: '#e99',
     color: '#fff',
     padding: 5,
-    borderRadius: 5
+    borderRadius: 5,
   },
-  lastSummary: {
-    borderWidth: 0,
+  summaryView: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: 10,
     marginBottom: 20
-  }
+  },
 }
 
-export default transaction
+export default transactions
