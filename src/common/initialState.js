@@ -3,8 +3,8 @@ const initialState = {
   "config": {
     "appName": "FinanGo",
     // "storage": "local",
-    // "storage": "localfake",
-    "storage": "mongodb",
+    "storage": "localfake",
+    // "storage": "mongodb",
     // "storage": "mongolab",
     "mongolab": {
       "apiKey": "apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD",

@@ -43,15 +43,21 @@ export const setMonthToNow = () => ({
   payload: dt.getCurrentDate()
 });
 
-export const toggleBaseline = () => ({
-  type: 'TOGGLE_BASELINE',
-});
-
-export const setTheme = (theme) => ({
+export const setTheme = theme => ({
   type: 'SET_THEME',
   payload: { theme },
 });
 
+export const changeCategoryView = () => ({
+  type: 'CHANGE_CATEGORY_VIEW',
+})
+
+export const setCurrentBalance = balance => ({
+  type: 'SET_CURRENT_BALANCE',
+  payload: balance
+})
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 const appStartEpic = (action$) =>
   action$.ofType(REHYDRATE)
     .map(appStarted);

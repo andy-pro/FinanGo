@@ -8,8 +8,7 @@
   "env": {
     "production": {
       "plugins": [
-        "transform-react-constant-elements",
-        "transform-remove-console"
+        "transform-react-constant-elements"
       ]
     }
   }

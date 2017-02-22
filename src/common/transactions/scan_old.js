@@ -5,8 +5,7 @@ const scan = (data, groupMode) => {
       newDate,
       // summary = 0,
       len = data.length,
-      __rowIds,
-      pos = 0
+      __rowIds
 
   const dataBlob = {}
   const sectionIds = []
@@ -31,9 +30,7 @@ const scan = (data, groupMode) => {
       newDate = date
       dataBlob[newDate] = {
         date: dt.toDateString(),
-        // rows: [],
-        // rows: rowIds.length,
-        rows: pos++,
+        rows: [],
         summary: 0,
         resume: [],
         amount: 0,
@@ -47,15 +44,13 @@ const scan = (data, groupMode) => {
     // dataBlob[newDate].rows.push(item.id)
     // addItem(item)
 
-    // let rowId = `${newDate}:${item.id}`
-    // __rowIds.push(rowId)
-    __rowIds.push(item.id)
+    let rowId = `${newDate}:${item.id}`
+    __rowIds.push(rowId)
 
     let blob = dataBlob[newDate]
 
-    // blob.rows.push(rowId)
-    // dataBlob[rowId] = item
-    dataBlob[item.id] = item
+    blob.rows.push(rowId)
+    dataBlob[rowId] = item
 
     // if (sectionIds.length > 1) {
     //   item.hidden = 1
@@ -115,10 +110,7 @@ const scan = (data, groupMode) => {
   // console.log(dataBlob, sectionIds, rowIds);
 
 
-  // return { dataBlob, sectionIds, rowIds }
-  let a = { dataBlob, sectionIds, rowIds }
-  console.log(a);
-  return a
+  return { dataBlob, sectionIds, rowIds }
 
   // return dataBlob
 }

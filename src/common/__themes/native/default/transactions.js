@@ -6,6 +6,12 @@ const transactions = StyleSheet.create({
   //   flex: 1,
   //   paddingHorizontal: 15
   // },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginTop: 20,
+    marginBottom: 10,
+  },
   item: {
     flex: 1,
     flexDirection: 'row',
@@ -34,13 +40,13 @@ const transactions = StyleSheet.create({
     paddingVertical: 5,
   },
   groupInfo: {
-    paddingLeft: 10,
+    paddingLeft: 8,
   },
   amount: {
     fontSize: 14,
     color: CONST._main_,
     fontWeight: 'normal',
-    marginLeft: 10,
+    marginLeft: 8,
   },
   category: {
     fontSize: 12,
@@ -53,14 +59,25 @@ const transactions = StyleSheet.create({
     // marginRight: 10
   },
 
-  date: {
-    padding: 5,
-    borderRadius: 5,
-    marginVertical: 15,
-    backgroundColor: '#ccc',
-    color:'#555',
-    fontSize: 16,
+  resumeTitle: {
+    fontSize: 14,
+    // fontStyle: 'italic',
+    fontWeight: '600',
   },
+
+  resume: {
+    fontSize: 14,
+    fontStyle: 'italic'
+  },
+
+  // date: {
+  //   padding: 5,
+  //   borderRadius: 5,
+  //   marginTop: 20,
+  //   backgroundColor: '#ccc',
+  //   color:'#555',
+  //   fontSize: 16,
+  // },
   time: {
     color: '#555',
     fontSize: 11,
@@ -68,7 +85,7 @@ const transactions = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 4,
     paddingVertical: 2,
-    marginLeft: 10
+    marginLeft: 8
   },
   summary: {
     fontSize: 14,
@@ -78,12 +95,11 @@ const transactions = StyleSheet.create({
     borderRadius: 5,
   },
   summaryView: {
-    // display: 'flex',
-    // flex: 1,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: 10,
-    marginBottom: 20
+    marginVertical: 5,
+    // marginBottom: 10,
   },
 
 })

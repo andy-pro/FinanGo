@@ -18,7 +18,7 @@ const transformDirection = (style) => {
   }
 }
 
-export const transformStyle = (theme, style) => {
+const transformStyle = (theme, style) => {
   if (style instanceof Array) {
     style = Object.assign({}, ...style)
   }
@@ -35,9 +35,63 @@ export const transformStyle = (theme, style) => {
 
 const createExtendedRule = (rule) => (props) => rule(props.theme, props.style)
 
-export const createStylizedComponent = (rule, tag, passProps) =>
+const createStylizedComponent = (rule, tag, passProps) =>
   createComponent(
     createExtendedRule(rule),
     tag,
     passProps,
   );
+
+// export { transformStyle, createStylizedComponent }
+
+export const Text = createStylizedComponent(
+  transformStyle,
+  'span',
+  ['data-path', 'onPress']
+)
+
+export const View = createStylizedComponent(
+  transformStyle,
+  'div',
+  ['data-path', 'onKeyDown', 'onPress']
+)
+
+export const Form = createStylizedComponent(
+  transformStyle,
+  'form',
+  ['onSubmit', 'onKeyDown']
+)
+
+export const Button = createStylizedComponent(
+  transformStyle,
+  'button',
+  ['onClick', 'title']
+)
+
+export const TextInput = createStylizedComponent(
+  transformStyle,
+  'input',
+  // ['placeholder', {$cmd: 'assign', $set: ['onChange', 'onChangeText']}, 'value', 'autoFocus', 'onFocus', 'onBlur']
+  ['required', 'placeholder', 'onChangeText', 'value', 'autoFocus', 'onFocus', 'onBlur', '$ref', 'editable', 'type', 'step']
+)
+
+export const TouchableHighlight = createStylizedComponent(
+  transformStyle,
+  'div',
+  // [{$cmd: 'transform', $set: ['backgroundColor', 'underlayColor']}]
+  ['underlayColor', 'onPress', '$ref']
+)
+
+export const TouchableOpacity = TouchableHighlight
+
+export const ScrollView = createStylizedComponent(
+  transformStyle,
+  'div'
+  // ['data-path', 'onKeyDown', 'onPress']
+)
+
+export const Input = createStylizedComponent(
+  transformStyle,
+  'input',
+  ['type', 'value', 'checked', 'onChange', 'disabled']
+)

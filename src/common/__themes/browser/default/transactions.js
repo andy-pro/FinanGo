@@ -1,7 +1,12 @@
 import * as CONST from './_const'
 
 const transactions = {
-
+  header: {
+    // flexDirection: 'row',
+    // justifyContent: 'flex-start',
+    marginTop: 20,
+    marginBottom: 10,
+  },
   item: {
     // flex: 1,
     // flexDirection: 'row',
@@ -14,10 +19,11 @@ const transactions = {
     // padding: 10,
     alignItems: 'center',
     cursor: 'pointer',
+    color: '#555',
   },
   title: {
     fontSize: 15,
-    color: '#555',
+    // color: '#555',
     fontWeight: '600'
   },
   groupTitle: {
@@ -56,15 +62,28 @@ const transactions = {
     fontSize: 14,
     color: 'red',
   },
-  date: {
-    color:'#555',
-    fontSize: 16,
-    backgroundColor: '#ddd',
-    padding: 5,
-    borderRadius: 5,
-    marginVertical: 15,
-    display: 'inline-block'
+
+  resumeTitle: {
+    fontSize: 14,
+    // fontStyle: 'italic',
+    // fontWeight: '600',
+    display: 'block',
   },
+  resume: {
+    fontSize: 13,
+    fontStyle: 'italic',
+    // color: '#888'
+  },
+
+  // date: {
+  //   color:'#555',
+  //   fontSize: 16,
+  //   backgroundColor: '#ddd',
+  //   padding: 5,
+  //   borderRadius: 5,
+  //   marginVertical: 15,
+  //   display: 'inline-block'
+  // },
   time: {
     color: '#555',
     fontSize: 11,
@@ -79,7 +98,9 @@ const transactions = {
     backgroundColor: '#e99',
     color: '#fff',
     padding: 5,
-    borderRadius: 5,
+    borderRadius: 6,
+    borderColor: '#fff',
+    borderWidth: 1,
   },
   summaryView: {
     display: 'flex',

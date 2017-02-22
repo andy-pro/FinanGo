@@ -3,14 +3,15 @@ import type { Action, AppState } from '../types';
 import * as dt from '../__lib/dateUtils'
 
 const initialState = {
-  baselineShown: false,
+  // baselineShown: false,
   currentTheme: 'defaultTheme',
+  currentBalance: 0,
   error: null,
   menuShown: false,
   online: false,
   started: false,
   date: dt.getCurrentDate(),
-  categoryMapView: false,
+  categoryMapView: true,
 };
 
 const reducer = (
@@ -51,6 +52,9 @@ const reducer = (
 
     case 'CHANGE_CATEGORY_VIEW':
       return { ...state, categoryMapView: !state.categoryMapView };
+
+    case 'SET_CURRENT_BALANCE':
+      return { ...state, currentBalance: action.payload }
 
     default:
       return state;

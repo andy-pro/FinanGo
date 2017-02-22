@@ -1,4 +1,4 @@
-export default getSuggestions = (inputList, query, order) => {
+export const getSuggestions = (inputList, query, order) => {
   // order: 1 - ascendant, -1 - descendant
   const inputValue = query.trim().toLowerCase(),
         inputLength = inputValue.length,
@@ -22,3 +22,6 @@ export default getSuggestions = (inputList, query, order) => {
   createList(inputList);
   return suggestions.sort((a, b) => (b.path.length - a.path.length)*order);
 };
+
+export const calcBalance = (data, ids) =>
+  ids.reduce((b, id) => b + data[id].summary, 0)

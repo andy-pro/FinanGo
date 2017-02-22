@@ -13,6 +13,7 @@ export const getUserData = () => {
       return Observable.of({
         type: 'USER_LOADED',
         payload: mockData
+        // payload: {}
       })
     default:
       return api.getUserData.map(result => {

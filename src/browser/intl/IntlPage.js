@@ -16,9 +16,9 @@ const IntlPage = () => {
 
   return (
     <Box>
-      <Title message='Intl' />
+      <Title message='Settings' />
       <PageHeader
-        heading="react-intl"
+        heading="Settings"
       />
       <SwitchLocale />
     </Box>

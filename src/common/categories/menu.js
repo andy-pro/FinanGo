@@ -10,22 +10,43 @@ import { mainStyles, iconBtn as iconBtnStyle } from '../__themes'
 
 class CategoryMenu extends Component {
 
-  state = {
-    add: '',
-    title: '',
-    color: '',
-    preserve: false
+  constructor(props) {
+    super(props);
+    let { category } = props
+    this.state = {
+      add: '',
+      title: category.title || '',
+      color: category.color || '',
+      preserve: false
+    }
+    this.fields = { add: {} }
+    let refName = props.isNative ? 'ref' : '$ref'
+    this.refhack = {
+      add: {[refName]: c => this.fields.add.ref = c},
+    }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    // console.log('menu will update!', this.refs, this.props, nextProps, this.props === nextProps);
+  componentWillReceiveProps(nextProps) {
+  // componentWillUpdate(nextProps, nextState) {
+    // console.log('menu will update!', this.fields);
+    // if (!nextProps.enable) nextProps.category = {}
     const { isChild, title, color } = nextProps.category
     this.state.add = ''
     this.state.title = isChild ? title : ''
     this.state.color = (isChild && color) ? color : ''
     this.state.preserve = false
-    // this.colorDidChange = false
-    // console.log('click', this.state);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.category !== this.props.category) seFocus()
+  }
+
+  componentDidMount() {
+    setFocus()
+  }
+
+  setFocus = () => {
+    if (this.props.enable) this.fields.add.ref.focus()
   }
 
   onChange = (query, field) => {
@@ -44,7 +65,8 @@ class CategoryMenu extends Component {
     const { category, enable } = this.props;
     let { path, parentPath, isChild } = category
     if (!enable) return
-    if (required && (!value || value === category[field])) return
+    if (value === category[field]) return
+    if (required && !value) return
     let action, data = {}
 
     switch (field) {
@@ -61,6 +83,7 @@ class CategoryMenu extends Component {
         break
       case 'color':
         if (!isChild) return
+        // console.log('colors:', value, category[field]);
         if (value) {
           value = checkColor(value)
           if (!value) return
@@ -96,14 +119,25 @@ class CategoryMenu extends Component {
     })
   }
 
-  onDelete = () => this.props.delCategory(this.props.category)
+  onDelete = () => {
+    let {category} = this.props
+    Alert.alert(
+      `Delete category "${category.title}"`,
+      'Are you shure?',
+      [
+        {text: 'Cancel', null, style: 'cancel'},
+        {text: 'OK', onPress: () => this.props.delCategory(category)},
+      ],
+      { cancelable: false }
+    )
+  }
 
   onPreserveChange = () => this.setState({ preserve: !this.state.preserve })
 
   render() {
     const { category, enable } = this.props;
-    const { isChild } = category
-    // console.log('menu render', category, this.state);
+    const isChild = Boolean(category.isChild)
+    // console.log('category menu render', category, this.state);
 
     return (
         <View style={mainStyles.form}>
@@ -115,9 +149,10 @@ class CategoryMenu extends Component {
             <TextInput
               required
               placeholder={isChild ? 'New subcategory' : 'New category'}
-              editable={!enable}
+              editable={enable}
               value={this.state.add}
               onChangeText={e => this.onChange(e, 'add')}
+              {...this.refhack.add}
               { ...this.propSet0 }
             />
             <Icon.Button
@@ -135,7 +170,7 @@ class CategoryMenu extends Component {
             <TextInput
               required
               placeholder={'Rename'}
-              editable={!isChild}
+              editable={isChild}
               value={this.state.title}
               onChangeText={e => this.onChange(e, 'title')}
               { ...this.propSet0 }
@@ -154,7 +189,7 @@ class CategoryMenu extends Component {
           >
             <TextInput
               placeholder={'Color'}
-              editable={!isChild}
+              editable={isChild}
               value={this.state.color}
               onChangeText={e => this.onChange(e, 'color')}
               { ...this.propSet0 }
@@ -167,7 +202,7 @@ class CategoryMenu extends Component {
             />
           </Form>
 
-          <View style={mainStyles.row}>
+          <View style={mainStyles.between}>
             <Checkbox
               label='Preserve references'
               disabled={!isChild}
@@ -179,7 +214,7 @@ class CategoryMenu extends Component {
             <Icon.Button
               name='ios-remove-circle-outline'
               backgroundColor={isChild ? '#d66' : '#ddd'}
-              onPress={this.onDelete}
+              onPress={isChild ? this.onDelete : null}
               style={iconBtnStyle}
             />
           </View>
@@ -202,7 +237,8 @@ class CategoryMenu extends Component {
 }
 
 export default connect(
-  ({app}) => ({categoryMapView: app.categoryMapView}),
+  // ({app}) => ({categoryMapView: app.categoryMapView}),
+  null,
   { addCategory, updateCategory, delCategory }
 )(CategoryMenu);
 

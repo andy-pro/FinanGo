@@ -20,11 +20,15 @@ import { connect } from 'react-redux';
 import messages from '../messages'
 
 // Pages
-import HomePage from '../../common/home/HomePage';
-import NewTransactionPage from '../../common/transactions/NewTransactionPage';
+// import HomePage from '../../common/home/HomePage';
+import TransactionsPage from '../../common/transactions/TransactionsPage';
+// import NewTransactionPage from '../../common/transactions/NewTransactionPage';
 import CategoriesPage from '../../common/categories/CategoriesPage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
+
+// import TestPage from '../../common/demo/ListViewDemo';
+
 // import OfflinePage from '../offline/OfflinePage';
 // import TodosPage from '../todos/TodosPage';
 // import NotFoundPage from '../notfound/NotFoundPage';
@@ -49,6 +53,11 @@ class App extends Component {
     if (!this.props.appStarted) return null;
     const { appMenuShown, appShowMenu, currentLocale } = this.props;
     messages.setLanguage(currentLocale);
+
+    // console.log('*******************');
+    // console.log('*    Start App    *');
+    // console.log('*******************');
+
     return (
       <Container inverse>
 
@@ -57,11 +66,12 @@ class App extends Component {
           menu={<Menu />}
           onChange={appShowMenu}
         >
-          <Page exactly pattern="/" component={HomePage} />
-          <Page pattern="/single" component={NewTransactionPage} />
-          <Page pattern="/group" component={NewTransactionPage} />
+          <Page exactly pattern="/" component={TransactionsPage} />
+          <Page pattern="/single" component={TransactionsPage} />
+          <Page pattern="/group" component={TransactionsPage} />
+          <Page pattern="/income" component={TransactionsPage} />
           <Page pattern="/categories" component={CategoriesPage} />
-          <Page pattern="/intl" component={IntlPage} />
+          <Page pattern="/settings" component={IntlPage} />
           <Page authorized pattern="/me" component={MePage} />
           {/* Miss does't work in React Native for some reason. */}
           {/* <Miss render={() => <Redirect to="/" />} /> */}
@@ -69,7 +79,7 @@ class App extends Component {
           <Match
             pattern="/"
             render={({ location: { pathname } }) => {
-              const urls = ['/', '/single', '/group', '/categories', '/intl', '/me'];
+              const urls = ['/', '/single', '/group', '/income', '/categories', '/settings', '/me'];
               if (urls.indexOf(pathname) !== -1) return null;
               return (
                 <Redirect to="/" />

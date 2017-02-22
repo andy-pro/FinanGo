@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { clearTransactions, addTransaction } from './actions'
+import { addTransaction } from './actions'
 // import { setMonthToNow } from '../app/actions'
 
 import { Form, View, Text, TextInput, Icon } from '../__components';
 import AutosuggestForm from '../__components/AutosuggestForm';
 
-import getSuggestions from './getSuggestions'
+import { getSuggestions } from './utils'
 import { getTimeId } from '../__lib/dateUtils'
 import { removeSpecial, getSlug, slugifyCategory, getValue } from '../__lib/utils'
 
@@ -23,13 +23,13 @@ import { colors, mainStyles, transactions as styles, suggestions as suggStyles }
 
 const { locally } = initialState.config
 
-class NewTransactionPage extends Component {
+class NewTransactionForm extends Component {
 
   // props.pattern: /single, /group, /income
 
   constructor(props) {
     super(props);
-
+    // console.log('new trans page constructor');
     this.amountTypes = [
       {title: 'кг'},
       {title: 'г'},
@@ -39,7 +39,7 @@ class NewTransactionPage extends Component {
       {title: 'м.п.'}
     ]
 
-    const isNative = props.isReactNative
+    const { isNative } = props
     let refName = isNative ? 'ref' : '$ref'
     this.refhack = {
       title: {[refName]: c => this.fields.title.ref = c},
@@ -51,7 +51,7 @@ class NewTransactionPage extends Component {
     this.fields = {
       title: {
         name: 'title',
-        pos: {top: isNative ? 42 : 36, maxHeight: 202},
+        pos: {top: isNative ? 42 : 36, maxHeight: isNative ? 202 : 286},
         getSuggestions: query => getSuggestions(this.props.categories, query, 1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
@@ -98,14 +98,15 @@ class NewTransactionPage extends Component {
 
     this.state = this.init()
 
-    if (props.pattern === '/group') {
+    if (props.groupMode) {
       this.initGroup()
     }
 
   }
 
-  initGroup = () =>
+  initGroup = () => {
     this.groupId = getTimeId().id
+  }
 
   init = () => ({
     query: '',
@@ -119,12 +120,12 @@ class NewTransactionPage extends Component {
     showList: false,
   })
 
-  componentWillMount() {
-    if (this.groupId && this.props.user && this.props.transactions.length) {
-      // clear array of transactions in edit group mode
-      this.props.clearTransactions()
-    }
-  }
+  // componentWillMount() {
+  //   if (this.groupId && this.props.user && this.props.transactions.length) {
+  //     // clear array of transactions in edit group mode
+  //     this.props.clearTransactions()
+  //   }
+  // }
 
   // componentWillUnmount(props) {
   //   console.log('unmount', props);
@@ -266,8 +267,9 @@ class NewTransactionPage extends Component {
   }
 
   render() {
-    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', 'pattern', this.props.pattern, this.state);
-    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', 'pattern', this.props.pattern, this.props.transactions.length);
+    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.state);
+    // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.props.transactions.length);
+    // console.log('!!! Form for new transactions !!!');
     const { suggestions, showList, field } = this.state
     return (
 
@@ -363,10 +365,7 @@ class NewTransactionPage extends Component {
 
         <View style={mainStyles.divider} />
 
-        <RenderTransactions
-          editable={true}
-          editModeGroupId={this.groupId || 0}
-        />
+        {this.props.children}
 
       </AutosuggestForm>
 
@@ -430,11 +429,6 @@ class NewTransactionPage extends Component {
 }
 
 export default connect(
-  (state) => ({
-    user: state.user,
-    categories: state.categories,
-    transactions: state.transactions,
-    isReactNative: state.device.isReactNative,
-  }),
-  { clearTransactions, addTransaction }
-)(NewTransactionPage);
+  null,
+  { addTransaction }
+)(NewTransactionForm);

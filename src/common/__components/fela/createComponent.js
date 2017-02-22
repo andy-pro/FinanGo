@@ -39,7 +39,8 @@ function createComponent(rule) {
       // console.log('QWERT', prop, ruleProps);
       switch (prop) {
         case 'editable':
-          output.disabled = ruleProps.editable;
+          // output.disabled = !Boolean(ruleProps.editable);
+          if (ruleProps.editable === false) output.disabled = true
           break;
         case 'onChangeText':
           output.onChange = ruleProps.onChangeText;

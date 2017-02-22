@@ -44,11 +44,17 @@ const mainStyles = StyleSheet.create({
     // alignItems: 'flex-start',
     // alignItems: 'flex-end',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
+    // justifyContent: 'flex-start',
 
     // marginBottom: 5,
     // marginVertical: 1,
 
+  },
+  between: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 
   input: {
@@ -80,9 +86,7 @@ const checkbox = StyleSheet.create({
 
 const datePicker = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
   },
   text: {
     color: 'white',
@@ -91,14 +95,6 @@ const datePicker = StyleSheet.create({
     // marginLeft: -8
   },
 })
-
-const menuBtn = {
-  backgroundColor: CONST._main_,
-  // backgroundColor: 'red',
-  size: 30,
-  paddingLeft: 12,
-  paddingRight: 8,
-}
 
 const iconBtn = {
   width: 38,
@@ -109,7 +105,6 @@ const iconBtn = {
 
 export {
   colors,
-  menuBtn,
   iconBtn,
   mainStyles,
   categories,

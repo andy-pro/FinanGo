@@ -12,6 +12,24 @@ const glyphMap = {
   'ios-add-circle-outline': require('./io/android-add-circle').default,
   'ios-remove-circle-outline': require('./io/android-remove-circle').default,
   'ios-eye-outline': require('./io/ios-eye').default,
+
+
+  'i1': require('./io/stat/android-apps').default,
+  'i2': require('./io/stat/grid').default,
+  'i3': require('./io/stat/ios-analytics').default,
+  'i4': require('./io/stat/ios-analytics-outline').default,
+  'i5': require('./io/stat/ios-grid-view').default,
+  'i6': require('./io/stat/ios-grid-view-outline').default,
+  'i7': require('./io/stat/ios-pie').default,
+  'i8': require('./io/stat/ios-pie-outline').default,
+  'i9': require('./io/stat/pie-graph').default,
+  'ia': require('./io/stat/podium').default,
+  'ib': require('./io/stat/stats-bars').default,
+  'ic': require('./io/stat/android-list').default,
+  'id': require('./io/stat/ios-list').default,
+  'ie': require('./io/stat/ios-list-outline').default,
+
+
 }
 
 export default createIconSet(glyphMap);

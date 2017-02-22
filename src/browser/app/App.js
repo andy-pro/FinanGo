@@ -25,10 +25,10 @@ import {
 } from './components';
 
 // Pages
-import HomePage from '../../common/home/HomePage';
-import NewTransactionPage from '../../common/transactions/NewTransactionPage';
+// import HomePage from '../../common/home/HomePage';
+import TransactionsPage from '../../common/transactions/TransactionsPage';
 
-import AddGroupPage from '../../common/transactions/AddGroupPage';
+// import AddGroupPage from '../../common/transactions/AddGroupPage';
 import CategoriesPage from '../../common/categories/CategoriesPage';
 import TodosPage from '../todos/TodosPage';
 import FieldsPage from '../fields/FieldsPage';
@@ -82,14 +82,14 @@ class App extends Component {
           />
           <Menu />
           <Box marginLeft={6} padding={1}>
-            <Page pattern="/" exactly component={HomePage} />
-            <Page pattern="/single" component={NewTransactionPage} />
-            <Page pattern="/group" component={NewTransactionPage} />
-            <Page pattern="/income" component={NewTransactionPage} />
-            <Page pattern="/categories" exactly component={CategoriesPage} />
+            <Page pattern="/" exactly component={TransactionsPage} />
+            <Page pattern="/single" component={TransactionsPage} />
+            <Page pattern="/group" component={TransactionsPage} />
+            <Page pattern="/income" component={TransactionsPage} />
+            <Page pattern="/categories" component={CategoriesPage} />
             <Page pattern="/todos" component={TodosPage} />
             <Page pattern="/fields" component={FieldsPage} />
-            <Page pattern="/intl" component={IntlPage} />
+            <Page pattern="/settings" component={IntlPage} />
             <Page pattern="/offline" component={OfflinePage} />
             <Page authorized pattern="/me" component={MePage} />
             <Miss component={NotFoundPage} />

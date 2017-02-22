@@ -7,17 +7,22 @@ import transactions from './transactions'
 const colors = {
   header: CONST._main_,
   touch: '#dfd',
+  active: CONST._main_,
+  disabled: '#ddd',
 }
 
 const mainStyles = {
 
-  // headerColor: CONST._main_,
-  // touchColor: '#dfd',
-
   root: {
     // flex: 1,
     fontFamily: 'Arial, sans-serif',
-    paddingHorizontal: 5
+    // paddingHorizontal: 5
+  },
+
+  container: {
+    // display: 'flex',
+    paddingHorizontal: 15,
+    // justifyContent: 'space-between',
   },
 
   form: {
@@ -35,12 +40,16 @@ const mainStyles = {
 
   row: {
     display: 'flex',
-    flexDirection: 'row',
-    // flex-start, flex-end, center, stretch
+    // align-items: flex-start | flex-end | center | baseline | stretch (default)
     alignItems: 'flex-start',
-    // paddingVertical: 5,
+  },
+  between: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    // justify-content: flex-start (default) | flex-end | center | space-between | space-around
     justifyContent: 'space-between',
   },
+
   input: {
     width: 0,
     borderRadius: 4,
@@ -79,18 +88,26 @@ const mainStyles = {
     // top: 0,
     // left: 0,
     marginTop: 24,
-    paddingVertical: 10,
+    // paddingTop: 10,
     width: 150,
   },
+  menuFooter: {
+    backgroundColor: '#085',
+    borderTopWidth: 1,
+    borderTopColor: '#aaa',
+    height: 42,
+    marginTop: 10,
+    // color: '#aaa',
+  }
 
 
 }
 
 const datePicker = {
   container: {
-    // flex: 1,
-    // flexDirection: 'row',
-    // justifyContent: 'flex-end'
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   text: {
     color: '#555',
@@ -113,13 +130,8 @@ const button = {
   verticalAlign: 'center'
 }
 
-const menuBtn = {
-  backgroundColor: '#ddd',
-}
-
 export {
   colors,
-  menuBtn,
   mainStyles,
   categories,
   suggestions,

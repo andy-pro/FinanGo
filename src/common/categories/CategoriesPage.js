@@ -15,47 +15,72 @@ const ROOT_PATH = 'categories'
 
 class Categories extends Component {
 
-  init = () => {
-    this.category = {}
-    return { showMenu: false }
+  constructor(props) {
+    super(props);
+    this.state = this.init()
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(this.init())
+  init = () => ({
+    category: {},
+    showMenu: false,
+  })
+
+  // componentWillReceiveProps(nextProps) {
+    // this.setState(this.init())
+  // }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    let hideMenu =  nextProps.categories !== this.props.categories ||
+                    nextProps.mapView !== this.props.mapView
+    // console.log('scu6', categoriesChanged);
+    if (hideMenu) {
+      // nextState = this.init()
+      // this.state = this.init()
+      nextState.showMenu = false
+      nextState.category = {}
+      return true
+    }
+    return  nextState.showMenu !== this.state.showMenu ||
+            nextState.category !== this.state.category
+            // categoriesChanged
   }
 
-  state = this.init()
+  // state = this.init()
 
   onClickList = (path) => {
 
-    let show = Boolean(path);
+    let showMenu = Boolean(path);
 
     // console.log('cat path:', path);
 
-    if (show !== this.state.showMenu || path != this.category.path) {
-      let category = path ? getCategoryByPath(this.props.categories, path) : {}
+    if (showMenu !== this.state.showMenu || path != this.state.category.path) {
+      let _category = path ? getCategoryByPath(this.props.categories, path) : {}
       let [ parentPath, index ] = splitOnce(path, '.', true)
-      this.category = {
+      let category = {
         categories: this.props.categories,
-        title: category.title,
-        color: category.color,
+        title: _category.title || '',
+        color: _category.color || '',
         path,
         parentPath,
         index,
         isChild: Boolean(path && path !== ROOT_PATH)
       }
       // console.log('click list:', this.category);
-      this.setState({showMenu: show})
+      this.setState({
+        category,
+        showMenu,
+      })
     }
   }
 
 
   render() {
     // console.log('%cCategories render', 'color:#048;font-weight:bold', this.props);
+    let {categories, mapView, isNative} = this.props
+    let showMenu = isNative ? this.state.showMenu : true
+    // console.log('categories page render', categories);
 
-    let {categories, mapv} = this.props
-
-    createList = (data, _path, clr) => {
+    const createList = (data, _path, clr) => {
       return (
         <View style={styles.sub}>
           {data.map((item, i) => {
@@ -76,22 +101,24 @@ class Categories extends Component {
                 color: 'white'
               }
             }
+            // console.log('cate', item.slug);
+            let sub = item.sub && item.sub.length
             return (
               <View
                 key={item.slug}
-                style={mapv ? styles.row : styles.list}
+                style={mapView ? styles.row : styles.list}
               >
 
-              <View style={styles.row}>
-                <Text
-                  style={[ styles.item, _style ]}
-                  onPress={this.onClickList.bind(this, path)}
-                >
-                  {item.title}
-                </Text>
-              </View>
+                <View style={styles.row}>
+                  <Text
+                    style={[ styles.item, _style ]}
+                    onPress={this.onClickList.bind(this, path)}
+                  >
+                    {item.title}
+                  </Text>
+                </View>
 
-              { item.sub && item.sub.length && createList(item.sub, path + '.sub', item.color || clr) }
+                { sub ? createList(item.sub, path + '.sub', item.color || clr) : null }
 
               </View>
             )
@@ -103,13 +130,17 @@ class Categories extends Component {
     return (
       <View style={mainStyles.root}>
 
-        <CategoryMenu
-          category={this.category}
-          enable={this.state.showMenu}
-        />
-        <View style={mainStyles.divider}></View>
+        {showMenu &&
+          <View style={mainStyles.divider}>
+            <CategoryMenu
+              category={this.state.category}
+              enable={this.state.showMenu}
+              isNative={isNative}
+            />
+          </View>
+        }
         <ScrollView style={styles.container}>
-          <ScrollView horizontal={mapv}>
+          <ScrollView horizontal={mapView}>
             <View>
               <Text
                 onPress={this.onClickList.bind(this, ROOT_PATH)}
@@ -129,8 +160,9 @@ class Categories extends Component {
 
 }
 export default connect(
-  ({app, categories}) => ({
+  ({app, device, categories}) => ({
     categories,
-    mapv: app.categoryMapView,
+    mapView: app.categoryMapView,
+    isNative: device.isReactNative,
   })
 )(Categories)

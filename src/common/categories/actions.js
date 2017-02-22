@@ -4,11 +4,6 @@ import initialState from '../initialState'
 const { locally } = initialState.config
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-export const changeViewMode = () => ({
-  type: 'CHANGE_CATEGORY_VIEW',
-})
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const addCategory = payload => ({
   type: locally ? 'ADD_CATEGORY_LOCAL' : 'ADD_CATEGORY_EPIC',
   payload

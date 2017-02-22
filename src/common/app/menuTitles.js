@@ -6,7 +6,6 @@ export default {
   '/refresh': 'links.refresh',
   '/este': 'links.este',
   '/categories': 'links.categories',
-  '/categories/edit': 'links.categories.edit',
   '/todos': 'links.todos',
   '/fields': 'links.fields',
   '/intl': 'links.intl',

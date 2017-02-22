@@ -10,21 +10,33 @@ const Link = ({
   onPress,
   style,
   to,
+  action,
 }, { router }) => (
-  <Match exactly={exactly} pattern={to}>
-    {({ matched }) => (
-      <Text
-        onPress={() => {
-          router.transitionTo(to);
-          if (!onPress) return;
-          onPress();
-        }}
-        style={[style, matched && activeStyle]}
-      >
-        {children}
-      </Text>
-    )}
-  </Match>
+  action ?
+    <Text
+      onPress={() => {
+        action();
+        if (onPress) onPress();
+      }}
+      style={style}
+    >
+      {children}
+    </Text>
+  :
+    <Match exactly={exactly} pattern={to}>
+      {({ matched }) => (
+        <Text
+          onPress={() => {
+            router.transitionTo(to);
+            if (!onPress) return;
+            onPress();
+          }}
+          style={[style, matched && activeStyle]}
+        >
+          {children}
+        </Text>
+      )}
+    </Match>
 );
 
 Link.contextTypes = {

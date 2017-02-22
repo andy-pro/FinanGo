@@ -1,9 +1,10 @@
 // @flow
 // import type { State } from '../../common/types';
 import React from 'react';
-// import linksMessages from '../../common/app/linksMessages';
+
 import theme from './themes/initial';
-// import { FormattedMessage, Link } from './components';
+
+import { getTransactions } from '../../common/transactions/actions';
 import { Link } from './components';
 import { ScrollView, StyleSheet } from 'react-native';
 import { appShowMenu } from '../../common/app/actions';
@@ -43,7 +44,7 @@ MenuLink = connect(
   { appShowMenu },
 )(MenuLink);
 
-const Menu = ({ user }) => (
+const Menu = ({ user, date, getTransactions }) => (
   <ScrollView
     automaticallyAdjustContentInsets={false}
     contentContainerStyle={styles.contentContainer}
@@ -52,18 +53,17 @@ const Menu = ({ user }) => (
     <MenuLink to="/single" message={messages['links.single']} />
     <MenuLink to="/group" message={messages['links.group']} />
     <MenuLink to="/income" message={messages['links.income']} />
-    <MenuLink to="/refresh" message={messages['links.refresh']} />
+    <MenuLink to="/refresh" message={messages['links.refresh']} action={() => getTransactions(date)} />
     <MenuLink to="/categories" message={messages['links.categories']} />
-    <MenuLink to="/fields" message={messages['links.fields']} />
-    <MenuLink to="/me" message={messages['links.me']} />
-    <MenuLink to="/intl" message={messages['links.intl']} />
     <MenuLink to="/settings" message={messages['links.settings']} />
+    <MenuLink to="/me" message={messages['links.me']} />
   </ScrollView>
 );
 
 export default connect(
   (state) => ({
+    date: state.app.date,
     user: state.user,
-    intl: state.intl,
   }),
+  { getTransactions }
 )(Menu);

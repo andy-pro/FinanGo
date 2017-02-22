@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Button } from '../index'
+import { Button } from '../fela'
 import { button as buttonStyle } from '../../__themes'
 
 export default function createIconButtonComponent(Icon) {
@@ -8,7 +8,7 @@ export default function createIconButtonComponent(Icon) {
 
     render() {
       let {color='white'} = this.props
-      const { type, backgroundColor, onPress, children, ...props } = this.props;
+      const { type, backgroundColor, onPress, children, title, ...props } = this.props;
       const style ={
         ...buttonStyle,
         backgroundColor,
@@ -23,7 +23,7 @@ export default function createIconButtonComponent(Icon) {
       props.style.marginTop = -4
       props.size = 24
       return (
-        <Button style={style} onClick={onPress} type={type}>
+        <Button style={style} onClick={onPress} type={type} title={title}>
           <Icon {...props} />
           {children}
         </Button>

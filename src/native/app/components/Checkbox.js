@@ -4,7 +4,7 @@ import theme from '../themes/initial';
 import { Image, Text, TouchableOpacity } from 'react-native';
 import { checkbox as style } from '../../../common/__themes'
 
-const Checkbox = ({ checked, onPress, label }) => {
+const Checkbox = ({ checked, onPress, label, disabled }) => {
   const image = checked
     ? require('./img/CheckboxChecked.png')
     : require('./img/Checkbox.png');
@@ -12,7 +12,7 @@ const Checkbox = ({ checked, onPress, label }) => {
   return (
     <TouchableOpacity
       activeOpacity={theme.activeOpacity}
-      onPress={onPress}
+      onPress={disabled ? null : onPress}
       style={style.input}
     >
       <Image source={image} />

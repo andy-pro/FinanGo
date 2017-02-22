@@ -11,6 +11,7 @@ import user from './user/reducer';
 // import { fieldsReducer as fields } from './lib/redux-fields';
 import categories from './categories/reducer';
 import transactions from './transactions/reducer';
+import list from './list/reducer';
 
 
 // stackoverflow.com/q/35622588/233902
@@ -45,6 +46,7 @@ const configureReducer = (initialState: Object) => {
     user,
     categories,
     transactions,
+    list
   });
 
   // The power of higher-order reducers, http://slides.com/omnidan/hor
