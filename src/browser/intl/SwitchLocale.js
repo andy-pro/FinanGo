@@ -1,7 +1,6 @@
 // @flow
 import type { State } from '../../common/types';
 import React from 'react';
-import { compose } from 'ramda';
 import { connect } from 'react-redux';
 import { setCurrentLocale } from '../../common/intl/actions';
 import {
@@ -39,12 +38,10 @@ const SwitchLocale = ({
   </Box>
 );
 
-export default compose(
-  connect(
-    (state: State) => ({
-      currentLocale: state.intl.currentLocale,
-      locales: state.intl.locales,
-    }),
-    { setCurrentLocale },
-  ),
+export default connect(
+  (state: State) => ({
+    currentLocale: state.intl.currentLocale,
+    locales: state.intl.locales,
+  }),
+  { setCurrentLocale },
 )(SwitchLocale);

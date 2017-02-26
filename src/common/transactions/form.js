@@ -17,11 +17,11 @@ import RenderTransactions from './render'
 // import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 
-import initialState from '../initialState'
+import config from '../config'
 
 import { colors, mainStyles, transactions as styles, suggestions as suggStyles } from '../__themes'
 
-const { locally } = initialState.config
+const { locally } = config
 
 class NewTransactionForm extends Component {
 
@@ -105,7 +105,7 @@ class NewTransactionForm extends Component {
   }
 
   initGroup = () => {
-    this.groupId = getTimeId().id
+    this.groupId = getTimeId().pid
   }
 
   init = () => ({
@@ -225,7 +225,7 @@ class NewTransactionForm extends Component {
   addTransaction = (transaction) => {
     let dt = getTimeId()
     transaction.date = dt.iso
-    if (locally) transaction.id = dt.id
+    if (locally) transaction.id = dt.pid
     else transaction.userId = this.props.user.id
 
     this.props.addTransaction(transaction)

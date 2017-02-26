@@ -2,68 +2,56 @@ const scan = (data, groupMode) => {
 
   let group,
       prevItem,
-      newDate,
-      // summary = 0,
+      newDay,
       len = data.length,
-      __rowIds,
-      pos = 0
+      rowDayIds,
+      length = 0,
+      balance = 0
+
+// let q=performance.now()
 
   const dataBlob = {}
   const sectionIds = []
   const rowIds = []
 
-  // const setSummary = item => {
-  //   let summary = dataBlob[newDate].summary
-  //   if (summary) item.summary = summary
-  // }
+  data.forEach((_item, i) => {
 
-  data.forEach((item, i) => {
-
-    let dt = new Date(item.date),
+    let { date, ...item } = _item,
+        dt = new Date(date),
         time = dt.toLocaleTimeString(),
-        date = dt.getDate()
+        // day of the month
+        day = dt.getDate()
 
-    if (date !== newDate) {
+    if (day !== newDay) {
 
-      // if (prevItem) setSummary(prevItem)
+      /* New Day - New Section init */
+
       if (prevItem) prevItem.last = 1
 
-      newDate = date
-      dataBlob[newDate] = {
-        date: dt.toDateString(),
-        // rows: [],
-        // rows: rowIds.length,
-        rows: pos++,
+      newDay = day
+      dataBlob[newDay] = {
+        day: dt.toDateString(),
+        date,
+        rows: length++,
         summary: 0,
         resume: [],
         amount: 0,
       }
-      sectionIds.push(newDate)
-      __rowIds = []
-      rowIds.push(__rowIds)
+      sectionIds.push(newDay)
+      rowDayIds = []
+      rowIds.push(rowDayIds)
 
     }
 
-    // dataBlob[newDate].rows.push(item.id)
-    // addItem(item)
-
-    // let rowId = `${newDate}:${item.id}`
-    // __rowIds.push(rowId)
-    __rowIds.push(item.id)
-
-    let blob = dataBlob[newDate]
-
-    // blob.rows.push(rowId)
-    // dataBlob[rowId] = item
-    dataBlob[item.id] = item
-
-    // if (sectionIds.length > 1) {
-    //   item.hidden = 1
-    // }
-
+    let _id = `${newDay}:${item.id}`
+    rowDayIds.push(_id)
+    dataBlob[_id] = item
+    let blob = dataBlob[newDay]
     let cost = parseFloat(item.cost)
+
     if (cost) {
       blob.summary += cost
+      balance += cost
       blob.amount++
     }
 
@@ -103,22 +91,17 @@ const scan = (data, groupMode) => {
 
     }
 
-    // if (i === len - 1) setSummary(item)
     if (i === len - 1) item.last = 1
 
     prevItem = item
 
   })
 
-  // console.log(dataBlob);
+  return { dataBlob, sectionIds, rowIds, length, balance }
 
-  // console.log(dataBlob, sectionIds, rowIds);
-
-
-  // return { dataBlob, sectionIds, rowIds }
-  let a = { dataBlob, sectionIds, rowIds }
-  console.log(a);
-  return a
+  // let a = { dataBlob, sectionIds, rowIds }
+  // console.log('time', performance.now()-q, JSON.stringify(a.dataBlob));
+  // return a
 
   // return dataBlob
 }

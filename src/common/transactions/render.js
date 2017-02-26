@@ -9,13 +9,9 @@ import { getCategoryBySlug, fmtCost } from '../__lib/utils'
 import Summary from './summary'
 
 import scan from './scan'
-import { calcBalance } from './utils'
+// import { calcBalance } from './utils'
 
 import { colors, mainStyles, transactions as styles, iconBtn as iconBtnStyle } from '../__themes'
-
-// const getDateString = date =>
-//   // new Date(date).toLocaleString()
-//   new Date(date).toLocaleDateString()
 
 /* presets */
 const del_btn = { name: 'ios-trash-outline', backgroundColor: '#d66' }
@@ -26,7 +22,7 @@ const dis_btn = { name: 'ios-refresh-circle-outline', backgroundColor: '#aaa' }
 let ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
   sectionHeaderHasChanged : (s1, s2) => s1 !== s2,
-  getSectionData: (dataBlob, sectionId) => dataBlob[sectionId],
+  getSectionHeaderData: (dataBlob, sectionId) => dataBlob[sectionId],
   getRowData: (dataBlob, sectionId, rowId) => dataBlob[rowId]
 });
 
@@ -57,42 +53,37 @@ class RenderTransactions extends Component {
     const { transactions, groupMode } = this.props
     this.state = {
       editing: false,
-      dataSource: this.scanAndClone(transactions, groupMode, 0)
+      ds: this.scanAndClone(transactions, groupMode, 0)
     }
-  }
-
-  toggleItemsShown = blob => {
-    let shown = !Boolean(blob.shown)
-    blob.shown = shown
-    let { dataBlob, rowIds } = this.data
-    rowIds[blob.rows].forEach(row => dataBlob[row].shown = shown)
-  }
-
-  toggleFold = id => {
-    let sectionId = this.data.sectionIds[id]
-    let blob = this.data.dataBlob[sectionId]
-    this.toggleItemsShown(blob)
   }
 
   scanAndClone = (transactions, groupMode, toggleId) => {
-    const data = scan(transactions, groupMode)
+    let data = scan(transactions, groupMode)
     if (this.props.pattern === '/') {
-      let balance = calcBalance(data.dataBlob, data.sectionIds)
-      this.props.setCurrentBalance(balance)
+      // let balance = calcBalance(transactions)
+      this.props.setCurrentBalance(data.balance)
     }
-    // console.log(data);
-    this.data = data
-    if (toggleId !== undefined && transactions.length) {
-      this.toggleFold(toggleId)
+    let { dataBlob, sectionIds, rowIds } = data
+    if (toggleId !== undefined && data.length) {
+      let sid = sectionIds[toggleId]
+      let blob = dataBlob[sid]
+      this.toggleItemsShown(blob, dataBlob, rowIds)
     }
-    return this.cloneData(data)
+    return ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
   }
 
   onSectionPress = blob => {
-    this.toggleItemsShown(blob)
+    let { _dataBlob, sectionIdentities, rowIdentities } = this.state.ds
+    this.toggleItemsShown(blob, _dataBlob, rowIdentities)
     this.setState({
-      dataSource: this.cloneData(this.data)
+      ds: ds.cloneWithRowsAndSections(_dataBlob, sectionIdentities, rowIdentities)
     })
+  }
+
+  toggleItemsShown = (blob, dataBlob, rowIds) => {
+    let shown = !Boolean(blob.shown)
+    blob.shown = shown
+    rowIds[blob.rows].forEach(row => dataBlob[row].shown = shown)
   }
 
   cloneData = ({ dataBlob, sectionIds, rowIds }) => {
@@ -103,7 +94,7 @@ class RenderTransactions extends Component {
     // console.log('we are receive props');
     const { transactions, groupMode } = nextProps
     this.setState({
-      dataSource: this.scanAndClone(transactions, groupMode, 0)
+      ds: this.scanAndClone(transactions, groupMode, 0)
     })
   }
 
@@ -131,14 +122,13 @@ class RenderTransactions extends Component {
   render() {
 //=====================================
     let { user, categories, transactions, groupMode } = this.props
-    // console.log('render transactions, count:', transactions.length);
-    let len = transactions.length
-    if (!user || !len) return null
+    console.log('%crender transactions, count:', 'color:blue;font-weight:bold', transactions.length);
+    if (!user || !transactions.length) return null
     let { editing } = this.state
     const { currency } = user
 
     const renderSummaryDay = (id) => {
-      let item = this.data.dataBlob[id]
+      let item = this.state.ds._dataBlob[id]
       return (
         <View style={styles.item}>
           <View style={{
@@ -174,7 +164,7 @@ class RenderTransactions extends Component {
             backgroundColor='#b3b3b3'
             onPress={() => this.onSectionPress(blob)}
           >
-            {groupMode ? renderGroupInfo(blob) : blob.date}
+            {groupMode ? renderGroupInfo(blob) : blob.day}
           </Icon.Button>
         </View>
       )
@@ -186,12 +176,7 @@ class RenderTransactions extends Component {
 
       if (!item.shown) {
         return item.last ? renderSummaryDay(sectionId) : null
-        // return null
       }
-      // if (!this.data.dataBlob[sectionId].unfold) {
-      //   return item.last ? renderSummaryDay(sectionId) : null
-      //   // return null
-      // }
 
       let button
 
@@ -308,7 +293,7 @@ class RenderTransactions extends Component {
     return (
       <ListView
         style={mainStyles.container}
-        dataSource={this.state.dataSource}
+        dataSource={this.state.ds}
         renderRow={renderRow}
         renderSectionHeader={renderSectionHeader}
         enableEmptySections
@@ -323,12 +308,6 @@ class RenderTransactions extends Component {
 // export default RenderTransactions
 
 export default connect(
-  // (state) => ({
-  //   user: state.user,
-  //   categories: state.categories,
-  //   // transactions: state.transactions,
-  //   // isReactNative: state.device.isReactNative,
-  // }),
   null,
   { delTransaction, undoDelTransaction, setCurrentBalance }
 )(RenderTransactions);

@@ -12,8 +12,16 @@ const compiler = webpack(webpackConfig);
 
 app.use(webpackDev(compiler, {
   headers: {'Access-Control-Allow-Origin': '*'},
-  noInfo: true,
-  publicPath: webpackConfig.output.publicPath
+  noInfo: true, // Display no info to console (only warnings and errors)
+  publicPath: webpackConfig.output.publicPath,
+  // stats: {
+  //   // see https://webpack.github.io/docs/node.js-api.html
+  //   colors: true,
+  //   cached: false
+  //   // modules: false
+  //   // chunks: false
+  // },
+  // stats: 'verbose', // output all the information webpack has
 }));
 
 app.use(webpackHot(compiler));

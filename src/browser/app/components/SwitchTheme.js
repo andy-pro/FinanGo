@@ -3,7 +3,6 @@ import type { State } from '../../../common/types';
 import * as themes from '../../app/themes';
 import React from 'react';
 import { Box, Button, Heading } from '../../app/components';
-import { compose } from 'ramda';
 import { connect } from 'react-redux';
 import { setTheme } from '../../../common/app/actions';
 
@@ -42,11 +41,9 @@ const SwitchTheme = ({ currentTheme, setTheme }: SwitchThemeProps) => (
   </Box>
 );
 
-export default compose(
-  connect(
-    (state: State) => ({
-      currentTheme: state.app.currentTheme,
-    }),
-    { setTheme },
-  ),
+export default connect(
+  (state: State) => ({
+    currentTheme: state.app.currentTheme,
+  }),
+  { setTheme },
 )(SwitchTheme);

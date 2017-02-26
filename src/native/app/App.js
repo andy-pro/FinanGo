@@ -14,7 +14,7 @@ import { Match, Redirect } from 'react-router';
 // }
 
 import { appStart, appStop, appShowMenu } from '../../common/app/actions';
-// import { compose } from 'ramda';
+
 import { connect } from 'react-redux';
 
 import messages from '../messages'

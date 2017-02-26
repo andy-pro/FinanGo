@@ -11,10 +11,12 @@ export const getCurrentDate = () => {
 }
 
 export const getTimeId = () => {
-  let dt = new Date()
+  let dt = new Date(),
+      id = dt.valueOf()
   return {
     dt,
-    id: dt.valueOf(),
+    id,
+    pid: id.toString(36), // pretty id
     iso: dt.toISOString()
   }
 }

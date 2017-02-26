@@ -1,8 +1,6 @@
 import { REHYDRATE } from 'redux-persist/constants';
 
-// import { getNewestUserData } from '../transactions/actions'
-
-import { getUserData } from '../user/actions'
+import { getUserData, getUserData2 } from '../user/actions'
 import * as dt from '../__lib/dateUtils'
 
 export const appError = (error: Object) => ({
@@ -23,10 +21,6 @@ export const appShowMenu = (menuShown: boolean) => ({
 // Called on componentDidMount aka only at the client (browser or native).
 export const appStart = () => ({
   type: 'APP_START',
-});
-
-export const appStarted = () => ({
-  type: 'APP_STARTED',
 });
 
 export const appStop = () => ({
@@ -58,86 +52,10 @@ export const setCurrentBalance = balance => ({
 })
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-const appStartEpic = (action$) =>
-  action$.ofType(REHYDRATE)
-    .map(appStarted);
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-const appStartedFinanGoEpic = action$ =>
-  action$.ofType('APP_STARTED')
-    // .switchMap(getNewestUserData)
-    .switchMap(getUserData)
-
-//
-// const userLoadedEpic = action$ =>
-//   action$.ofType('USER_LOADED')
-//     .mergeMap(action => Observable.of({ type: 'GET_TRANSACTIONS', payload: mockData[1] }))
+/* start application after rehydrate data */
+// const appStartedFinanGoEpic = action$ => action$.ofType(REHYDRATE).map(getUserData)
+const appStartedFinanGoEpic = action$ => action$.ofType(REHYDRATE).switchMap(getUserData)
 
 export const epics = [
-  appStartEpic,
-  // appStartedFirebaseEpic,
   appStartedFinanGoEpic,
-  // userLoadedEpic,
 ];
-
-/*
-const appStartedFirebaseEpic = (action$, deps) => {
-  const { firebase, firebaseAuth, getState } = deps;
-
-  const appOnline$ = Observable.create((observer) => {
-    const onValue = (snap) => {
-      const online = snap.val();
-      if (online === getState().app.online) return;
-      observer.next(appOnline(online));
-    };
-    firebase.child('.info/connected').on('value', onValue);
-    return () => {
-      firebase.child('.info/connected').off('value', onValue);
-    };
-  });
-
-  // firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged
-  const onAuth$ = Observable.create((observer) => {
-    const unsubscribe = firebaseAuth().onAuthStateChanged((firebaseUser) => {
-      observer.next(onAuth(firebaseUser));
-    });
-    return unsubscribe;
-  });
-
-  const signInAfterRedirect$ = Observable.create((observer) => {
-    let unsubscribed = false;
-    firebaseAuth().getRedirectResult()
-      .then(({ user: firebaseUser }) => {
-        if (unsubscribed || !firebaseUser) return;
-        observer.next(signInDone(firebaseUser));
-      })
-      .catch((error) => {
-        if (unsubscribed) return;
-        observer.error(signInFail(error));
-      });
-    return () => {
-      unsubscribed = true;
-    };
-  });
-
-  const streams = [
-    appOnline$,
-    onAuth$,
-  ];
-
-  if (process.env.IS_BROWSER) {
-    streams.push(signInAfterRedirect$);
-  }
-
-  return action$
-    .filter((action: Action) => action.type === 'APP_STARTED')
-    .mergeMap(() => Observable
-      .merge(...streams)
-      // takeUntil unsubscribes all merged streams on APP_STOP.
-      .takeUntil(
-        action$.filter((action: Action) => action.type === 'APP_STOP'),
-      ),
-    );
-};
-*/

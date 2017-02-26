@@ -39,7 +39,6 @@ const Header = ({ user, date, getTransactions }) => {
       <HeaderLink to="/income" />
       <HeaderLink to='/refresh' action={() => getTransactions(date)} />
       <HeaderLink to="/categories" />
-      <HeaderLink to="/todos" />
       <HeaderLink to="/settings" />
       <View style={mainStyles.menuFooter}>
         {user &&

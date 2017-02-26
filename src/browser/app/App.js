@@ -12,7 +12,7 @@ import favicon from '../../common/app/favicon';
 import { Redirect, Miss } from 'react-router';
 
 import { appStart, appStop } from '../../common/app/actions';
-// import { compose } from 'ramda';
+
 import { connect } from 'react-redux';
 
 import messages from '../messages'
@@ -25,18 +25,11 @@ import {
 } from './components';
 
 // Pages
-// import HomePage from '../../common/home/HomePage';
 import TransactionsPage from '../../common/transactions/TransactionsPage';
-
-// import AddGroupPage from '../../common/transactions/AddGroupPage';
 import CategoriesPage from '../../common/categories/CategoriesPage';
-import TodosPage from '../todos/TodosPage';
-import FieldsPage from '../fields/FieldsPage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 import NotFoundPage from '../notfound/NotFoundPage';
-import OfflinePage from '../offline/OfflinePage';
-// import SignInPage from '../auth/SignInPage';
 
 // const App = ({ currentLocale, theme, themeName }) => (
 class App extends Component {
@@ -46,15 +39,13 @@ class App extends Component {
   // }
 
   componentDidMount() {
-    const { appStart } = this.props;
     // Must be called after the initial render to match server rendered HTML.
-    appStart();
+    this.props.appStart();
   }
 
   componentWillUnmount() {
-    const { appStop } = this.props;
     // App is rerended on hot reload, therefore we need a proper cleanup.
-    appStop();
+    this.props.appStop();
   }
 
   render() {
@@ -87,10 +78,7 @@ class App extends Component {
             <Page pattern="/group" component={TransactionsPage} />
             <Page pattern="/income" component={TransactionsPage} />
             <Page pattern="/categories" component={CategoriesPage} />
-            <Page pattern="/todos" component={TodosPage} />
-            <Page pattern="/fields" component={FieldsPage} />
             <Page pattern="/settings" component={IntlPage} />
-            <Page pattern="/offline" component={OfflinePage} />
             <Page authorized pattern="/me" component={MePage} />
             <Miss component={NotFoundPage} />
           </Box>

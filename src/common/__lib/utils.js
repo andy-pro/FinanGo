@@ -1,5 +1,8 @@
 import slugify from 'slugify'
 
+export const pick = (obj, props) =>
+  props.reduce((o, k) => {o[k] = obj[k]; return o}, {})
+
 export const fmtCost = cost =>
   Number(cost || 0).toFixed(2).replace(/[.,]00$/, "")
 

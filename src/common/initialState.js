@@ -2,27 +2,36 @@
 const initialState = {
   "config": {
     "appName": "FinanGo",
-    // "storage": "local",
-    "storage": "localfake",
+    "storage": "local",
+    // "storage": "localfake",
     // "storage": "mongodb",
     // "storage": "mongolab",
     "mongolab": {
       "apiKey": "apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD",
       "databaseURL": "https://api.mlab.com/api/1/databases/shop/collections/"
     },
-    "firebase": {
-      "apiKey": "AIzaSyDZRAOrDErAaC-TCKbr4cMzaohsPR4sWgU",
-      "authDomain": "este.firebaseapp.com",
-      "databaseURL": "https://este.firebaseio.com",
-      "storageBucket": "project-808488257248094054.appspot.com"
-    },
     "user": {
-      // andy pro
-      "id" : "5856ffa4da7d1f056c935686",
-      // faddey
-      // "id" : "58a33d33793e920948fb163c",
+      "id" : "5856ffa4da7d1f056c935686", // andy pro
+      // "id" : "58a33d33793e920948fb163c", // faddey
     },
-    "sentryUrl": "https://f297cec9c9654088b8ccf1ea9136c458@app.getsentry.com/77415"
+    "users": {
+      "5856ffa4da7d1f056c935686": {
+        "id" : "5856ffa4da7d1f056c935686",
+        "firstName" : "Андрей",
+        "lastName" : "Проценко",
+        "displayName": "Andy Pro",
+        "photoURL": "https://avatars.githubusercontent.com/u/12512653?v=3",
+        "currency": "₴"
+      },
+      "58a33d33793e920948fb163c": {
+        "id" : "58a33d33793e920948fb163c",
+        "firstName" : "Ярослав",
+        "lastName" : "Проценко",
+        "displayName": "Faddey",
+        "photoURL": "https://avatars.githubusercontent.com/u/12512653?v=3",
+        "currency": "₴"
+      },
+    },
   },
   "device": {
     "host": "",

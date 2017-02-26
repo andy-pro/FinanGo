@@ -54,8 +54,8 @@ export type AuthState = {
 export type ConfigState = {
   appName: string,
   appVersion: string,
-  firebase: ?Object,
-  sentryUrl: string,
+  // firebase: ?Object,
+  // sentryUrl: string,
 };
 
 export type DeviceState = {

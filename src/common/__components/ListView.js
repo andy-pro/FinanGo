@@ -6,41 +6,67 @@ class ListView extends Component {
 
   static DataSource = function(methods) {
 
+    // rowHasChanged(prevRowData, nextRowData);
+    // sectionHeaderHasChanged(prevSectionData, nextSectionData);
+    // getSectionHeaderData(dataBlob, sectionID);
+    // getRowData(dataBlob, sectionID, rowID);
+
     // methods example:
       // rowHasChanged: (r1, r2) => r1 !== r2,
       // sectionHeaderHasChanged : (s1, s2) => s1 !== s2,
-      // getSectionData: (dataBlob, sectionId) => dataBlob[sectionId],
+      // getSectionHeaderData: (dataBlob, sectionId) => dataBlob[sectionId],
       // getRowData: (dataBlob, sectionId, rowId) => dataBlob[rowId]
 
-    this.cloneWithRows = dataBlob => ({
-      dataBlob,
-      methods
+    const props = {
+      _rowHasChanged: methods.rowHasChanged,
+      _getRowData: methods.getRowData,
+      _sectionHeaderHasChanged: methods.sectionHeaderHasChanged,
+      _getSectionHeaderData: methods.getSectionHeaderData,
+    }
+
+    this.cloneWithRows = _dataBlob => ({
+      _dataBlob,
+      ...props
     })
 
-    this.cloneWithRowsAndSections = (dataBlob, sectionIds, rowIds) => ({
-      dataBlob,
-      sectionIds,
-      rowIds,
-      methods,
+    this.cloneWithRowsAndSections = (_dataBlob, sectionIdentities, rowIdentities) => ({
+      _dataBlob,
+      sectionIdentities,
+      rowIdentities,
+      ...props,
     })
+
+    /*
+    _dirtyRows, [[true, true, true ...]
+    _dirtySections, [true, true, ...]
+    _cachedRowCount,
+    rowIdentities,
+    sectionIdentities
+    */
 
   }
 
   render() {
     const {style, dataSource, renderSectionHeader, renderRow} = this.props
 
-    let { dataBlob, sectionIds, rowIds, methods } = dataSource
+    let {
+      _dataBlob,
+      sectionIdentities,
+      rowIdentities,
+      _getRowData,
+      _getSectionHeaderData,
+    } = dataSource
 
-    return sectionIds ?
+    return sectionIdentities ?
       <View style={style}>
-        {sectionIds.map((sid, index) => {
-          let sectionData = methods.getSectionData(dataBlob, sid)
-          let rows = rowIds[index]
+        {sectionIdentities.map((sid, index) => {
+          let sectionData = _getSectionHeaderData(_dataBlob, sid)
+          let rows = rowIdentities[index]
           return (
             <div key={sid}>
               {renderSectionHeader(sectionData, sid)}
               {rows.map(rid => {
-                let rowData = methods.getRowData(dataBlob, sid, rid)
+                let rowData = _getRowData(_dataBlob, sid, rid)
                 return (
                   <div key={rid}>
                     {renderRow(rowData, sid, rid)}
@@ -53,7 +79,7 @@ class ListView extends Component {
       </View>
     :
       <View style={style}>
-        {dataBlob.map((item, index) => {
+        {_dataBlob.map((item, index) => {
           return (
             <div key={item.id || index}>
               {renderRow(item, index, index)}

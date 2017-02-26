@@ -22,6 +22,6 @@ export const getSuggestions = (inputList, query, order) => {
   createList(inputList);
   return suggestions.sort((a, b) => (b.path.length - a.path.length)*order);
 };
-
-export const calcBalance = (data, ids) =>
-  ids.reduce((b, id) => b + data[id].summary, 0)
+//
+// export const calcBalance = ({ dataBlob, sectionIds }) =>
+//   sectionIds.reduce((b, id) => b + dataBlob[id].summary, 0)

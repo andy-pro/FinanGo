@@ -1,6 +1,3 @@
-// @flow
-// import type { Action } from '../types';
-// import { assocPath, dissocPath, filter } from 'ramda';
 import {
   unshiftItem,
   pushItem,

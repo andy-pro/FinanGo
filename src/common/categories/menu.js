@@ -38,11 +38,11 @@ class CategoryMenu extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.category !== this.props.category) seFocus()
+    if (prevProps.category !== this.props.category) this.setFocus()
   }
 
   componentDidMount() {
-    setFocus()
+    this.setFocus()
   }
 
   setFocus = () => {

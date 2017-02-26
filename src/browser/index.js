@@ -1,11 +1,11 @@
 // @flow
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Root from './app/Root';
-// import configureReporting from '../common/configureReporting';
-import configureStore from '../common/configureStore';
 import localforage from 'localforage';
 import uuid from 'uuid';
+
+import configureStore from '../common/__config/store';
+import Root from './app/Root';
 
 const initialState = window.__INITIAL_STATE__; // eslint-disable-line no-underscore-dangle
 
@@ -17,8 +17,13 @@ const initialState = window.__INITIAL_STATE__; // eslint-disable-line no-undersc
 
 const store = configureStore({
   initialState,
-  platformDeps: { uuid, storageEngine: localforage },
+  platformDeps: {
+    config: initialState.config,
+    uuid,
+    storageEngine: localforage
+  },
   // platformMiddleware: [reportingMiddleware],
+  // platformMiddleware: [localDBMiddleware],
 });
 
 // console.log('store is:', store.getState());

@@ -1,6 +1,6 @@
 // @flow
 export { ThemeProvider } from 'react-fela';
-export { default as Baseline } from './Baseline';
+// export { default as Baseline } from './Baseline';
 export { default as Box } from './Box';
 export { default as Button } from './Button';
 export { default as Checkbox } from './Checkbox';
@@ -19,7 +19,7 @@ export { default as Radio } from './Radio';
 export { default as SwitchTheme } from './SwitchTheme';
 export { default as Text } from './Text';
 export { default as Title } from './Title';
-export { default as ToggleBaseline } from './ToggleBaseline';
+// export { default as ToggleBaseline } from './ToggleBaseline';
 // export { default as focus } from './focus';
 export { default as fxbml } from './fxbml';
 export { default as styled } from './styled';

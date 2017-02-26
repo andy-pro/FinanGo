@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
-import App from './App';
-import configureFela from '../../common/configureFela';
 import { BrowserRouter } from 'react-router';
-import { Provider as Fela } from 'react-fela';
 import { Provider as Redux } from 'react-redux';
+import { Provider as Fela } from 'react-fela';
+import configureFela from '../../common/__config/fela';
+import App from './App';
 
 // This should be part of Fela.
 // TODO: https://github.com/rofrischmann/fela/issues/125

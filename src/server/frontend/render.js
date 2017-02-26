@@ -1,18 +1,20 @@
 // @flow
-import App from '../../browser/app/App';
-import Helmet from 'react-helmet';
-import Html from './Html';
 import React from 'react';
-import ServerFetchProvider from './ServerFetchProvider';
-import config from '../config';
-import configureFela from '../../common/configureFela';
-import configureStore from '../../common/configureStore';
-import createInitialState from './createInitialState';
-import serialize from 'serialize-javascript';
-import { Provider as Fela } from 'react-fela';
-import { Provider as Redux } from 'react-redux';
-import { createServerRenderContext, ServerRouter } from 'react-router';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
+import { createServerRenderContext, ServerRouter } from 'react-router';
+import { Provider as Redux } from 'react-redux';
+import { Provider as Fela } from 'react-fela';
+import serialize from 'serialize-javascript';
+import Helmet from 'react-helmet';
+
+import Html from './Html';
+import App from '../../browser/app/App';
+import ServerFetchProvider from './ServerFetchProvider';
+import configureFela from '../../common/__config/fela';
+import configureStore from '../../common/__config/store';
+import createInitialState from './createInitialState';
+import config from '../config';
+
 
 const settleAllWithTimeout = promises => Promise
   .all(promises.map(p => p.reflect()))

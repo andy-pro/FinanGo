@@ -1,9 +1,6 @@
 import { Observable } from 'rxjs'
 import * as api from '../__api'
-import initialState from '../initialState'
-import mockData from '../configureMockData'
-
-const { storage, locally } = initialState.config
+import mockData from '../__config/mockData'
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const clearTransactions = () => ({
@@ -11,12 +8,22 @@ export const clearTransactions = () => ({
 })
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-const getTransactions = (date) => {
-  switch (storage) {
+const getTransactions = date => ({ config, getState }) => {
+
+  switch (config.storage) {
     case 'localfake':
       return {
         type: 'GET_TRANSACTIONS',
         payload: mockData.transactions
+      }
+    case 'local':
+      let state = getState()
+      // console.log('state', state);
+      // let transactions = localdb.find(state, { date: date })
+      return {
+        // type: 'LOCAL_DB_QUERY',
+        type: 'GET_TRANSACTIONS',
+        payload: transactions
       }
     default:
       return {
@@ -43,8 +50,9 @@ const monthChangedEpic = action$ =>
     .map(action => getTransactions(action.payload))
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 export const addTransaction = payload => ({
-  type: locally ? 'TRANSACTION_ADDED' : 'ADD_TRANSACTION_EPIC',
+  type: 'ADD_TRANSACTION_EPIC',
   payload
 })
 
@@ -52,10 +60,7 @@ const addTransactionEpic = action$ =>
   action$.ofType('ADD_TRANSACTION_EPIC')
     .mergeMap(action =>
       api.addTransaction(action.payload)
-        .map(payload => ({
-          type: 'TRANSACTION_ADDED',
-          payload
-        }))
+        .map(d => d('TRANSACTION_ADDED'))
     )
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -72,7 +77,8 @@ export const undoDelTransaction = id => ({
 const preDelTransactionEpic = action$ => action$.ofType('WILL_DEL_TRANSACTION')
   .mergeMap(action =>
     Observable.of({
-      type: locally ? 'TRANSACTION_DELETED' : 'DEL_TRANSACTION',
+      // type: locally ? 'TRANSACTION_DELETED' : 'DEL_TRANSACTION',
+      type: true ? 'TRANSACTION_DELETED' : 'DEL_TRANSACTION',
       id: action.id
     })
     .delay(3000)

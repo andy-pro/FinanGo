@@ -38,14 +38,11 @@ const reducer = (
     case 'APP_ONLINE':
       return { ...state, online: action.payload.online };
 
-    case 'APP_STARTED':
+    case 'APP_START':
       return { ...state, started: true };
 
     case 'MONTH_CHANGED':
       return { ...state, date: action.payload };
-
-    case 'TOGGLE_BASELINE':
-      return { ...state, baselineShown: !state.baselineShown };
 
     case 'SET_THEME':
       return { ...state, currentTheme: action.payload.theme };
