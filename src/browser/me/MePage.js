@@ -1,10 +1,8 @@
 // @flow
 import React from 'react';
-import getUserPhotoUrl from '../../common/user/getUserPhotoUrl';
-// import linksMessages from '../../common/app/linksMessages';
-// import { FormattedMessage } from 'react-intl';
-import { Match, Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import { Match, Redirect } from 'react-router';
+import getUserPhotoUrl from '../../common/user/getUserPhotoUrl';
 import {
   Box,
   Image,

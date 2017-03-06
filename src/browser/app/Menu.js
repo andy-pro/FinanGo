@@ -8,12 +8,12 @@ import { getTransactions } from '../../common/transactions/actions';
 import { Link } from '../app/components';
 import { View, Text } from '../../common/__components'
 import messages from '../messages'
-import menuTitles from '../../common/app/menuTitles'
 
-import { mainStyles } from '../../common/__themes'
+import { mainCSS } from '../../common/__themes'
 
-const HeaderLink = ({ exactly, to, message, action }) => {
-  message = message || messages[menuTitles[to]]
+const MenuLink = ({ exactly, to, message, action }) => {
+  let linkTitle = 'links.' + (to.slice(1) || 'home')
+  message = message || messages[linkTitle]
   if (action) to = action
   return (
     <Link
@@ -30,32 +30,46 @@ const HeaderLink = ({ exactly, to, message, action }) => {
   );
 }
 
-const Header = ({ user, date, getTransactions }) => {
+const Menu = ({ user, date, getTransactions, delHandler }, { history }) => {
+
+  const refresh = () => {
+    let p = history.location.pathname
+    if (p === '/' || p === '/single' || p ==='/delete') {
+      getTransactions(date)
+    }
+  }
+
   return (
-    <View style={mainStyles.menu}>
-      <HeaderLink exactly to="/" />
-      <HeaderLink to="/single" />
-      <HeaderLink to="/group" />
-      <HeaderLink to="/income" />
-      <HeaderLink to='/refresh' action={() => getTransactions(date)} />
-      <HeaderLink to="/categories" />
-      <HeaderLink to="/settings" />
-      <View style={mainStyles.menuFooter}>
+    <View style={mainCSS.menu}>
+      <MenuLink exactly to="/" />
+      <MenuLink to="/single" />
+      <MenuLink to="/group" />
+      <MenuLink to="/income" />
+      <MenuLink to='/refresh' action={refresh} />
+      <MenuLink to="/delete" action={delHandler} />
+      <MenuLink to="/categories" />
+      <MenuLink to="/settings" />
+      <View style={mainCSS.menuFooter}>
         {user &&
-          <HeaderLink to="/me" message={user.displayName} />
+          <MenuLink to="/me" message={user.displayName} />
         }
       </View>
     </View>
   );
 }
 
+Menu.contextTypes = {
+  history: React.PropTypes.object,
+};
+
 export default connect(
-  (state) => ({
+  ({ app , user }) => ({
     // currentLocale: state.intl.currentLocale,
-    date: state.app.date,
-    user: state.user,
+    date: app.date,
+    delHandler: app.delHandler,
+    user,
     // themeName: state.app.currentTheme,
     // theme: themes[state.app.currentTheme] || themes.defaultTheme,
   }),
   { getTransactions }
-)(Header);
+)(Menu);

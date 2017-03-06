@@ -1,5 +1,5 @@
-import Match from './Match'
-import Checkbox from './Checkbox'
+import Match from '../Match'
+import Checkbox from '../Checkbox'
 import ListView from './ListView'
 import Icon from './icons/Ionicons';
 // import DatePicker from './DatePicker'
@@ -14,6 +14,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from './fela'
 
 const Alert = {
@@ -34,6 +35,7 @@ export {
   TouchableHighlight,
   TouchableOpacity,
   ScrollView,
+  Image,
   Match,
   Checkbox,
   ListView,

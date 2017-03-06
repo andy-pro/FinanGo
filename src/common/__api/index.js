@@ -1,8 +1,3 @@
-// import * as mongo from './mongodb'
-
-// export { mongo as api }
-// export * from './mongodb'
-
 import config from '../config'
 
 let localdb = require('./localdb')
@@ -10,6 +5,8 @@ let fakedb = require('./fakedb')
 let mongodb = require('./mongodb')
 
 let api
+
+/* set necessary adapter */
 
 switch (config.storage) {
   case 'local':

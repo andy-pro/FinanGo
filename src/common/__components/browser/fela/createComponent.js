@@ -34,6 +34,10 @@ function createComponent(rule) {
     //   ...ruleProps
     // }
 
+    if (style instanceof Array) {
+      style = Object.assign({}, ...style)
+    }
+
     // filter props to extract props to pass through
     var componentProps = passThroughProps.reduce(function (output, prop) {
       // console.log('QWERT', prop, ruleProps);
@@ -51,12 +55,17 @@ function createComponent(rule) {
         case '$ref':
           output.ref = ruleProps.$ref;
           break;
+        case 'source':
+          output.src = ruleProps.source;
+          break;
         case 'underlayColor':
+          // console.log('%cstyle add hover!!! before:', 'color:blue',JSON.stringify(style));
+          // console.log('fn=', rule);
           style[':hover'] = {
             backgroundColor: ruleProps.underlayColor,
             cursor: 'pointer'
           };
-          // console.log('style', style);
+          // console.log('%cstyle add hover!!! after:', 'color:red',JSON.stringify(style));
           break;
         default:
           output[prop] = ruleProps[prop];
@@ -67,12 +76,14 @@ function createComponent(rule) {
 
     componentProps.id = id;
 
+    // console.log('style', JSON.stringify(style));
+
     var cls = className ? className + ' ' : '';
     componentProps.className = cls + renderer.renderRule(rule, { theme, style });
-    if (componentProps.placeholder) {
+    // if (componentProps.placeholder) {
       // console.log('PROPS', componentProps);
 
-    }
+    // }
     return (0, _react.createElement)(type, componentProps, children);
   };
 

@@ -1,23 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { delTransaction, undoDelTransaction } from './actions'
-import { setCurrentBalance } from '../app/actions'
 
-import { View, Text, TouchableHighlight, TouchableOpacity, ListView, Icon, Alert } from '../__components';
+import { setBalance, setDelHandler } from './actions'
+
+import { View, Text, TouchableHighlight, TouchableOpacity, ListView, Icon, Checkbox } from '../__components';
 import { getCategoryBySlug, fmtCost } from '../__lib/utils'
 import Summary from './summary'
 
 import scan from './scan'
 // import { calcBalance } from './utils'
 
-import { colors, mainStyles, transactions as styles, iconBtn as iconBtnStyle } from '../__themes'
-
-/* presets */
-const del_btn = { name: 'ios-trash-outline', backgroundColor: '#d66' }
-const rfr_btn = { name: 'ios-refresh-circle-outline', backgroundColor: '#18a06a' }
-const dis_btn = { name: 'ios-refresh-circle-outline', backgroundColor: '#aaa' }
-
+import { colors, mainCSS, transactionsCSS as styles, iconBtnCSS } from '../__themes'
 
 let ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
@@ -43,45 +37,45 @@ class RenderTransactions extends Component {
 
     // const { transactions, groupMode } = props
     // this.state = {
-    //   editing: false,
     //   dataSource: this.scanAndClone(transactions, groupMode, 0)
     // }
   }
   */
 
   componentWillMount() {
+    console.log('transactions renderer mount!!!!');
     const { transactions, groupMode } = this.props
     this.state = {
-      editing: false,
       ds: this.scanAndClone(transactions, groupMode, 0)
     }
   }
 
-  scanAndClone = (transactions, groupMode, toggleId) => {
+  scanAndClone = (transactions, groupMode, shownId) => {
     let data = scan(transactions, groupMode)
     if (this.props.pattern === '/') {
       // let balance = calcBalance(transactions)
-      this.props.setCurrentBalance(data.balance)
+      this.props.setBalance(data.balance)
     }
     let { dataBlob, sectionIds, rowIds } = data
-    if (toggleId !== undefined && data.length) {
-      let sid = sectionIds[toggleId]
+    if (shownId !== undefined && data.length) {
+      let sid = sectionIds[shownId]
       let blob = dataBlob[sid]
-      this.toggleItemsShown(blob, dataBlob, rowIds)
+      this.setItemsShown(blob, dataBlob, rowIds, true)
     }
     return ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
   }
 
   onSectionPress = blob => {
     let { _dataBlob, sectionIdentities, rowIdentities } = this.state.ds
-    this.toggleItemsShown(blob, _dataBlob, rowIdentities)
+    this.setItemsShown(blob, _dataBlob, rowIdentities) // toggle
     this.setState({
       ds: ds.cloneWithRowsAndSections(_dataBlob, sectionIdentities, rowIdentities)
     })
   }
 
-  toggleItemsShown = (blob, dataBlob, rowIds) => {
-    let shown = !Boolean(blob.shown)
+  setItemsShown = (blob, dataBlob, rowIds, value) => {
+    // if value is undefined 'shown' will be toggled
+    let shown = value === undefined ? !Boolean(blob.shown) : value
     blob.shown = shown
     rowIds[blob.rows].forEach(row => dataBlob[row].shown = shown)
   }
@@ -91,40 +85,77 @@ class RenderTransactions extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('we are receive props');
-    const { transactions, groupMode } = nextProps
-    this.setState({
-      ds: this.scanAndClone(transactions, groupMode, 0)
-    })
-  }
-
-  onDelTransaction = (e, item) => {
-    if (item.willDel) {
-      // console.log('%cundelete transaction', 'color:green;font-size:15px', item.id)
-      this.props.undoDelTransaction(item.id)
-    } else {
-      // console.log('%cdelete transaction', 'color:red;font-size:15px', item.id)
-      this.props.delTransaction(item.id)
+    console.log('we are receive props');
+    let { transactions, groupMode, date } = nextProps,
+        { _transactions, _groupMode, _date } = this.props,
+        rescan = transactions !== _transactions || groupMode !== _groupMode
+    if (rescan) {
+      this.setState({
+        ds: this.scanAndClone(transactions, groupMode, date === _date ? undefined : 0)
+        // ds: this.scanAndClone(transactions, groupMode)
+      })
     }
   }
 
   onTransactionPress = () => {
-    // Alert.alert('quququ editing:'+this.state.editing)
-    if (this.state.editing) return
-    if (this.props.editable && !this.state.editing) {
-      this.setState({
-        editing: true
+    if (this.props.editable && !this.props.delHandler) {
+      this.props.setDelHandler(this.props.delTransactions)
+    }
+  }
+
+  // deleteTransactions = () => {
+  //   let { _dataBlob, sectionIdentities, rowIdentities } = this.state.ds
+  //   const ids = []
+  //   rowIdentities.forEach(days => {
+  //     days.forEach(row => {
+  //       let item = _dataBlob[row]
+  //       if (item.delFlag) ids.push(item.id)
+  //     })
+  //   })
+  //
+  //   // return this.props.delTransactions(ids)
+  //
+  //   let args, len = ids.length
+  //   if (len) {
+  //     args =[
+  //       `Are you shure? (${len} items)`,
+  //       [
+  //         { text: 'Cancel', null, style: 'cancel' },
+  //         { text: 'OK', onPress: () => this.props.delTransactions(ids) },
+  //       ],
+  //       { cancelable: false }
+  //     ]
+  //   } else args = ['Nothing to remove']
+  //   Alert.alert('Delete transactions', ...args)
+  // }
+
+  toggleDelBlob = (blob, sectionId) => {
+    let { _dataBlob, sectionIdentities, rowIdentities } = this.state.ds
+    let children = rowIdentities[_dataBlob[sectionId].rows]
+    delFlag = !Boolean(blob.delFlag)
+    blob.delFlag = delFlag
+    if (blob.day) { // it's a day
+      children.forEach(row => {
+        _dataBlob[row].delFlag = delFlag
+      })
+    } else if (blob.groupMaster) { // it's a group transaction
+      let { groupId } = blob
+      children.forEach(row => {
+        row = _dataBlob[row]
+        if (row.groupId === groupId) row.delFlag = delFlag
       })
     }
+    this.setState({
+      ds: ds.cloneWithRowsAndSections(_dataBlob, sectionIdentities, rowIdentities)
+    })
   }
 
 //=====================================
   render() {
 //=====================================
-    let { user, categories, transactions, groupMode } = this.props
+    let { user, categories, transactions, groupMode, delHandler } = this.props
     console.log('%crender transactions, count:', 'color:blue;font-weight:bold', transactions.length);
     if (!user || !transactions.length) return null
-    let { editing } = this.state
     const { currency } = user
 
     const renderSummaryDay = (id) => {
@@ -156,7 +187,7 @@ class RenderTransactions extends Component {
       return `Покупок: ${amount} на сумму: ${summary} ${currency}`
     }
 
-    const renderSectionHeader = (blob, id) => {
+    const renderSectionHeader = (blob, sectionId) => {
       let name = blob.shown ? 'remove' : 'add'
       return (
         <View style={styles.header}>
@@ -166,6 +197,13 @@ class RenderTransactions extends Component {
           >
             {groupMode ? renderGroupInfo(blob) : blob.day}
           </Icon.Button>
+          {delHandler &&
+            <Checkbox
+              onPress={() => this.toggleDelBlob(blob, sectionId)}
+              style={mainCSS.rcheckbox}
+              checked={blob.delFlag}
+            />
+          }
         </View>
       )
     }
@@ -178,42 +216,31 @@ class RenderTransactions extends Component {
         return item.last ? renderSummaryDay(sectionId) : null
       }
 
-      let button
-
-      if (editing) {
-        button = item.didDel ? {...dis_btn} : item.willDel ? {...rfr_btn} : {...del_btn}
-        button.style = iconBtnStyle
-        if (!item.didDel) {
-          button.onPress = (e) => this.onDelTransaction(e, item)
-        }
-      }
-
       return (
         <View>
 
           <TouchableHighlight
             onPress={this.onTransactionPress}
             underlayColor={colors.touch}
-          >
-
-            <View style={[
+            style={[
               styles.item,
               item.groupId ? styles.group : null,
-              item.groupMaster ? styles.groupMaster : null
-            ]}>
+              item.groupMaster ? styles.groupMaster : null,
+            ]}
+          >
 
               {item.groupMaster ?
 
-                <View style={mainStyles.row}>
+                <View style={mainCSS.row}>
                   <Icon.Button
                     name="ios-list-box-outline"
                     backgroundColor={colors.header}
                     onPress={this.onGroupSubmit}
-                    style={iconBtnStyle}
+                    style={iconBtnCSS}
                   />
 
                   <View style={styles.groupInfo}>
-                    <View style={mainStyles.row}>
+                    <View style={mainCSS.row}>
                       <Text style={styles.groupTitle}>
                         {item.title}
                       </Text>
@@ -224,7 +251,10 @@ class RenderTransactions extends Component {
                     </View>
                     <View>
                       <Text style={styles.category}>
-                        Покупок: {item.amount}
+                        Покупок: {item.amount} на сумму:{' '}
+                        <Text style={styles.cost}>
+                          {fmtCost(item.groupCost)} {currency}
+                        </Text>
                       </Text>
                     </View>
                   </View>
@@ -234,7 +264,7 @@ class RenderTransactions extends Component {
               :
 
                 <View>
-                  <View style={mainStyles.row}>
+                  <View style={mainCSS.row}>
                     <Text style={styles.title}>
                       {item.title}
                     </Text>
@@ -261,24 +291,22 @@ class RenderTransactions extends Component {
                 </View>
               }
 
-              <View style={mainStyles.row}>
-
-                {item.groupMaster ?
-                  <Summary value={item.groupCost} />
-                  :
+              <View style={mainCSS.row}>
+                {!item.groupMaster &&
                   <Text style={styles.cost}>
                     {fmtCost(item.cost)} {currency}
                   </Text>
                 }
-
-                {editing &&
-                  <View style={{marginLeft: 15}}>
-                    <Icon.Button {...button} />
-                  </View>
+                {delHandler &&
+                  <Checkbox
+                    onPress={() => this.toggleDelBlob(item, sectionId)}
+                    style={mainCSS.rcheckbox}
+                    checked={item.delFlag}
+                  />
                 }
               </View>
 
-            </View>
+
 
           </TouchableHighlight>
 
@@ -292,7 +320,7 @@ class RenderTransactions extends Component {
 
     return (
       <ListView
-        style={mainStyles.container}
+        style={mainCSS.container}
         dataSource={this.state.ds}
         renderRow={renderRow}
         renderSectionHeader={renderSectionHeader}
@@ -308,6 +336,8 @@ class RenderTransactions extends Component {
 // export default RenderTransactions
 
 export default connect(
-  null,
-  { delTransaction, undoDelTransaction, setCurrentBalance }
+  ({app}) => ({
+    delHandler: Boolean(app.delHandler),
+  }),
+  { setBalance, setDelHandler }
 )(RenderTransactions);

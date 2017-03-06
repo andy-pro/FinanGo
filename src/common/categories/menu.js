@@ -5,8 +5,10 @@ import { addCategory, updateCategory, delCategory } from './actions'
 import { removeSpecial, getSlug, findDuplicate, testColor } from '../__lib/utils'
 import { Form, View, TextInput, Icon, Checkbox, Alert } from '../__components';
 
-import { mainStyles, iconBtn as iconBtnStyle } from '../__themes'
-// import { iconBtn as iconBtnStyle } from '../__themes'
+import Checkbox2 from '../__components/Checkbox';
+
+import { mainCSS, iconBtnCSS, checkboxCSS } from '../__themes'
+// import { iconBtn as iconBtnCSS } from '../__themes'
 
 class CategoryMenu extends Component {
 
@@ -140,10 +142,10 @@ class CategoryMenu extends Component {
     // console.log('category menu render', category, this.state);
 
     return (
-        <View style={mainStyles.form}>
+        <View style={mainCSS.form}>
 
           <Form
-            style={mainStyles.row}
+            style={mainCSS.row}
             onSubmit={this.onAddSubmit}
           >
             <TextInput
@@ -159,12 +161,12 @@ class CategoryMenu extends Component {
               name='ios-add-circle-outline'
               backgroundColor={enable ? '#18a06a' : '#ddd'}
               onPress={this.onAddSubmit}
-              style={iconBtnStyle}
+              style={iconBtnCSS}
             />
           </Form>
 
           <Form
-            style={mainStyles.row}
+            style={mainCSS.row}
             onSubmit={this.onTitleSubmit}
           >
             <TextInput
@@ -179,12 +181,12 @@ class CategoryMenu extends Component {
               name='ios-create-outline'
               backgroundColor={isChild ? '#18a06a' : '#ddd'}
               onPress={this.onTitleSubmit}
-              style={iconBtnStyle}
+              style={iconBtnCSS}
             />
           </Form>
 
           <Form
-            style={mainStyles.row}
+            style={mainCSS.row}
             onSubmit={this.onColorSubmit}
           >
             <TextInput
@@ -198,24 +200,22 @@ class CategoryMenu extends Component {
               name='ios-color-palette-outline'
               backgroundColor={isChild ? checkColor(this.state.color, '#ddd') : '#ddd'}
               onPress={this.onColorSubmit}
-              style={iconBtnStyle}
+              style={iconBtnCSS}
             />
           </Form>
 
-          <View style={mainStyles.between}>
+          <View style={mainCSS.between}>
             <Checkbox
               label='Preserve references'
               disabled={!isChild}
               checked={this.state.preserve}
               onPress={this.onPreserveChange}
-              style={mainStyles.checkbox}
             />
-
             <Icon.Button
               name='ios-remove-circle-outline'
               backgroundColor={isChild ? '#d66' : '#ddd'}
               onPress={isChild ? this.onDelete : null}
-              style={iconBtnStyle}
+              style={iconBtnCSS}
             />
           </View>
 
@@ -227,7 +227,7 @@ class CategoryMenu extends Component {
   propSet0 = {
     // onBlur: this.onBlur,
     // required: true,
-    style: [mainStyles.input, {marginRight: 10}],
+    style: [mainCSS.input, {marginRight: 10}],
     keyboardType: 'default',
     returnKeyType: 'done',
     autoCapitalize: 'sentences',

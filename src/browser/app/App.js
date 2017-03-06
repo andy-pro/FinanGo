@@ -1,5 +1,7 @@
 // @flow
 import React, { Component } from 'react';
+import { Redirect, Miss } from 'react-router';
+import { connect } from 'react-redux';
 import * as themes from './themes';
 import Page from './Page';
 // import Header from './Header';
@@ -7,18 +9,10 @@ import Page from './Page';
 import Menu from './Menu';
 import Helmet from 'react-helmet';
 import favicon from '../../common/app/favicon';
-// import start from '../../common/app/start';
-// import { Match } from '../../common/__components';
-import { Redirect, Miss } from 'react-router';
-
 import { appStart, appStop } from '../../common/app/actions';
-
-import { connect } from 'react-redux';
-
 import messages from '../messages'
 
 import {
-  // Baseline,
   Box,
   Container,
   ThemeProvider,
@@ -77,6 +71,7 @@ class App extends Component {
             <Page pattern="/single" component={TransactionsPage} />
             <Page pattern="/group" component={TransactionsPage} />
             <Page pattern="/income" component={TransactionsPage} />
+            <Page pattern="/delete" component={TransactionsPage} />
             <Page pattern="/categories" component={CategoriesPage} />
             <Page pattern="/settings" component={IntlPage} />
             <Page authorized pattern="/me" component={MePage} />

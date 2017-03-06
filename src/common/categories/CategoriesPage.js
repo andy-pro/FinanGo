@@ -8,8 +8,8 @@ import { splitOnce, getCategoryByPath } from '../__lib/utils'
 
 import CategoryMenu from './menu'
 
-import { mainStyles, categories as styles } from '../__themes'
-// import { mainStyles } from '../__themes'
+import { mainCSS, categoriesCSS as styles } from '../__themes'
+// import { mainCSS } from '../__themes'
 
 const ROOT_PATH = 'categories'
 
@@ -128,10 +128,10 @@ class Categories extends Component {
     }
 
     return (
-      <View style={mainStyles.root}>
+      <View style={mainCSS.root}>
 
         {showMenu &&
-          <View style={mainStyles.divider}>
+          <View style={mainCSS.divider}>
             <CategoryMenu
               category={this.state.category}
               enable={this.state.showMenu}

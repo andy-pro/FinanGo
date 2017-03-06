@@ -1,30 +1,18 @@
 import { Observable } from 'rxjs'
 
-import users from '../../__data/users'
-import config from '../../config'
 import constants from './constants'
 
-export const getUserData = payload => {
-  let { userId } = config,
-      user = users[userId];
-  return Observable.of({
-    user,
-    categories: payload.categories,
-    transactions: payload.localdb.transactions
-  })
-}
-
-export const addTransaction = transaction =>
-  Observable.of(payload => {
-    payload.payload = transaction
-    return {
-      type: constants.QUERY,
-      query: { table: 'transactions', $op: 'add' },
-      payload
-    }
+const __transactionsQuery = ($op, action) =>
+  Observable.of({
+    type: constants.QUERY,
+    query: { table: 'transactions', $op },
+    payload: action
   })
 
-  // Observable.of(action => {
-  //   action.payload = transaction
-  //   return action
-  // })
+export const getUserData = action => __transactionsQuery('init', action)
+
+export const addTransaction = action => __transactionsQuery('add', action)
+
+export const delTransactions = action => __transactionsQuery('del', action)
+
+export const getTransactions = action => __transactionsQuery('get', action)

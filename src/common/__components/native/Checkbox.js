@@ -1,17 +1,16 @@
 // @flow
 import React from 'react';
-import theme from '../themes/initial';
 import { Image, Text, TouchableOpacity } from 'react-native';
-import { checkbox as style } from '../../../common/__themes'
+import { checkbox as style } from '../../__themes'
 
 const Checkbox = ({ checked, onPress, label, disabled }) => {
   const image = checked
-    ? require('./img/CheckboxChecked.png')
-    : require('./img/Checkbox.png');
+    ? require('../img/CheckboxChecked.png')
+    : require('../img/Checkbox.png');
 
   return (
     <TouchableOpacity
-      activeOpacity={theme.activeOpacity}
+      activeOpacity={0.5}
       onPress={disabled ? null : onPress}
       style={style.input}
     >

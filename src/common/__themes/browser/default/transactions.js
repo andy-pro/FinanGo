@@ -2,10 +2,10 @@ import * as CONST from './_const'
 
 const transactions = {
   header: {
-    // flexDirection: 'row',
-    // justifyContent: 'flex-start',
+    display: 'flex',
+    justifyContent: 'space-between',
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 6,
   },
   item: {
     // flex: 1,
@@ -14,11 +14,11 @@ const transactions = {
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     justifyContent: 'space-between',
-    paddingVertical: 3,
-    paddingHorizontal: 10,
+    paddingTop: 4,
+    paddingLeft: 10,
     // padding: 10,
     alignItems: 'center',
-    cursor: 'pointer',
+    // cursor: 'pointer',
     color: '#555',
   },
   title: {
@@ -61,6 +61,7 @@ const transactions = {
   cost: {
     fontSize: 14,
     color: 'red',
+    paddingRight: 10,
   },
 
   resumeTitle: {
@@ -75,23 +76,17 @@ const transactions = {
     // color: '#888'
   },
 
-  // date: {
-  //   color:'#555',
-  //   fontSize: 16,
-  //   backgroundColor: '#ddd',
-  //   padding: 5,
-  //   borderRadius: 5,
-  //   marginVertical: 15,
-  //   display: 'inline-block'
-  // },
   time: {
     color: '#555',
     fontSize: 11,
     backgroundColor: '#ddd',
+    paddingHorizontal: 3,
+    paddingVertical: 1,
+    marginLeft: 10,
     borderRadius: 3,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    marginLeft: 10
+    borderColor: '#ccc',
+    borderStyle: 'solid',
+    borderWidth: 1,
   },
   summary: {
     fontSize: 14,
@@ -99,8 +94,8 @@ const transactions = {
     color: '#fff',
     padding: 5,
     borderRadius: 6,
-    borderColor: '#fff',
-    borderWidth: 1,
+    // borderColor: '#fff',
+    // borderWidth: 1,
   },
   summaryView: {
     display: 'flex',

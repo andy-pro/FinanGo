@@ -1,6 +1,6 @@
-import Match from './Match'
+import Match from '../Match'
 // import Modal from './Modal'
-import { Checkbox } from '../../native/app/components'
+import Checkbox from './Checkbox'
 import { View as Form } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 // import DatePicker from './DatePicker'
@@ -14,6 +14,7 @@ import {
   // StyleSheet,
   TextInput,
   ScrollView,
+  Image,
   TouchableHighlight,
   TouchableOpacity,
   Alert,
@@ -28,6 +29,7 @@ export {
   // StyleSheet,
   TextInput,
   ScrollView,
+  Image,
   TouchableHighlight,
   TouchableOpacity,
   Icon,

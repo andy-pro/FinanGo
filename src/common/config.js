@@ -1,8 +1,10 @@
 const config = {
 
-  // "storage": "local",
-  "storage": "localfake",
+  "storage": "local",
+  // "storage": "localfake",
   // "storage": "mongolab",
+
+  // "populate": true,
 
   "mongolab": {
     "apiKey": "apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD",

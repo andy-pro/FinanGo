@@ -1,6 +1,7 @@
 import { REHYDRATE } from 'redux-persist/constants';
 
-import { getUserData, getUserData2 } from '../user/actions'
+// import { getUserData } from '../user/actions'
+import * as api from '../__api'
 import * as dt from '../__lib/dateUtils'
 
 export const appError = (error: Object) => ({
@@ -27,14 +28,9 @@ export const appStop = () => ({
   type: 'APP_STOP',
 });
 
-export const changeMonth = date => ({
+export const changeMonth = (date=dt.getCurrentDate()) => ({
   type: 'MONTH_CHANGED',
   payload: date
-});
-
-export const setMonthToNow = () => ({
-  type: 'MONTH_CHANGED',
-  payload: dt.getCurrentDate()
 });
 
 export const setTheme = theme => ({
@@ -46,15 +42,22 @@ export const changeCategoryView = () => ({
   type: 'CHANGE_CATEGORY_VIEW',
 })
 
-export const setCurrentBalance = balance => ({
-  type: 'SET_CURRENT_BALANCE',
-  payload: balance
-})
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* start application after rehydrate data */
 // const appStartedFinanGoEpic = action$ => action$.ofType(REHYDRATE).map(getUserData)
-const appStartedFinanGoEpic = action$ => action$.ofType(REHYDRATE).switchMap(getUserData)
+const appStartedFinanGoEpic = action$ => {
+/* store is:
+  config: {appName, appVersion, locally, mongolab: {...}, storage, userId},
+  getState(), getUid(), now(), storageEngine, uuid()
+*/
+
+  return  action$.ofType(REHYDRATE)
+    // payload - is a data from REHYDRATE, need for restore from localdb to store
+    .switchMap(({ payload }) => api.getUserData({
+      type: 'USER_LOADED',
+      payload
+    }))
+}
 
 export const epics = [
   appStartedFinanGoEpic,

@@ -9,7 +9,15 @@ export default middleware = ({ dispatch, getState }) => next => action => {
 
   const file = getState()[constants.filename]
 
-  dispatch(operations(file, action))
+  // inplace-трансформация объекта action и
+  // внесение именений в store.localdb, если необходимо
+  const middle = operations(file, action)
+
+  if (middle.type === constants.STATE) {
+
+    dispatch(middle)
+
+  }
 
   dispatch(action.payload)
 

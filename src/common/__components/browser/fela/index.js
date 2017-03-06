@@ -19,9 +19,7 @@ const transformDirection = (style) => {
 }
 
 const transformStyle = (theme, style) => {
-  if (style instanceof Array) {
-    style = Object.assign({}, ...style)
-  }
+
   if (style.borderWidth) style.borderStyle = 'solid'
   if (style.borderBottomWidth) style.borderBottomStyle = 'solid'
   if (style.borderTopWidth) style.borderTopStyle = 'solid'
@@ -30,6 +28,7 @@ const transformStyle = (theme, style) => {
 
   transformDirection(style)
   // style.fontFamily = theme.text.fontFamily
+  // console.log('result style', JSON.stringify(style));
   return style
 }
 
@@ -88,6 +87,12 @@ export const ScrollView = createStylizedComponent(
   transformStyle,
   'div'
   // ['data-path', 'onKeyDown', 'onPress']
+)
+
+export const Image = createStylizedComponent(
+  transformStyle,
+  'img',
+  ['source']
 )
 
 export const Input = createStylizedComponent(

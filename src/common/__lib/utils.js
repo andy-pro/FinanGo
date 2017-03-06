@@ -109,6 +109,19 @@ export const updateItemById = (list, id, set) =>
 export const deleteItemById = (list, id) =>
   list.filter(item => item.id !== id)
 
+export const deleteItemsByIds = (list, ids) => {
+  if (!ids instanceof Array) ids = [ids]
+  ids = ids.slice(0)
+  return list.filter(item => {
+    for (let i = 0, len = ids.length; i < len; i++) {
+      if (item.id === ids[i]) {
+        ids.splice(i, 1)
+        return false
+      }
+    }
+    return true
+  })
+}
 // function update(list, element, key, set) {
 //   let value = element[key]
 //   return list.map(item =>

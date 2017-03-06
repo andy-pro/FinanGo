@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import theme from './themes/initial';
 import { Platform, StyleSheet, View, Alert } from 'react-native';
 import { appShowMenu, changeCategoryView } from '../../common/app/actions';
-import titles from '../../common/app/menuTitles';
 import messages from '../messages';
 import { Button, Text } from './components';
 import DatePicker from '../../common/__components/DatePicker'
@@ -59,7 +58,7 @@ const Header = ({ menuShown, appShowMenu, pattern, changeCategoryView }) => (
     />
 
     <Text style={styles.title}>
-      {messages[titles[pattern]]}
+      {messages[`links.${pattern.slice(1) || 'home'}.title`]}
     </Text>
 
     <View style={styles.rside}>

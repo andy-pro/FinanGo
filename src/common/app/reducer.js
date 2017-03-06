@@ -12,6 +12,7 @@ const initialState = {
   started: false,
   date: dt.getCurrentDate(),
   categoryMapView: true,
+  delHandler: null,
 };
 
 const reducer = (
@@ -50,8 +51,11 @@ const reducer = (
     case 'CHANGE_CATEGORY_VIEW':
       return { ...state, categoryMapView: !state.categoryMapView };
 
-    case 'SET_CURRENT_BALANCE':
+    case 'SET_BALANCE':
       return { ...state, currentBalance: action.payload }
+
+    case 'SET_DEL_HANDLER':
+      return { ...state, delHandler: action.payload }
 
     default:
       return state;

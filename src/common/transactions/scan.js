@@ -2,7 +2,7 @@ const scan = (data, groupMode) => {
 
   let group,
       prevItem,
-      newDay,
+      newDay = 32,
       len = data.length,
       rowDayIds,
       length = 0,
@@ -14,15 +14,33 @@ const scan = (data, groupMode) => {
   const sectionIds = []
   const rowIds = []
 
-  data.forEach((_item, i) => {
+  // data.forEach((item, i) => {
 
-    let { date, ...item } = _item,
-        dt = new Date(date),
-        time = dt.toLocaleTimeString(),
-        // day of the month
-        day = dt.getDate()
+  for (let i = len - 1; i >= 0; i--) {
 
-    if (day !== newDay) {
+    let item = data[i]
+    // let { ...item } = _item
+
+    // delete item.shown
+
+    let date, dt, time, day
+
+    try {
+      date = item.date
+      dt = new Date(date)
+      time = dt.toLocaleTimeString()
+      day = dt.getDate() // day of the month
+      console.log('day', day, 'index:', i, 'title:', item.title);
+      if (day > newDay) {
+        throw new RangeError('invalid date')
+      }
+    } catch (e) {
+      console.error(e, 'the damaged transaction, index:', i, 'data:', JSON.stringify(item))
+      continue
+    }
+
+    // if (day !== newDay) {
+    if (day < newDay) {
 
       /* New Day - New Section init */
 
@@ -43,7 +61,8 @@ const scan = (data, groupMode) => {
 
     }
 
-    let _id = `${newDay}:${item.id}`
+    // let _id = `${newDay}:${item.id}`
+    let _id = item.id
     rowDayIds.push(_id)
     dataBlob[_id] = item
     let blob = dataBlob[newDay]
@@ -54,6 +73,10 @@ const scan = (data, groupMode) => {
       balance += cost
       blob.amount++
     }
+
+    if (item.shown) blob.shown = true
+
+    delete item.delFlag
 
     if (item.groupMaster) {
 
@@ -91,11 +114,13 @@ const scan = (data, groupMode) => {
 
     }
 
-    if (i === len - 1) item.last = 1
+    if (!i) item.last = 1
 
     prevItem = item
 
-  })
+  }
+
+  // console.log('result of scan:', JSON.stringify(sectionIds, null ,2));
 
   return { dataBlob, sectionIds, rowIds, length, balance }
 

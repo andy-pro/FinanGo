@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Button } from '../fela'
-import { button as buttonStyle } from '../../__themes'
+import { buttonCSS } from '../../../__themes'
 
 export default function createIconButtonComponent(Icon) {
   return class IconButton extends Component {
@@ -10,7 +10,7 @@ export default function createIconButtonComponent(Icon) {
       let {color='white'} = this.props
       const { type, backgroundColor, onPress, children, title, ...props } = this.props;
       const style ={
-        ...buttonStyle,
+        ...buttonCSS,
         backgroundColor,
         color,
         cursor: 'pointer',

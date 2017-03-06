@@ -3,16 +3,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { changeCategoryView, changeStatsMode } from '../../common/app/actions';
-import { Box, Heading, Title } from './components';
+import { Box, Title } from './components';
 // import { DatePicker, Icon } from '../../common/__components'
 import { View, Text, Icon } from '../../common/__components'
 import DatePicker from '../../common/__components/DatePicker'
 import Summary from '../../common/transactions/summary'
 
 import messages from '../messages'
-import titles from '../../common/app/menuTitles';
 
-import { colors, mainStyles, datePicker as datePickerStyle, transactions as transactionsStyle } from '../../common/__themes'
+import { colors, mainCSS, datePickerCSS } from '../../common/__themes'
 
 const view_names = {
   table: { name: 'table', title: 'Table', icon: 'ic' },
@@ -21,9 +20,8 @@ const view_names = {
   pie:   { name: 'pie', title: 'Pie', icon: 'i9' },
 }
 
-
-const Header = ({ pattern, currentBalance, changeCategoryView, changeStatsMode }) => {
-  const title = messages[titles[pattern] + '.title']
+const Header = ({ pattern, currentBalance, changeCategoryView, changeStatsMode, delHandler }) => {
+  const title = messages[`links.${pattern.slice(1) || 'home'}.title`]
 
   let viewMode = {name: 'table'}
 
@@ -33,6 +31,8 @@ const Header = ({ pattern, currentBalance, changeCategoryView, changeStatsMode }
     onPress: changeStatsMode,
     title: view_names[name].title,
   })
+
+  let home = pattern === '/'
 
   return (
     <Box>
@@ -44,8 +44,8 @@ const Header = ({ pattern, currentBalance, changeCategoryView, changeStatsMode }
         marginTop={0}
         paddingBottom={0.5}
       >
-        <View style={mainStyles.container}>
-          <View style={mainStyles.between}>
+        <View style={mainCSS.container}>
+          <View style={mainCSS.between}>
 
             <View style={{
                 // display: 'flex',
@@ -53,8 +53,12 @@ const Header = ({ pattern, currentBalance, changeCategoryView, changeStatsMode }
                 // justifyContent: 'center'
                 textAlign: 'center'
               }}>
-              <Heading size={1} marginBottom={0}>{title}</Heading>
-              {pattern === '/' &&
+              <Text style={{
+                fontSize: 24,
+              }}>
+                {title}
+              </Text>
+              {home &&
                 <View style={{
                     paddingTop: 15
                   }}>
@@ -63,36 +67,43 @@ const Header = ({ pattern, currentBalance, changeCategoryView, changeStatsMode }
               }
             </View>
 
-              {pattern === '/' &&
-                <View style={{
-                    width: 130
-                  }}>
-                <View>
-                  <DatePicker
-                    icon={{backgroundColor: '#bbb'}}
-                    style={datePickerStyle}
-                  />
-                </View>
-                <View style={{
-                    display: 'flex',
-                    paddingTop: 10,
-                    justifyContent: 'space-between',
-                  }}>
-                  <Icon.Button { ...iconSet('table') } />
-                  <Icon.Button { ...iconSet('grid') } />
-                  <Icon.Button { ...iconSet('stats') } />
-                  <Icon.Button { ...iconSet('pie') } />
-
-                </View>
-                </View>
-              }
-              {pattern === '/categories' &&
-                <Icon.Button
-                  backgroundColor={colors.header}
-                  name="ios-eye-outline"
-                  onPress={changeCategoryView}
+            {home &&
+              <View style={{
+                  width: 130
+                }}>
+              <View>
+                <DatePicker
+                  icon={{backgroundColor: '#bbb'}}
+                  style={datePickerCSS}
                 />
-              }
+              </View>
+              <View style={{
+                  display: 'flex',
+                  paddingTop: 10,
+                  justifyContent: 'space-between',
+                }}>
+                <Icon.Button { ...iconSet('table') } />
+                <Icon.Button { ...iconSet('grid') } />
+                <Icon.Button { ...iconSet('stats') } />
+                <Icon.Button { ...iconSet('pie') } />
+
+              </View>
+              </View>
+            }
+            {pattern === '/categories' &&
+              <Icon.Button
+                backgroundColor={colors.header}
+                name="ios-eye-outline"
+                onPress={changeCategoryView}
+              />
+            }
+            {delHandler &&
+              <Icon.Button
+                backgroundColor='#d66'
+                name='ios-trash-outline'
+                onPress={delHandler}
+              />
+            }
 
 
           </View>
@@ -108,6 +119,7 @@ const Header = ({ pattern, currentBalance, changeCategoryView, changeStatsMode }
 export default connect(
   ({ app }) => ({
     currentBalance: app.currentBalance,
+    delHandler: app.delHandler,
   }),
   { changeCategoryView, changeStatsMode },
 )(Header);

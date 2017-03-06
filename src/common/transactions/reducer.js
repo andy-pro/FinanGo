@@ -2,7 +2,8 @@ import {
   unshiftItem,
   pushItem,
   updateItemById,
-  deleteItemById
+  deleteItemById,
+  deleteItemsByIds
 } from '../__lib/utils';
 
 const reducer = ( state = [], action ) => {
@@ -15,25 +16,15 @@ const reducer = ( state = [], action ) => {
     case 'CLEAR_TRANSACTIONS':
       return []
 
-    case 'GET_TRANSACTIONS':
+    case 'TRANSACTIONS_GOTTEN':
       return action.payload
 
     case 'TRANSACTION_ADDED':
-      // return pushItem(state, action.payload)
-      return unshiftItem(state, action.payload)
+      return pushItem(state, action.payload)
+      // return unshiftItem(state, action.payload) // if order=-1
 
-
-    case 'DEL_TRANSACTION':
-      return updateItemById(state, action.id, {didDel: true});
-
-    case 'TRANSACTION_DELETED':
-      return deleteItemById(state, action.id)
-
-    case 'WILL_DEL_TRANSACTION':
-      return updateItemById(state, action.id, {willDel: true});
-
-    case 'UNDO_DEL_TRANSACTION':
-      return updateItemById(state, action.id, {willDel: false});
+    case 'TRANSACTIONS_DELETED':
+      return deleteItemsByIds(state, action.payload)
 
     default:
       return state;

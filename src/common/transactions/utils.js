@@ -22,6 +22,22 @@ export const getSuggestions = (inputList, query, order) => {
   createList(inputList);
   return suggestions.sort((a, b) => (b.path.length - a.path.length)*order);
 };
-//
-// export const calcBalance = ({ dataBlob, sectionIds }) =>
-//   sectionIds.reduce((b, id) => b + dataBlob[id].summary, 0)
+
+const amountTypes = [
+  {title: 'кг'},
+  {title: 'г'},
+  {title: 'л'},
+  {title: 'мл'},
+  {title: 'шт'},
+  {title: 'м.п.'}
+]
+
+const re = /^\d*\.?\d+\s/
+
+export const getAmountTypes = query => {
+    if (!re.test(query)) return []
+    query = query.split(' ')[1].toLowerCase()
+    return amountTypes
+      .filter(item => !query || item.title.startsWith(query))
+      .map(({ title }) => ({ title }))
+  }

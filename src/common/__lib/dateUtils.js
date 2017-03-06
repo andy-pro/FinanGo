@@ -2,7 +2,12 @@ export const fmtDate = date => (date.month + 1) + '/' + date.year
 
 // export { fmtDate }
 
-export const getCurrentDate = () => {
+export const isCurrentMonth = date => {
+  let dt = getCurrentDate()
+  return date.month === dt.month && date.year === dt.year
+}
+
+const getCurrentDate = () => {
   let dt = new Date()
   return {
     month: dt.getMonth(),
@@ -49,4 +54,4 @@ const endMonthToISO = (date) =>
 const startMonthToISO = (date) =>
   new Date(date.year, date.month).toISOString()
 
-export { monthForward, monthBack, startMonthToISO, endMonthToISO }
+export { getCurrentDate, monthForward, monthBack, startMonthToISO, endMonthToISO }

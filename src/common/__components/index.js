@@ -1,2 +1,2 @@
-export * from './__browser';
-// export * from './__native';
+export * from './browser';
+// export * from './native';

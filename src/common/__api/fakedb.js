@@ -1,16 +1,19 @@
 import { Observable } from 'rxjs'
 
-import users from '../__data/users'
+import mockData from '../__mockData'
+import users from '../__mockData/users'
 import config from '../config'
 
-import mockData from '../__config/mockData'
 
-export const getUserData = ({ payload }) => {
+export const getUserData = ({ type }) => {
   let { userId } = config,
       user = users[userId];
   mockData.user = user
-  return Observable.of(mockData)
+  return Observable.of({ type, payload: mockData })
 }
 
-export const addTransaction = payload =>
-  Observable.of(type => ({ type, payload }))
+export const getTransactions = ({ type }) => Observable.of({ type, payload: mockData.transactions })
+
+export const addTransaction = action => Observable.of(action)
+
+export const delTransactions = action => Observable.of(action)

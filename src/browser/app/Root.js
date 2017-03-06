@@ -24,6 +24,7 @@ const getFelaMountNode = () => {
 const Root = ({ store }) => (
   <Redux store={store}>
     <Fela mountNode={getFelaMountNode()} renderer={configureFela()}>
+      {/*<BrowserRouter basename="/finan-go">*/}
       <BrowserRouter>
         <App />
       </BrowserRouter>

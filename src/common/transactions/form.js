@@ -3,12 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { addTransaction } from './actions'
-// import { setMonthToNow } from '../app/actions'
 
 import { Form, View, Text, TextInput, Icon } from '../__components';
 import AutosuggestForm from '../__components/AutosuggestForm';
 
-import { getSuggestions } from './utils'
+import { getSuggestions, getAmountTypes } from './utils'
 import { getTimeId } from '../__lib/dateUtils'
 import { removeSpecial, getSlug, slugifyCategory, getValue } from '../__lib/utils'
 
@@ -19,7 +18,7 @@ import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 
 import config from '../config'
 
-import { colors, mainStyles, transactions as styles, suggestions as suggStyles } from '../__themes'
+import { colors, mainCSS, suggestionsCSS } from '../__themes'
 
 const { locally } = config
 
@@ -30,14 +29,6 @@ class NewTransactionForm extends Component {
   constructor(props) {
     super(props);
     // console.log('new trans page constructor');
-    this.amountTypes = [
-      {title: 'кг'},
-      {title: 'г'},
-      {title: 'л'},
-      {title: 'мл'},
-      {title: 'шт'},
-      {title: 'м.п.'}
-    ]
 
     const { isNative } = props
     let refName = isNative ? 'ref' : '$ref'
@@ -80,12 +71,13 @@ class NewTransactionForm extends Component {
       amount: {
         name: 'amount',
         pos: isNative ? {top: 118, maxHeight: 146} : {top: 108},
-        getSuggestions: query => /\d+\s/.test(query) ? this.amountTypes : [],
+        getSuggestions: getAmountTypes,
         renderSuggestion: this.renderAmount,
         onSelect: suggestion => {
-          this.state.suggestions.forEach(item => item.selected = item === suggestion)
+          // this.state.suggestions.forEach(item => item.selected = item === suggestion)
           this.setState({
-            amount: this.state.query + suggestion.title,
+            // amount: this.state.query + suggestion.title,
+            amount: this.state.query.split(' ')[0] + ' ' + suggestion.title,
             showList: false,
           })
           this.fields.cost.ref.focus()
@@ -145,17 +137,29 @@ class NewTransactionForm extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextState.showList !== this.state.showList ||
-    nextState.query !== this.state.query ||
-    // nextState.groupTitle !== this.state.groupTitle ||
-    nextState.selectedIndex !== this.state.selectedIndex ||
-    nextProps.transactions !== this.props.transactions ||
-    nextProps.user !== this.props.user
-  }
+  // change 01.03.2017 nextState.field, при переходе по полям клавишей ТАБ:
+  // если содержимое полей одинаковое, то не перерисовывалось меню.
+  // попытка упростить: nextState !== state
+  //
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return nextState.showList !== this.state.showList ||
+  //   nextState.query !== this.state.query ||
+  //   nextState.field !== this.state.field ||
+  //   // nextState.groupTitle !== this.state.groupTitle ||
+  //   nextState.selectedIndex !== this.state.selectedIndex ||
+  //   nextProps.transactions !== this.props.transactions ||
+  //   nextProps.user !== this.props.user
+  // }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return nextState !== this.state ||
+  //   // nextProps.transactions !== this.props.transactions ||
+  //   nextProps.user !== this.props.user
+  // }
 
   onChange = (query, name) => {
     query = getValue(query)
+    // console.log('val', query);
     const field = this.fields[name]
     // console.log('Change: ', name, ' query:', query);
     let suggestions = (query.length && field.getSuggestions) ? field.getSuggestions(query) : []
@@ -195,7 +199,17 @@ class NewTransactionForm extends Component {
     for (let i = 0, len = keys.length; i < len; i++) {
       let key = keys[i]
       let field = this.state[key].trim()
-      if (!field) return this.fields[key].ref.focus()
+
+      let error = !field || (key === 'cost' && !/^\d*\.?\d+$/.test(field))
+      if (error) return this.fields[key].ref.focus()
+
+      // if (!field) return this.fields[key].ref.focus()
+      // if (key === 'cost') {
+      //   if (!/^\d*[\.]?\d+$/.test(field)) {
+      //     return this.fields[key].ref.focus()
+      //   }
+      // }
+
       fields[key] = field
     }
     let transaction = {
@@ -277,16 +291,16 @@ class NewTransactionForm extends Component {
         showList={showList}
         suggestions={suggestions}
         field={field}
-        style={suggStyles}
+        style={suggestionsCSS}
       >
 
         <Form
-          style={mainStyles.form}
+          style={mainCSS.form}
           onKeyDown={this.onKeyDown}
           onSubmit={this.onSubmit}
         >
 
-          <View style={mainStyles.row}>
+          <View style={mainCSS.row}>
             <TextInput
               autoFocus
               placeholder='Type a transaction title'
@@ -297,7 +311,7 @@ class NewTransactionForm extends Component {
             />
           </View>
 
-          <View style={mainStyles.row}>
+          <View style={mainCSS.row}>
             <TextInput
               placeholder='Type a transaction category'
               value={this.state.category}
@@ -307,7 +321,7 @@ class NewTransactionForm extends Component {
             />
           </View>
 
-          <View style={mainStyles.row}>
+          <View style={mainCSS.row}>
             <TextInput
               placeholder='Amount'
               value={this.state.amount}
@@ -321,8 +335,6 @@ class NewTransactionForm extends Component {
               value={this.state.cost}
               onChangeText={e => this.onChange(e, 'cost')}
               returnKeyType='done'
-              type='number'
-              step='0.01'
               {...this.refhack.cost}
               {...this.propSet2}
             />
@@ -340,10 +352,10 @@ class NewTransactionForm extends Component {
 
         {this.groupId &&
           <Form
-            style={mainStyles.form}
+            style={mainCSS.form}
             onSubmit={this.onGroupSubmit}
           >
-            <View style={mainStyles.row}>
+            <View style={mainCSS.row}>
               <TextInput
                 placeholder='Group title'
                 value={this.state.groupTitle}
@@ -363,7 +375,7 @@ class NewTransactionForm extends Component {
           </Form>
         }
 
-        <View style={mainStyles.divider} />
+        <View style={mainCSS.divider} />
 
         {this.props.children}
 
@@ -376,12 +388,12 @@ class NewTransactionForm extends Component {
     const matches = [[0, this.state.query.length]];
     const parts = AutosuggestHighlightParse(category.title, matches);
     const item =
-      <Text style={suggStyles.text}>
+      <Text style={suggestionsCSS.text}>
         {category.path_str}
         {
           parts.map((part, index) =>
             <Text
-              style={part.highlight ? suggStyles.highlight : null}
+              style={part.highlight ? suggestionsCSS.highlight : null}
               key={index}>
               {part.text}
             </Text>
@@ -393,14 +405,14 @@ class NewTransactionForm extends Component {
 
   renderAmount = amountType => {
     const item =
-      <Text style={suggStyles.text}>
+      <Text style={suggestionsCSS.text}>
         {amountType.title}
       </Text>
     return this.renderItem(item, amountType.selected)
   }
 
   renderItem = (item, selected) =>
-    <View style={selected ? suggStyles.selected : suggStyles.view}>
+    <View style={selected ? suggestionsCSS.selected : suggestionsCSS.view}>
       {item}
     </View>
 
@@ -411,7 +423,7 @@ class NewTransactionForm extends Component {
 
   propSet1 = {
     ...this.propSet0,
-    style: mainStyles.input,
+    style: mainCSS.input,
     keyboardType: 'default',
     returnKeyType: 'next',
     autoCapitalize: 'sentences',
@@ -420,7 +432,7 @@ class NewTransactionForm extends Component {
 
   propSet2 = {
     ...this.propSet0,
-    style: [mainStyles.input, {marginRight: 10}],
+    style: [mainCSS.input, {marginRight: 10}],
     keyboardType: 'numeric',
     autoCapitalize: 'none',
     autoCorrect: false

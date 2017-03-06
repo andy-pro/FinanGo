@@ -1,23 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Image, Text, TouchableOpacity } from './';
+import { checkboxCSS } from '../__themes'
 
-import { Input } from './fela'
+const Checkbox = ({ checked, onPress, label, disabled }) => {
 
-const Checkbox = ({ checked, onPress, style, label, disabled }) => {
+  const image = checked
+    ? require('./img/CheckboxChecked.png')
+    : require('./img/Checkbox.png');
+
   return (
-    <div>
-      <label style={style.label}>
-        <Input
-          style={style.input}
-          type="checkbox"
-          value={label}
-          checked={checked}
-          onChange={e => onPress(e.target.checked)}
-          disabled={disabled}
-        />
-        {label}
-      </label>
-    </div>
+    <TouchableOpacity
+      activeOpacity={0.5}
+      onPress={disabled ? null : onPress}
+      style={checkboxCSS.input}
+    >
+      <Image source={image} style={checkboxCSS.image}/>
+      {label &&
+        <Text style={[checkboxCSS.label, disabled ? {color: '#999'} : null]}>
+          {label}
+        </Text>
+      }
+    </TouchableOpacity>
   );
-}
+};
 
 export default Checkbox;

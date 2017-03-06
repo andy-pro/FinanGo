@@ -1,8 +1,8 @@
 import * as CONST from './_const'
 
-import categories from './categories'
-import suggestions from './suggestions'
-import transactions from './transactions'
+import categoriesCSS from './categories'
+import suggestionsCSS from './suggestions'
+import transactionsCSS from './transactions'
 
 const colors = {
   header: CONST._main_,
@@ -11,7 +11,7 @@ const colors = {
   disabled: '#ddd',
 }
 
-const mainStyles = {
+const mainCSS = {
 
   root: {
     // flex: 1,
@@ -41,7 +41,8 @@ const mainStyles = {
   row: {
     display: 'flex',
     // align-items: flex-start | flex-end | center | baseline | stretch (default)
-    alignItems: 'flex-start',
+    // alignItems: 'flex-start',
+    alignItems: 'baseline',
   },
   between: {
     display: 'flex',
@@ -50,6 +51,7 @@ const mainStyles = {
     justifyContent: 'space-between',
   },
 
+  // text-type input
   input: {
     width: 0,
     borderRadius: 4,
@@ -64,22 +66,6 @@ const mainStyles = {
     paddingVertical: 4,
     marginBottom: 6,
     // marginRight: 5
-  },
-  checkbox: {
-    input: {
-      position: 'relative',
-      top: 1,
-      marginLeft: 0,
-      marginBottom: 16,
-      marginRight: 6,
-      cursor: 'pointer',
-    },
-    label: {
-      color: '#555',
-      fontSize: 14,
-      paddingRight: 10,
-      cursor: 'pointer',
-    }
   },
 
   menu: {
@@ -100,10 +86,9 @@ const mainStyles = {
     // color: '#aaa',
   }
 
-
 }
 
-const datePicker = {
+const datePickerCSS = {
   container: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -115,7 +100,7 @@ const datePicker = {
 }
 
 // global button styles for Ionicons
-const button = {
+const buttonCSS = {
   backgroundColor: '#888',
   color: 'white',
   // paddingVertical: 5,
@@ -127,15 +112,48 @@ const button = {
   borderRadius: 4,
   // cursor: 'pointer',
   height: 26,
-  verticalAlign: 'center'
+  // verticalAlign: 'center'
 }
+
+const checkboxCSS = {
+  input: {
+    // marginLeft: 0,
+    // marginRight: 10,
+
+    // for TouchableOpacity and TouchableHighlight if set prop underlayColor
+    // auto set property cursor=pointer (see fela/createComponent)
+    // cursor: 'pointer',
+  },
+  image: {
+    top: 4,
+    position: 'relative',
+    width: 18,
+    marginRight: 10,
+  },
+  label: {
+    color: '#555',
+    fontSize: 14,
+    paddingRight: 10,
+    // cursor: 'pointer',
+  },
+  // pull to right
+  // rinput: {
+  //   marginLeft: 10,
+  //   marginRight: 0,
+  //   marginTop: 2,
+  //   // cursor: 'pointer',
+  // }
+}
+
+const iconBtnCSS = {}
 
 export {
   colors,
-  mainStyles,
-  categories,
-  suggestions,
-  transactions,
-  datePicker,
-  button
+  mainCSS,
+  categoriesCSS,
+  suggestionsCSS,
+  transactionsCSS,
+  datePickerCSS,
+  buttonCSS,
+  checkboxCSS,
 }

@@ -5,8 +5,6 @@ import SwitchLocale from './SwitchLocale';
 
 import {
   Box,
-  PageHeader,
-  Paragraph,
   Title,
 } from '../app/components';
 
@@ -17,9 +15,6 @@ const IntlPage = () => {
   return (
     <Box>
       <Title message='Settings' />
-      <PageHeader
-        heading="Settings"
-      />
       <SwitchLocale />
     </Box>
   );

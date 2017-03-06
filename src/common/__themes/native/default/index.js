@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native'
 
 import * as CONST from './_const'
-import categories from './categories'
-import suggestions from './suggestions'
-import transactions from './transactions'
+import categoriesCSS from './categories'
+import suggestionsCSS from './suggestions'
+import transactionsCSS from './transactions'
 
 const colors = {
   header: CONST._main_,
@@ -12,7 +12,7 @@ const colors = {
 }
 
 
-const mainStyles = StyleSheet.create({
+const mainCSS = StyleSheet.create({
 
   root: {
     flex: 1,
@@ -72,7 +72,7 @@ const mainStyles = StyleSheet.create({
 
 })
 
-const checkbox = StyleSheet.create({
+const checkboxCSS = StyleSheet.create({
   input: {
     flexDirection: 'row',
     marginTop: 8,
@@ -84,7 +84,7 @@ const checkbox = StyleSheet.create({
   }
 })
 
-const datePicker = StyleSheet.create({
+const datePickerCSS = StyleSheet.create({
   container: {
     flexDirection: 'row',
   },
@@ -96,7 +96,7 @@ const datePicker = StyleSheet.create({
   },
 })
 
-const iconBtn = {
+const iconBtnCSS = {
   width: 38,
   paddingLeft: 11,
   paddingRight: 0,
@@ -105,11 +105,11 @@ const iconBtn = {
 
 export {
   colors,
-  iconBtn,
-  mainStyles,
-  categories,
-  suggestions,
-  transactions,
-  checkbox,
-  datePicker,
+  mainCSS,
+  categoriesCSS,
+  suggestionsCSS,
+  transactionsCSS,
+  checkboxCSS,
+  datePickerCSS,
+  iconBtnCSS,
 }
