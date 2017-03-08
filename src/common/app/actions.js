@@ -42,6 +42,11 @@ export const changeCategoryView = () => ({
   type: 'CHANGE_CATEGORY_VIEW',
 })
 
+export const changeStatsMode = (name) => ({
+  type: 'CHANGE_STATS_MODE',
+  payload: name,
+})
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* start application after rehydrate data */
 // const appStartedFinanGoEpic = action$ => action$.ofType(REHYDRATE).map(getUserData)

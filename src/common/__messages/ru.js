@@ -9,7 +9,7 @@ export default {
   'links.categories': 'Категории',
   'links.settings': 'Настройки',
 
-  'links.home.title': 'Текущий баланс',
+  'links.home.title': 'Баланс',
   'links.single.title': 'Расходы',
   'links.group.title': 'Группа расходов',
   'links.income.title': 'Доходы',

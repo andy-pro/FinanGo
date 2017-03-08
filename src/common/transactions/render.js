@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { setBalance, setDelHandler } from './actions'
 
 import { View, Text, TouchableHighlight, TouchableOpacity, ListView, Icon, Checkbox } from '../__components';
+
 import { getCategoryBySlug, fmtCost } from '../__lib/utils'
 import Summary from './summary'
 
@@ -200,7 +201,6 @@ class RenderTransactions extends Component {
           {delHandler &&
             <Checkbox
               onPress={() => this.toggleDelBlob(blob, sectionId)}
-              style={mainCSS.rcheckbox}
               checked={blob.delFlag}
             />
           }
@@ -228,6 +228,7 @@ class RenderTransactions extends Component {
               item.groupMaster ? styles.groupMaster : null,
             ]}
           >
+            <View style={styles.itemRow}>
 
               {item.groupMaster ?
 
@@ -300,13 +301,12 @@ class RenderTransactions extends Component {
                 {delHandler &&
                   <Checkbox
                     onPress={() => this.toggleDelBlob(item, sectionId)}
-                    style={mainCSS.rcheckbox}
                     checked={item.delFlag}
                   />
                 }
               </View>
 
-
+            </View>
 
           </TouchableHighlight>
 

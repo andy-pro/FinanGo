@@ -1,8 +1,11 @@
+import HeaderBar from '../HeaderBar'
 import Match from '../Match'
 // import Modal from './Modal'
-import Checkbox from './Checkbox'
+import Checkbox from '../Checkbox'
 import { View as Form } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Link from './Link'
+import MenuLink from './MenuLink'
 // import DatePicker from './DatePicker'
 // import AutosuggestForm from './AutosuggestForm';
 
@@ -33,9 +36,12 @@ export {
   TouchableHighlight,
   TouchableOpacity,
   Icon,
+  HeaderBar,
   Match,
   Checkbox,
   Alert,
+  Link,
+  MenuLink,
   // Modal,
   // DatePicker,
   // AutosuggestForm,

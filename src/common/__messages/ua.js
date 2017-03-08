@@ -9,7 +9,7 @@ export default {
   'links.categories': 'Категорії',
   'links.settings': 'Налаштування',
 
-  'links.home.title': 'Поточний баланс',
+  'links.home.title': 'Баланс',
   'links.single.title': 'Окрема витрата',
   'links.group.title': 'Група витрат',
   'links.income.title': 'Прибуток',

@@ -9,6 +9,7 @@ const colors = {
   touch: '#dfd',
   active: CONST._main_,
   disabled: '#ddd',
+  alarm: '#d66',
 }
 
 const mainCSS = {

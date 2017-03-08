@@ -5,14 +5,14 @@ import Header from './Header';
 import { Alert } from './components';
 import { View, Match } from '../../common/__components';
 import RoundButton from '../../common/__components/native/RoundButton';
-import { mainStyles } from '../../common/__themes'
+import { mainCSS } from '../../common/__themes'
 
 const Page = ({ component: Component, pattern, ...props }) => (
   <Match
     {...props}
     pattern={pattern}
     render={renderProps => (
-      <View style={mainStyles.root}>
+      <View style={mainCSS.root}>
         <Header pattern={pattern} />
         <Alert />
         <Component {...renderProps} />

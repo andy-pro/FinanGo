@@ -8,18 +8,16 @@ const transactions = {
     marginBottom: 6,
   },
   item: {
-    // flex: 1,
-    // flexDirection: 'row',
-    display: 'flex',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
-    justifyContent: 'space-between',
     paddingTop: 4,
     paddingLeft: 10,
-    // padding: 10,
-    alignItems: 'center',
-    // cursor: 'pointer',
     color: '#555',
+  },
+  itemRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   title: {
     fontSize: 15,

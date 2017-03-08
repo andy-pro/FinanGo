@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 import * as CONST from './_const'
+import headerCSS from './header'
 import categoriesCSS from './categories'
 import suggestionsCSS from './suggestions'
 import transactionsCSS from './transactions'
@@ -9,8 +10,10 @@ const colors = {
   header: CONST._main_,
   touch: '#bbb',
   background: '#fff',
+  active: CONST._main_,
+  disabled: '#ddd',
+  alarm: '#d66',
 }
-
 
 const mainCSS = StyleSheet.create({
 
@@ -40,7 +43,7 @@ const mainCSS = StyleSheet.create({
   row: {
     flexDirection: 'row',
 
-    // alignItems: 'baseline' // flex-start, flex-end, center, stretch
+    // alignItems: flex-start, flex-end, center, stretch
     // alignItems: 'flex-start',
     // alignItems: 'flex-end',
     alignItems: 'center',
@@ -53,7 +56,7 @@ const mainCSS = StyleSheet.create({
   },
   between: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
 
@@ -70,28 +73,48 @@ const mainCSS = StyleSheet.create({
     marginTop: 4
   },
 
+  menu: {
+    padding: 10
+  },
+  menuFooter: {
+    // backgroundColor: '#085',
+    borderTopWidth: 1,
+    borderTopColor: '#484848',
+    // height: 42,
+    marginTop: 10,
+    // color: '#aaa',
+  }
 })
 
 const checkboxCSS = StyleSheet.create({
   input: {
     flexDirection: 'row',
-    marginTop: 8,
-    marginLeft: 2,
+    marginVertical: 4,
+    // marginTop: 6,
+    marginLeft: 3,
+    alignItems: 'center',
+  },
+  image: {
+    marginRight: 10,
   },
   label: {
     fontSize: 16,
-    padding: 10,
+    // paddingVertical: 10,
+    paddingRight: 10,
   }
 })
 
 const datePickerCSS = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    // marginLeft: -5,
   },
   text: {
     color: 'white',
-    fontSize: 20,
-    paddingTop: 9,
+    fontSize: 19,
+    paddingTop: 10,
     // marginLeft: -8
   },
 })
@@ -106,6 +129,7 @@ const iconBtnCSS = {
 export {
   colors,
   mainCSS,
+  headerCSS,
   categoriesCSS,
   suggestionsCSS,
   transactionsCSS,

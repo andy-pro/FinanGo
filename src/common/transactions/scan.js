@@ -30,7 +30,7 @@ const scan = (data, groupMode) => {
       dt = new Date(date)
       time = dt.toLocaleTimeString()
       day = dt.getDate() // day of the month
-      console.log('day', day, 'index:', i, 'title:', item.title);
+      // console.log('day', day, 'index:', i, 'title:', item.title);
       if (day > newDay) {
         throw new RangeError('invalid date')
       }

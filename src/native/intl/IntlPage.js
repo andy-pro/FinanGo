@@ -1,19 +1,19 @@
 // @flow
 import React from 'react';
 import theme from '../app/themes/initial';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Text, ScrollView, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { setCurrentLocale } from '../../common/intl/actions';
 import {
-  CenteredContainer,
+  Container,
   // FormattedDate,
   // FormattedRelative,
-  Text,
+  // Text,
 } from '../app/components';
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: theme.fontSizeH5,
+    padding: 20,
   },
   text: {
     fontSize: theme.fontSizeH5,
@@ -28,7 +28,7 @@ const IntlPage = ({ currentLocale, locales, setCurrentLocale }) => {
   const componentRenderedAt = Date.now();
   return (
     <ScrollView>
-      <CenteredContainer style={styles.container}>
+      <Container style={styles.container}>
         {locales.map(locale =>
           <Text
             style={[styles.text, locale === currentLocale && styles.selected]}
@@ -36,7 +36,7 @@ const IntlPage = ({ currentLocale, locales, setCurrentLocale }) => {
             onPress={() => setCurrentLocale(locale)}
           >{locale}</Text>,
         )}
-      </CenteredContainer>
+      </Container>
     </ScrollView>
   );
 };

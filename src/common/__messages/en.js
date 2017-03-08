@@ -9,7 +9,7 @@ export default {
   'links.categories': 'Categories',
   'links.settings': 'Settings',
 
-  'links.home.title': 'Current balance',
+  'links.home.title': 'Balance',
   'links.single.title': 'Single expense',
   'links.group.title': 'Group expense',
   'links.income.title': 'Income expense',

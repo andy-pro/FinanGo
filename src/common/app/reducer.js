@@ -13,6 +13,7 @@ const initialState = {
   date: dt.getCurrentDate(),
   categoryMapView: true,
   delHandler: null,
+  statsMode: 'table',
 };
 
 const reducer = (
@@ -56,6 +57,9 @@ const reducer = (
 
     case 'SET_DEL_HANDLER':
       return { ...state, delHandler: action.payload }
+
+    case 'CHANGE_STATS_MODE':
+      return { ...state, statsMode: action.payload }
 
     default:
       return state;

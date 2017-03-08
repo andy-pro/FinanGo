@@ -1,16 +1,15 @@
 // @flow weak
 import React from 'react';
 import { Match } from 'react-router';
-import { Text } from './';
+import { Text } from 'react-native';
 
 const Link = ({
-  activeStyle,
   children,
   exactly,
   onPress,
-  style,
   to,
   action,
+  style,
 }, { router }) => (
   action ?
     <Text
@@ -18,7 +17,7 @@ const Link = ({
         action();
         if (onPress) onPress();
       }}
-      style={style}
+      style={style.link}
     >
       {children}
     </Text>
@@ -31,7 +30,7 @@ const Link = ({
             if (!onPress) return;
             onPress();
           }}
-          style={[style, matched && activeStyle]}
+          style={[style.link, matched && style.linkActive]}
         >
           {children}
         </Text>

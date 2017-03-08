@@ -6,7 +6,8 @@ import * as themes from './themes';
 import Page from './Page';
 // import Header from './Header';
 // import Footer from './Footer';
-import Menu from './Menu';
+// import Menu from './Menu';
+import Menu from '../../common/__components/Menu';
 import Helmet from 'react-helmet';
 import favicon from '../../common/app/favicon';
 import { appStart, appStop } from '../../common/app/actions';
@@ -31,6 +32,10 @@ class App extends Component {
   // static contextTypes = {
   //   router: React.PropTypes.object, // Redux store.
   // }
+
+  getChildContext() {
+    return { messages };
+  }
 
   componentDidMount() {
     // Must be called after the initial render to match server rendered HTML.
@@ -83,6 +88,11 @@ class App extends Component {
   }
 
 }
+
+
+App.childContextTypes = {
+  messages: React.PropTypes.object
+};
 
 export default connect(
   (state) => ({

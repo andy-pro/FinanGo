@@ -3,8 +3,8 @@ import type { State } from '../../common/types';
 import React from 'react';
 // import SignOut from '../auth/SignOut';
 import getUserPhotoUrl from '../../common/user/getUserPhotoUrl';
-import { CenteredContainer, Text } from '../app/components';
-import { Image, StyleSheet, View } from 'react-native';
+import { Container } from '../app/components';
+import { Image, StyleSheet, View, Text } from 'react-native';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -20,7 +20,7 @@ const MePage = ({ user }) => (
   !user ?
     <Redirect to="/" />
   :
-    <CenteredContainer>
+    <Container>
       <View>
         <Text>{user.displayName}</Text>
       </View>
@@ -28,7 +28,7 @@ const MePage = ({ user }) => (
         source={{ uri: getUserPhotoUrl(user) }}
         style={styles.image}
       />
-    </CenteredContainer>
+    </Container>
 );
 
 MePage.propTypes = {

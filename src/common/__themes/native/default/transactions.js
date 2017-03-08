@@ -8,18 +8,20 @@ const transactions = StyleSheet.create({
   // },
   header: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     marginTop: 20,
     marginBottom: 10,
   },
   item: {
-    flex: 1,
-    flexDirection: 'row',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
-    justifyContent: 'space-between',
     paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingLeft: 10,
+  },
+  itemRow: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center'
   },
   title: {
@@ -56,7 +58,7 @@ const transactions = StyleSheet.create({
     fontSize: 16,
     color: 'red',
     marginTop: 8,
-    // marginRight: 10
+    marginRight: 10
   },
 
   resumeTitle: {

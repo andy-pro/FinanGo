@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableHighlight } from 'react-native';
-import { colors } from '../__themes'
+import { colors } from '../../__themes'
 
 const styles = StyleSheet.create({
   button: {
