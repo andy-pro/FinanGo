@@ -1,6 +1,6 @@
 
-import type { Theme } from './types';
-import openColor from './openColor';
+// import type { Theme } from './types';
+// import openColor from './openColor';
 import typography from './typography';
 
 // www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
@@ -16,24 +16,29 @@ export const nativeFontFamily = [
   'sans-serif',
 ].join(', ');
 
-const theme: Theme = {
+const theme = {
   typography: typography({
     fontSize: 16,
     fontSizeScale: 'step5', // perfect fourth, modularscale.com
     lineHeight: 24,
   }),
   colors: {
-    primary: openColor.blue6,
-    success: openColor.green5,
-    warning: openColor.orange6,
-    danger: openColor.red6,
-    lightdanger: openColor.red3,
-    black: openColor.gray8,
-    white: openColor.white,
-    gray: openColor.gray5,
-    open: openColor,
-    green: openColor.green7,
-    silver: openColor.gray4,
+    // primary: openColor.blue6,
+    primary: '#228ae6',
+    // success: openColor.green5,
+    // warning: openColor.orange6,
+    // danger: openColor.red6,
+    // lightdanger: openColor.red3,
+    // black: openColor.gray8,
+    black: '#343a40',
+    // white: openColor.white,
+    white: '#fff',
+    // gray: openColor.gray5,
+    gray: '#adb5bd',
+    // open: openColor,
+    // green: openColor.green7,
+    // silver: openColor.gray4,
+    silver: '#ced4da',
   },
   border: {
     radius: 2,

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { Platform, StyleSheet, View } from 'react-native'
 import { appShowMenu } from '../../common/app/actions'
 import messages from '../messages'
-import { colors, HeaderCSS } from '../../common/__themes'
+import { colors, headerCSS } from '../../common/__themes'
 import { HeaderBar } from '../../common/__components'
 
 // const iOSDefaultStatusBarHeight = 20;
@@ -36,15 +36,15 @@ let iconColors = {
 }
 
 const Header = ({ menuShown, appShowMenu, pattern }) => (
-  <View style={HeaderCSS.header}>
+  <View style={headerCSS.header}>
     <Icon.Button
-      { ...iconStyle }
+      { ...iconStyles.set1 }
       backgroundColor={colors.header}
       name="ios-menu"
       onPress={() => appShowMenu(!menuShown)}
     />
     <HeaderBar
-      style={HeaderCSS}
+      style={headerCSS}
       iconStyles={iconStyles}
       iconColors={iconColors}
       pattern={pattern}

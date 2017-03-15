@@ -6,10 +6,12 @@ import RenderTransactions from './render'
 import Form from './form'
 
 import { changeMonth } from '../app/actions'
-import { clearTransactions, setDelHandler, delTransactions } from './actions'
+import { getTransactions, clearTransactions, delTransactions, setDelHandler } from './actions'
 import { Alert } from '../__components';
 import { pick } from '../__lib/utils'
 import { isCurrentMonth } from '../__lib/dateUtils'
+
+const LIMIT = 150
 
 class TransactionsPage extends Component {
 
@@ -17,7 +19,7 @@ class TransactionsPage extends Component {
     // this.props.getTransactions()
     console.log('============ TransactionsPage WILL Mount ==============');
 
-    const { date, user, pattern, changeMonth, clearTransactions, setDelHandler, transactions } = this.props
+    const { date, user, pattern, changeMonth, getTransactions, clearTransactions, setDelHandler, transactions } = this.props
 
     let len = transactions.length
 
@@ -32,9 +34,15 @@ class TransactionsPage extends Component {
 
       switch (pattern) {
         case '/':
-          return changeMonth()
+          changeMonth()
+          return getTransactions()
+
+        case '/delete':
+          return getTransactions()
+
         case '/group':
           if (len) clearTransactions()
+
         case '/single':
           if (len && !isCurrentMonth(date)) clearTransactions()
       }
@@ -72,27 +80,41 @@ class TransactionsPage extends Component {
   // }
 
 
-  delTransactions = () => {
-    let ids = []
-    this.props.transactions.forEach(item => {
-      if (item.delFlag) {
-        ids.push(item.id)
-      }
-    })
+  delTransactions = ({ deleteMonth }) => {
+    let { transactions, date } = this.props,
+        ids = [],
+        len,
+        args
 
-    // return this.props.delTransactions(ids)
+    // console.log('delete month?', deleteMonth, JSON.stringify(date));
 
-    let args, len = ids.length
-    if (len) {
+    if (deleteMonth) {
+      len = transactions.length
+    } else {
+      this.props.transactions.forEach(item => {
+        if (item.delFlag) {
+          ids.push(item.id)
+        }
+      })
+      len = ids.length
+    }
+    let details = ` (${len} items)`
+    // if (len < LIMIT || deleteMonth) {
+    if (len && len < LIMIT) {
       args =[
-        `Are you shure? (${len} items)`,
+        `Are you shure?${details}`,
         [
           { text: 'Cancel', null, style: 'cancel' },
-          { text: 'OK', onPress: () => this.props.delTransactions(ids) },
+          { text: 'OK', onPress: () => {
+            let query = deleteMonth ? { date } : { id: {$in: ids} }
+            this.props.delTransactions(query)
+          }},
         ],
         { cancelable: false }
       ]
-    } else args = ['Nothing to remove']
+    }
+    else if (len >= LIMIT) args = [`Request-URI Too Long.${details}`]
+    else args = ['Nothing to remove']
     Alert.alert('Delete transactions', ...args)
   }
 
@@ -129,11 +151,11 @@ class TransactionsPage extends Component {
 export default connect(
   ({ app, device, user, categories, transactions }) => ({
     date: app.date,
+    messages: app.messages,
     user,
     categories,
     transactions,
     isNative: device.isReactNative,
   }),
-  // { getTransactions }
-  { changeMonth, clearTransactions, delTransactions, setDelHandler }
+  { changeMonth, getTransactions, clearTransactions, delTransactions, setDelHandler }
 )(TransactionsPage);

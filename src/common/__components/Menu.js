@@ -6,24 +6,21 @@ import { getTransactions } from '../transactions/actions';
 import { ScrollView, View, MenuLink as Link } from './';
 import { mainCSS } from '../__themes'
 
-const MenuLink = ({ ...props }, { messages }) => {
-  if (!props.message) {
-    let linkTitle = 'links.' + (props.to.slice(1) || 'home')
-    props.message = messages[linkTitle]
+const Menu = ({ messages, user, date, getTransactions, delHandler }, { history }) => {
+
+  const MenuLink = ({ ...props }) => {
+    if (!props.message) {
+      let linkTitle = 'links.' + (props.to.slice(1) || 'home')
+      props.message = messages[linkTitle]
+      // props.message = linkTitle
+    }
+    return <Link {...props} />
   }
-  return <Link {...props} />
-}
-
-MenuLink.contextTypes = {
-  messages: React.PropTypes.object,
-};
-
-const Menu = ({ user, date, getTransactions, delHandler }, { history }) => {
 
   const refresh = () => {
     let p = history.location.pathname
     if (p === '/' || p === '/single' || p ==='/delete') {
-      getTransactions(date)
+      getTransactions({ date })
     }
   }
 
@@ -39,6 +36,7 @@ const Menu = ({ user, date, getTransactions, delHandler }, { history }) => {
       <MenuLink to="/refresh" action={refresh} />
       <MenuLink to="/delete" action={delHandler} />
       <MenuLink to="/categories" />
+      <MenuLink to="/backup" />
       <MenuLink to="/settings" />
       <View style={mainCSS.menuFooter}>
         {user &&
@@ -56,6 +54,8 @@ Menu.contextTypes = {
 
 export default connect(
   ({ app , user }) => ({
+    currentLocale: app.currentLocale,
+    messages: app.messages,
     date: app.date,
     delHandler: app.delHandler,
     user,

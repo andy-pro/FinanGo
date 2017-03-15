@@ -7,6 +7,7 @@ export default {
   'links.refresh': 'Оновити',
   'links.delete': 'Видалити',
   'links.categories': 'Категорії',
+  'links.backup': 'Резерв',
   'links.settings': 'Налаштування',
 
   'links.home.title': 'Баланс',
@@ -15,6 +16,7 @@ export default {
   'links.income.title': 'Прибуток',
   'links.delete.title': 'Видалення',
   'links.categories.title': 'Категорії',
+  'links.backup.title': 'Резерв',
   'links.settings.title': 'Налаштування',
   'links.me.title': 'Користувач',
 

@@ -2,40 +2,28 @@
 import React, { Component } from 'react';
 import { Redirect, Miss } from 'react-router';
 import { connect } from 'react-redux';
+import { ThemeProvider } from 'react-fela';
+
 import * as themes from './themes';
 import Page from './Page';
-// import Header from './Header';
-// import Footer from './Footer';
-// import Menu from './Menu';
+
 import Menu from '../../common/__components/Menu';
 import Helmet from 'react-helmet';
 import favicon from '../../common/app/favicon';
 import { appStart, appStop } from '../../common/app/actions';
-import messages from '../messages'
+import { Alert } from '../../common/__components';
 
-import {
-  Box,
-  Container,
-  ThemeProvider,
-} from './components';
+import { Box, Container } from './components';
 
 // Pages
 import TransactionsPage from '../../common/transactions/TransactionsPage';
 import CategoriesPage from '../../common/categories/CategoriesPage';
+import BackupPage from '../../common/backup/BackupPage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 import NotFoundPage from '../notfound/NotFoundPage';
 
-// const App = ({ currentLocale, theme, themeName }) => (
 class App extends Component {
-
-  // static contextTypes = {
-  //   router: React.PropTypes.object, // Redux store.
-  // }
-
-  getChildContext() {
-    return { messages };
-  }
 
   componentDidMount() {
     // Must be called after the initial render to match server rendered HTML.
@@ -47,10 +35,22 @@ class App extends Component {
     this.props.appStop();
   }
 
+  shouldComponentUpdate({ notify }, nextState) {
+    if (notify !== this.props.notify) {
+      setTimeout(
+        () => {
+          let { messages: T } = this.props
+          Alert.alert(T[notify.header], T[notify.message])
+        }, 0
+      )
+      return false
+    }
+    return true
+  }
+
   render() {
-    const { currentLocale, theme, themeName } = this.props
-    messages.setLanguage(currentLocale);
-    // console.log('%cApp render', 'color:blue;font-weight:bold', 'locale:', currentLocale, this.props)
+    const { theme, themeName, currentLocale } = this.props
+    console.log('%cApp render', 'color:blue;font-weight:bold', currentLocale)
     return (
       <ThemeProvider
         key={themeName} // Enforce rerender.
@@ -78,6 +78,7 @@ class App extends Component {
             <Page pattern="/income" component={TransactionsPage} />
             <Page pattern="/delete" component={TransactionsPage} />
             <Page pattern="/categories" component={CategoriesPage} />
+            <Page pattern="/backup" component={BackupPage} />
             <Page pattern="/settings" component={IntlPage} />
             <Page authorized pattern="/me" component={MePage} />
             <Miss component={NotFoundPage} />
@@ -89,16 +90,13 @@ class App extends Component {
 
 }
 
-
-App.childContextTypes = {
-  messages: React.PropTypes.object
-};
-
 export default connect(
-  (state) => ({
-    currentLocale: state.intl.currentLocale,
-    themeName: state.app.currentTheme,
-    theme: themes[state.app.currentTheme] || themes.defaultTheme,
+  ({ app }) => ({
+    notify: app.notify,
+    messages: app.messages,
+    currentLocale: app.currentLocale,
+    themeName: app.currentTheme,
+    theme: themes[app.currentTheme] || themes.defaultTheme,
   }),
   { appStart, appStop }
 )(App);

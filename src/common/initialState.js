@@ -1,5 +1,10 @@
 /* eslint-disable quotes, quote-props, comma-dangle, max-len */
 const initialState = {
+  "app": {
+    "currentLocale": "en",
+    "defaultLocale": "en",
+    "locales": [ "en", "ru", "ua" ],
+  },
   "config": {
     "appName": "FinanGo",
     "storage": "local",
@@ -38,16 +43,6 @@ const initialState = {
     "isReactNative": false,
     "platform": ""
   },
-  "intl": {
-    "currentLocale": "en",
-    "defaultLocale": "en",
-    "initialNow": null,
-    "locales": [
-      "en",
-      "ru",
-      "ua",
-    ],
-  }
 };
 
 let { storage } = initialState.config

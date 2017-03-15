@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 
 import app from '../app/reducer';
 import device from '../device/reducer';
-import intl from '../intl/reducer';
 import user from '../user/reducer';
 import categories from '../categories/reducer';
 import transactions from '../transactions/reducer';
@@ -21,17 +20,15 @@ const resetStateOnSignOutReducer = (reducer, initialState) => (state, action) =>
   return reducer({
     app: state.app,
     device: initialState.device,
-    intl: initialState.intl,
   }, action);
 };
 
-const configureReducer = (initialState: Object) => {
+const configureReducer = initialState => {
 
   let reducer = {
     app,
     device,
     config: (state={}) => state,
-    intl,
     user,
     categories,
     transactions,

@@ -1,8 +1,8 @@
 // @flow
-import type { State } from '../../common/types';
+
 import React from 'react';
 import { connect } from 'react-redux';
-import { setCurrentLocale } from '../../common/intl/actions';
+import { setCurrentLocale } from '../../common/app/actions';
 import {
   Box,
   Button,
@@ -39,9 +39,9 @@ const SwitchLocale = ({
 );
 
 export default connect(
-  (state: State) => ({
-    currentLocale: state.intl.currentLocale,
-    locales: state.intl.locales,
+  ({ app }) => ({
+    currentLocale: app.currentLocale,
+    locales: app.locales,
   }),
   { setCurrentLocale },
 )(SwitchLocale);

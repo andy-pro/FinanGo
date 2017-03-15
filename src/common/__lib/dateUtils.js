@@ -21,7 +21,7 @@ export const getTimeId = () => {
   return {
     dt,
     id,
-    pid: id.toString(36), // pretty id
+    pid: id.toString(36), // pretty id of the current date
     iso: dt.toISOString()
   }
 }
@@ -48,10 +48,18 @@ const monthBack = date => {
 }
 
 
-const endMonthToISO = (date) =>
-  startMonthToISO(monthForward(date, false))
+// const endMonthToISO = (date) =>
+//   endMonth(date).toISOString()
+//
+// const startMonthToISO = (date) =>
+//   startMonth(date).toISOString()
 
-const startMonthToISO = (date) =>
-  new Date(date.year, date.month).toISOString()
+const endMonth = (date) =>
+  startMonth(monthForward(date, false))
 
-export { getCurrentDate, monthForward, monthBack, startMonthToISO, endMonthToISO }
+const startMonth = (date) =>
+  new Date(date.year, date.month)
+
+// export { getCurrentDate, monthForward, monthBack, startMonth, endMonth, startMonthToISO, endMonthToISO }
+
+export { getCurrentDate, monthForward, monthBack, startMonth, endMonth }

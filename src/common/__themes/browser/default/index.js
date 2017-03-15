@@ -3,6 +3,7 @@ import * as CONST from './_const'
 import categoriesCSS from './categories'
 import suggestionsCSS from './suggestions'
 import transactionsCSS from './transactions'
+import headerCSS from './header'
 
 const colors = {
   header: CONST._main_,
@@ -157,4 +158,5 @@ export {
   datePickerCSS,
   buttonCSS,
   checkboxCSS,
+  headerCSS,
 }

@@ -5,6 +5,7 @@ import ListView from './ListView'
 import Icon from './icons/Ionicons';
 import Link from '../../../browser/app/components/Link'
 import MenuLink from './MenuLink'
+// import Picker from './Picker'
 // import DatePicker from './DatePicker'
 // import AutosuggestForm from './AutosuggestForm';
 
@@ -18,6 +19,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Picker,
 } from './fela'
 
 const Alert = {
@@ -47,6 +49,7 @@ export {
   Alert,
   Link,
   MenuLink,
+  Picker,
   // DatePicker,
   // AutosuggestForm,
 }

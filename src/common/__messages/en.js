@@ -7,6 +7,7 @@ export default {
   'links.refresh': 'Refresh',
   'links.delete': 'Delete',
   'links.categories': 'Categories',
+  'links.backup': 'Backup',
   'links.settings': 'Settings',
 
   'links.home.title': 'Balance',
@@ -15,11 +16,13 @@ export default {
   'links.income.title': 'Income expense',
   'links.delete.title': 'Deletion',
   'links.categories.title': 'Categories',
+  'links.backup.title': 'Backup',
   'links.settings.title': 'Settings',
   'links.me.title': 'User',
+  'links.notfound.title': 'Page not found',
 
-  "transactions.transaction": "Transaction",
-  "transactions.delete": "Delete",
+  "transactions": "Transactions",
+  "categories": "Categories",
 
   "placeholders.title": "Type a transaction title",
   "placeholders.category": "Type a transaction category",
@@ -40,5 +43,19 @@ export default {
   "notFound.h1": "This page isn\'t available",
   "notFound.p": "The link may be broken, or the page may have been removed.",
   "notFound.continue": "Continue here please.",
+
+
+  "cur.month": "Current month",
+  "cur.year": "Current year",
+  "whole.db": "Whole database",
+
+  "export.transactions": "Export transactions",
+  "export.categories": "Export categories",
+  "import.transactions": "Import transactions",
+  "import.categories": "Import categories",
+  "success": "Success",
+
+  "replace.mode": "Replace mode",
+  "merge.mode": "Merge mode",
 
 }

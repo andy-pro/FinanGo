@@ -14,6 +14,6 @@ export const getUserData = ({ type }) => {
 
 export const getTransactions = ({ type }) => Observable.of({ type, payload: mockData.transactions })
 
-export const addTransaction = action => Observable.of(action)
+export const addTransactions = action => Observable.of(action)
 
 export const delTransactions = action => Observable.of(action)

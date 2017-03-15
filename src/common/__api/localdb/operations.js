@@ -43,7 +43,7 @@ export default (file, _action) => {
 
   switch (query['$op']) {
 
-    case 'init':
+    case '$init':
       let data = action.payload || {},
           categories = data.categories || [],
           localdb = data[constants.filename] || {},
@@ -64,7 +64,7 @@ export default (file, _action) => {
 
       return populate ? modify : {}
 
-    case 'add':
+    case '$add':
       // immutable or mutable?
       // console.log(JSON.stringify(action.payload));
       // file[table] = pushItem(file[table], action.payload)
@@ -72,13 +72,13 @@ export default (file, _action) => {
       // file[table].push(action.payload)
       return modify
 
-    case 'del':
+    case '$del':
       file[table] = deleteItemsByIds(file[table], action.payload)
       return modify
 
     // операция get никак не изменяет базу данных,
     // но должна сделать выборку из file и положить в action.payload
-    case 'get':
+    case '$get':
       let date = action.payload
       action.payload = filters.filterByDate(file[table], date)
       return {}

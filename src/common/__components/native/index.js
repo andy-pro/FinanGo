@@ -21,6 +21,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Alert,
+  Picker,
 } from 'react-native';
 
 export {
@@ -42,6 +43,7 @@ export {
   Alert,
   Link,
   MenuLink,
+  Picker,
   // Modal,
   // DatePicker,
   // AutosuggestForm,

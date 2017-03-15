@@ -16,7 +16,8 @@ const view_names = {
 
 const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeStatsMode, delHandler, iconStyles, iconColors, statsMode, style }) => {
 
-  let home = pattern === '/'
+  let _home = pattern === '/',
+      _delete = pattern === '/delete'
 
   const iconSet = (name, onPress) => ({
     ...iconStyles.set2,
@@ -29,6 +30,19 @@ const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeS
     title: view_names[name].title,
   })
 
+  const DeleteButton = ({ onPress, children }) =>
+    <Icon.Button
+      { ...iconStyles.set1 }
+      backgroundColor={iconColors.bgDelete}
+      color={iconColors.delete}
+      name='ios-trash-outline'
+      onPress={onPress}
+    >
+      {children}
+    </Icon.Button>
+
+  const deleteMonth = () => delHandler({ deleteMonth: true })
+
   return (
     <View style={style.bar}>
 
@@ -36,14 +50,14 @@ const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeS
         <Text style={style.title}>
           {title}
         </Text>
-        {home &&
+        {_home &&
           <View style={style.summary}>
             <Summary value={currentBalance} />
           </View>
         }
       </View>
 
-      {home &&
+      {(_home || pattern === '/backup' || _delete) &&
 
         <View style={style.rside}>
           <View style={style.picker}>
@@ -52,12 +66,22 @@ const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeS
               style={datePickerCSS}
             />
           </View>
-          <View style={style.stats}>
-            <Icon.Button { ...iconSet('table') } />
-            <Icon.Button { ...iconSet('grid') } />
-            <Icon.Button { ...iconSet('stats') } />
-            <Icon.Button { ...iconSet('pie') } />
-          </View>
+          {_home &&
+            <View style={style.stats}>
+              <Icon.Button { ...iconSet('table') } />
+              <Icon.Button { ...iconSet('grid') } />
+              <Icon.Button { ...iconSet('stats') } />
+              <Icon.Button { ...iconSet('pie') } />
+            </View>
+          }
+          {_delete &&
+            <View style={style.stats}>
+              <DeleteButton onPress={deleteMonth}>
+                Month
+              </DeleteButton>
+              <DeleteButton onPress={delHandler} />
+            </View>
+          }
         </View>
 
       }
@@ -69,14 +93,8 @@ const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeS
           onPress={changeCategoryView}
         />
       }
-      {delHandler &&
-        <Icon.Button
-          { ...iconStyles.set1 }
-          backgroundColor={iconColors.bgDelete}
-          color={iconColors.delete}
-          name='ios-trash-outline'
-          onPress={delHandler}
-        />
+      {delHandler && !_delete &&
+        <DeleteButton onPress={delHandler} />
       }
 
 

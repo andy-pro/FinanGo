@@ -10,21 +10,23 @@ const reducer = ( state = [], action ) => {
 
   switch (action.type) {
 
-    case 'USER_LOADED':
+    case 'user/LOADED':
       return action.payload.transactions
 
-    case 'CLEAR_TRANSACTIONS':
+    case 'transactions/CLEAR':
       return []
 
-    case 'TRANSACTIONS_GOTTEN':
+    case 'transactions/GOTTEN':
       return action.payload
 
-    case 'TRANSACTION_ADDED':
-      return pushItem(state, action.payload)
+    case 'transactions/ADDED':
+      return pushItem(state, action.response)
       // return unshiftItem(state, action.payload) // if order=-1
 
-    case 'TRANSACTIONS_DELETED':
-      return deleteItemsByIds(state, action.payload)
+    case 'transactions/DELETED':
+      if (action.payload.date) return [] // delete month
+      let { id } = action.payload
+      if (id && id.$in) return deleteItemsByIds(state, id.$in)
 
     default:
       return state;

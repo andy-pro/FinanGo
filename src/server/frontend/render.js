@@ -15,7 +15,6 @@ import configureStore from '../../common/__config/store';
 import createInitialState from './createInitialState';
 import config from '../config';
 
-
 const settleAllWithTimeout = promises => Promise
   .all(promises.map(p => p.reflect()))
   // $FlowFixMe
@@ -43,20 +42,23 @@ const getLocale = req => process.env.IS_SERVERLESS
   ? config.defaultLocale
   : req.acceptsLanguages(config.locales) || config.defaultLocale;
 
-const createStore = req => configureStore({
-  initialState: {
-    ...initialState,
-    device: {
-      ...initialState.device,
-      host: getHost(req),
+const createStore = req => {
+  const currentLocale = getLocale(req);
+  initialState.app.messages.setLanguage(currentLocale);
+  return configureStore({
+    initialState: {
+      ...initialState,
+      app: {
+        ...initialState.app,
+        currentLocale,
+      },
+      device: {
+        ...initialState.device,
+        host: getHost(req),
+      }
     },
-    intl: {
-      ...initialState.intl,
-      currentLocale: getLocale(req),
-      initialNow: Date.now(),
-    },
-  },
-});
+  });
+}
 
 const renderBody = (store, context, location, fetchPromises) => {
   const felaRenderer = configureFela();
@@ -79,8 +81,7 @@ const renderBody = (store, context, location, fetchPromises) => {
 const renderScripts = (state, appJsFilename) =>
   // github.com/yahoo/serialize-javascript#user-content-automatic-escaping-of-html-characters
   // TODO: Switch to CSP, https://github.com/este/este/pull/731
-  `
-    <script>
+  ` <script>
       window.__INITIAL_STATE__ = ${serialize(state)};
     </script>
     <script src="${appJsFilename}"></script>
@@ -94,8 +95,12 @@ const renderHtml = (state, body) => {
   if (!config.isProduction) {
     global.webpackIsomorphicTools.refresh();
   }
+
+  // remove messages from state
+  delete state.app.messages
+
   const scripts = renderScripts(state, appJsFilename);
-  const html = renderToStaticMarkup(
+  return '<!DOCTYPE html>' + renderToStaticMarkup(
     <Html
       appCssFilename={appCssFilename}
       bodyCss={body.css}
@@ -105,7 +110,6 @@ const renderHtml = (state, body) => {
       isProduction={config.isProduction}
     />,
   );
-  return `<!DOCTYPE html>${html}`;
 };
 
 // react-router.now.sh/ServerRouter

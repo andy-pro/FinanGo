@@ -1,3 +1,5 @@
+import React, { Component } from 'react'
+
 import createComponent from './createComponent'
 
 const directionMapping = {
@@ -100,3 +102,28 @@ export const Input = createStylizedComponent(
   'input',
   ['type', 'value', 'checked', 'onChange', 'disabled']
 )
+
+const Select = createStylizedComponent(
+  transformStyle,
+  'select',
+  ['onValueChange', 'enabled']
+)
+
+export class Picker extends Component {
+
+  static Item = createStylizedComponent(
+    transformStyle,
+    'option',
+    ['label', 'value']
+  )
+
+  render() {
+    let { children, ...props } = this.props
+    return (
+      <Select { ...props }>
+        {children}
+      </Select>
+    )
+  }
+
+}

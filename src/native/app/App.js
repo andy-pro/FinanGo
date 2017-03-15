@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 // import { Match, Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import SideMenu from 'react-native-side-menu';
+// import SideMenu from 'react-native-side-menu';
+import SideMenu from 'react-native-drawer';
 
 import Page from './Page';
 import { Container } from './components';
@@ -54,9 +55,12 @@ class App extends Component {
       <Container inverse>
 
         <SideMenu
-          isOpen={appMenuShown}
-          menu={<Menu />}
-          onChange={appShowMenu}
+          open={appMenuShown}
+          content={<Menu />}
+          openDrawerOffset={0.3}
+          onOpen={() => appShowMenu(true)}
+          onClose={() => appShowMenu(false)}
+          tapToClose
         >
           <Page exactly pattern="/" component={TransactionsPage} />
           <Page pattern="/single" component={TransactionsPage} />

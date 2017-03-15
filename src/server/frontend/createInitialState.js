@@ -1,7 +1,8 @@
 // @flow
 import config from '../config';
 import deviceReducer from '../../common/device/reducer';
-import intlReducer from '../../common/intl/reducer';
+import appReducer from '../../common/app/reducer';
+import messages from '../../browser/messages'
 
 const {
   appName,
@@ -15,6 +16,13 @@ const {
 } = config;
 
 const createInitialState = () => ({
+  app: {
+    ...appReducer(),
+    currentLocale: defaultLocale,
+    defaultLocale,
+    locales,
+    messages,
+  },
   config: {
     appName,
     appVersion,
@@ -24,12 +32,6 @@ const createInitialState = () => ({
     userId,
   },
   device: deviceReducer(),
-  intl: {
-    ...intlReducer(),
-    currentLocale: defaultLocale,
-    defaultLocale,
-    locales,
-  },
 });
 
 export default createInitialState;

@@ -9,10 +9,10 @@ const __transactionsQuery = ($op, action) =>
     payload: action
   })
 
-export const getUserData = action => __transactionsQuery('init', action)
+export const getUserData = action => __transactionsQuery('$init', action)
 
-export const addTransaction = action => __transactionsQuery('add', action)
+export const addTransactions = action => __transactionsQuery('$add', action)
 
-export const delTransactions = action => __transactionsQuery('del', action)
+export const delTransactions = action => __transactionsQuery('$del', action)
 
-export const getTransactions = action => __transactionsQuery('get', action)
+export const getTransactions = action => __transactionsQuery('$get', action)

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import * as CONST from './_const'
 
-const styles = StyleSheet.create({
+const header = StyleSheet.create({
   header: {
     // alignItems: 'center', // align items in the cross-axis flexDirection
     backgroundColor: CONST._main_,
@@ -38,3 +38,5 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
 });
+
+export default header

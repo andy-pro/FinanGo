@@ -1,6 +1,6 @@
 // @flow
 import type { Theme } from './types';
-import openColor from './openColor';
+// import openColor from './openColor';
 import typography from './typography';
 import { nativeFontFamily } from './defaultTheme';
 
@@ -11,14 +11,14 @@ const theme: Theme = {
     lineHeight: 27, // 18 * 1.5
   }),
   colors: {
-    primary: openColor.blue8,
-    success: openColor.green5,
-    warning: openColor.orange6,
-    danger: openColor.red6,
-    black: openColor.gray8,
-    white: openColor.white,
-    gray: openColor.gray4,
-    open: openColor,
+    // primary: openColor.blue8,
+    // success: openColor.green5,
+    // warning: openColor.orange6,
+    // danger: openColor.red6,
+    // black: openColor.gray8,
+    // white: openColor.white,
+    // gray: openColor.gray4,
+    // open: openColor,
   },
   border: {
     radius: 2,

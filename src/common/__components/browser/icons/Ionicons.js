@@ -18,6 +18,9 @@ const glyphMap = {
   'md-stats': require('./io/stat/stats-bars').default,
   'md-pie': require('./io/stat/pie-graph').default,
 
+  'md-cloud-upload': require('./io/android-upload').default,
+  'md-cloud-download': require('./io/android-download').default,
+
   // 'i1': require('./io/stat/android-apps').default,
   // 'i2': require('./io/stat/grid').default,
   // 'i3': require('./io/stat/ios-analytics').default,

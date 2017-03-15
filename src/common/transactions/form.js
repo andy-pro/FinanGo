@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { addTransaction } from './actions'
+import { addTransactions } from './actions'
 
 import { Form, View, Text, TextInput, Icon } from '../__components';
 import AutosuggestForm from '../__components/AutosuggestForm';
@@ -177,7 +177,7 @@ class NewTransactionForm extends Component {
     }
     this.setState({
       query,
-      [name]:query,
+      [name]: query,
       field,
       suggestions,
       selectedIndex: si,
@@ -242,7 +242,7 @@ class NewTransactionForm extends Component {
     if (locally) transaction.id = dt.pid
     else transaction.userId = this.props.user.id
 
-    this.props.addTransaction(transaction)
+    this.props.addTransactions(transaction)
     this.setState(this.init())
     this.fields.title.ref.focus()
   }
@@ -442,5 +442,5 @@ class NewTransactionForm extends Component {
 
 export default connect(
   null,
-  { addTransaction }
+  { addTransactions }
 )(NewTransactionForm);

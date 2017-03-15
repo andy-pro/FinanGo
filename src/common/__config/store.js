@@ -6,13 +6,7 @@ import configureMiddleware from './middleware';
 import configureReducer from './reducer';
 import configureStorage from './storage';
 
-type Options = {
-  initialState: Object,
-  platformDeps?: Object,
-  platformMiddleware?: Array<Function>,
-};
-
-const configureStore = (options: Options) => {
+const configureStore = options => {
   const {
     initialState,
     platformDeps = {},

@@ -5,77 +5,80 @@ import { normalize, denormalize } from './utils'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/observable/dom/ajax'
 
-import config from '../../config'
-
-const dispatchError = error => Observable.of({
-  type: 'APP_ERROR',
-  payload: { error }
-})
-
 const norm = r => normalize(r.response)
 
 const jsonHeaders = {
   'Content-Type': 'application/json;charset=UTF-8'
 }
 
-const __getUser = () => ajax({ url: urls.user }).map(norm)
+const getUser = () =>
+  ajax({ url: urls.user })
+  .map(norm)
 
-const __getTransactions = filter => {
-  let url = urls.filterTransactions(filter)
-  return ajax({ url }).map(norm)
-}
+const getTransactions = query =>
+  ajax({ url: urls.transformQuery(query, 1) }) // second arg - order, default by date
+  .map(norm)
 
-export const getUserData = ({ type }) =>
-  Observable.forkJoin(__getUser(), __getTransactions())
-    .map(r => {
-      const { categories, ...user } = r[0]
-      return {
-        type,
-        payload: {
-          user,
-          categories,
-          transactions: r[1]
-        }
-      }
-    })
-    .catch(dispatchError)
+export { getUser, getTransactions }
+
+export const getUserData = query =>
+  Observable.forkJoin( getUser(), getTransactions(query) )
+  .map(r => {
+    const { categories, ...user } = r[0]
+    return {
+      user,
+      categories,
+      transactions: r[1],
+    }
+  })
 
 
-export const getTransactions = ({ type, payload:filter }) =>
-  __getTransactions(filter)
-    .map(payload => ({ type, payload }))
-    .catch(dispatchError)
-
-export const addTransaction = ({ type, payload:transaction }) =>
+export const addTransactions = transactions =>
   ajax({
     url: urls.transactions,
     method: 'POST',
     headers: jsonHeaders,
-    body: denormalize(transaction)
+    body: denormalize(transactions)
   })
-  .map(r => ({ type, payload: normalize(r.response) }))
-  .catch(dispatchError)
+  .map(norm)
 
-export const delTransactions = ({ type, payload }) =>
+export const delTransactions = query =>
   ajax({
-    url: urls.delTransactions(payload), // payload: array of id
+    url: urls.transformQuery(query),
     method: 'PUT',
     headers: jsonHeaders,
     body: JSON.stringify([])
   })
-  .map(r => ({ type, payload, response: r.response }))
-  .catch(dispatchError)
+  .map(({ response }) => response)
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-export const category = ({ type, payload, $op }) =>
+export const cmdCategory = (payload, cmd) =>
   ajax ({
     url: urls.user,
     method: 'PUT',
     headers: jsonHeaders,
-    body: JSON.stringify(urls[$op](payload))
+    body: JSON.stringify(urls[cmd+'Category'](payload))
   })
-  .map(r => ({ type, payload: normalize(r.response) }))
-  .catch(dispatchError)
+  .map(r => r.response.categories)
+  // .map(norm)
+  // .map(r => ({ type, payload: r }))
+  // .catch(dispatchError)
+
+//
+// export const category = ({ type, payload, $op }) =>
+//   ajax ({
+//     url: urls.user,
+//     method: 'PUT',
+//     headers: jsonHeaders,
+//     body: JSON.stringify(urls[$op](payload))
+//   })
+//   .map(norm)
+//   // .map(r => ({ type, payload: r }))
+//   .catch(dispatchError)
+
+export const getCategories = () =>
+  ajax({ url: urls.user })
+  .map(r => r.response.categories)
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

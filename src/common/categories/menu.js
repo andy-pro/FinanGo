@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import chroma from 'chroma-js'
-import { addCategory, updateCategory, delCategory } from './actions'
+// import { categoryAction, addCategory, updateCategory, delCategory } from './actions'
+import { categoryAction } from './actions'
 import { removeSpecial, getSlug, findDuplicate, testColor } from '../__lib/utils'
 import { Form, View, TextInput, Icon, Checkbox, Alert } from '../__components';
 
@@ -69,19 +70,22 @@ class CategoryMenu extends Component {
     if (!enable) return
     if (value === category[field]) return
     if (required && !value) return
-    let action, data = {}
+    // let action, data = {}
+    let cmd, data = {}
 
     switch (field) {
       case 'add':
         path = path + (isChild ? '.sub' : '')
         parentPath = path
-        action = this.props.addCategory
+        // action = this.props.addCategory
+        cmd = 'add'
         // data.color = ?
         // console.log('add', JSON.stringify(category));
         break
       case 'title':
         if (!isChild) return
-        action = this.props.updateCategory
+        // action = this.props.updateCategory
+        cmd = 'update'
         break
       case 'color':
         if (!isChild) return
@@ -90,7 +94,8 @@ class CategoryMenu extends Component {
           value = checkColor(value)
           if (!value) return
         }
-        action = this.props.updateCategory
+        // action = this.props.updateCategory
+        cmd = 'update'
         data.color = value
     }
 
@@ -115,10 +120,8 @@ class CategoryMenu extends Component {
       */
     }
 
-    action({
-      path,
-      data
-    })
+    // action({
+    this.props.categoryAction({ path, data }, cmd)
   }
 
   onDelete = () => {
@@ -128,7 +131,8 @@ class CategoryMenu extends Component {
       'Are you shure?',
       [
         {text: 'Cancel', null, style: 'cancel'},
-        {text: 'OK', onPress: () => this.props.delCategory(category)},
+        // {text: 'OK', onPress: () => this.props.delCategory(category)},
+        {text: 'OK', onPress: () => this.props.categoryAction(category, 'del')},
       ],
       { cancelable: false }
     )
@@ -239,7 +243,8 @@ class CategoryMenu extends Component {
 export default connect(
   // ({app}) => ({categoryMapView: app.categoryMapView}),
   null,
-  { addCategory, updateCategory, delCategory }
+  // { categoryAction, addCategory, updateCategory, delCategory }
+  { categoryAction }
 )(CategoryMenu);
 
 //

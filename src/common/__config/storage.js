@@ -10,8 +10,8 @@ import config from '../config'
 // TODO: Add redux-persist-migrate.
 
 const paths = [
-  ['app', ['currentTheme', 'categoryMapView']],
-  ['intl', ['currentLocale']],
+  ['app', ['currentTheme', 'categoryMapView', 'currentLocale']],
+  // ['intl', ['currentLocale']],
 ];
 
 if (config.storage === 'local') {
