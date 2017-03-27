@@ -12,18 +12,18 @@ import { denormalize } from './utils'
 // f={%22date%22:1}&apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD
 
 import config from '../../config'
-const { userId } = config
+// const { userId } = config
 
 const {apiKey: __apiKey, databaseURL: __dbURL } = config.mongolab
 const __usersURL = __dbURL + 'users';
 const __transactions = `${__dbURL}transactions?${__apiKey}`;
 
-const __query = (q, sort) => {
+const __query = (q, sort='') => {
   if (sort) sort = `&s=${JSON.stringify(sort)}`
   return `${__transactions}&q=${JSON.stringify(q)}${sort}`
 }
 
-export const user = `${__usersURL}/${userId}?${__apiKey}`
+export const user = () => `${__usersURL}/${config.userId}?${__apiKey}`
 
 export const transformQuery = (query, order) => {
 
@@ -32,15 +32,19 @@ export const transformQuery = (query, order) => {
   let sort
   if (order) sort = typeof order === 'object' ? order : { date: order }
 
-  let q = denormalize({userId}, false)
+  let q = denormalize({userId: config.userId}, false)
 
   Object.keys(query).forEach(key => {
     let _filter = query[key]
     switch (key) {
+
       case 'date':
-        q.date = {
-          $gte: { $date: _filter.$gte.toISOString() },
-          $lt:  { $date: _filter.$lt.toISOString()  }
+        let { $all, $gte, $lt } = _filter
+        if ($gte && $lt) {
+          q.date = {
+            $gte: { $date: _filter.$gte.toISOString() },
+            $lt:  { $date: _filter.$lt.toISOString()  }
+          }
         }
         break;
 
@@ -67,12 +71,12 @@ export { __transactions as transactions }
 // export const delTransactionURL = id =>
 //   `${__transactions}/${id}?${__apiKey}`
 
-export const delTransactions = ids => {
-  let q = {
-    _id: { $in: ids.map(id => ({ $oid: id })) }
-  }
-  return __query(q)
-}
+// export const delTransactions = ids => {
+//   let q = {
+//     _id: { $in: ids.map(id => ({ $oid: id })) }
+//   }
+//   return __query(q)
+// }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const addCategory = category => ({

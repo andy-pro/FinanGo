@@ -1,50 +1,17 @@
-'use strict';
+import React from 'react'
+import transformStyle from './transformStyle'
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createComponent;
+function createComponent(type='div', passThroughProps=[]) {
 
-var _react = require('react');
+  var FelaComponent = function FelaComponent({ children, className, id, style={}, passThrough=[], ...ruleProps }, { renderer, theme={} }) {
 
-// function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length), len = arr.length; i < len; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-function _toConsumableArray(arr) { return Array.isArray(arr) ? arr.map(item => item) : Array.from(arr) }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; } /*  weak */
-
-function createComponent(rule) {
-  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'div';
-  var passThroughProps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
-  var FelaComponent = function FelaComponent(_ref, _ref2) {
-
-    var renderer = _ref2.renderer,
-        theme = _ref2.theme || {};
-
-    var children = _ref.children,
-        className = _ref.className,
-        id = _ref.id,
-        style = _ref.style || {},
-        _ref$passThrough = _ref.passThrough,
-        passThrough = _ref$passThrough === undefined ? [] : _ref$passThrough,
-        ruleProps = _objectWithoutProperties(_ref, ['children', 'className', 'id', 'style', 'passThrough']);
-
-    // style = {
-    //   ...style,
-    //   ...ruleProps
-    // }
-
-    if (style instanceof Array) {
+    if (style instanceof Array)
       style = Object.assign({}, ...style)
-    }
 
-    // filter props to extract props to pass through
     var componentProps = passThroughProps.reduce(function (output, prop) {
-      // console.log('QWERT', prop, ruleProps);
       switch (prop) {
         case 'enabled':
         case 'editable':
-          // output.disabled = !ruleProps.enabled
           if (ruleProps.enabled === false || ruleProps.editable === false)
             output.disabled = true
           break;
@@ -64,41 +31,30 @@ function createComponent(rule) {
           output.src = ruleProps.source;
           break;
         case 'underlayColor':
-          // console.log('%cstyle add hover!!! before:', 'color:blue',JSON.stringify(style));
-          // console.log('fn=', rule);
           style[':hover'] = {
             backgroundColor: ruleProps.underlayColor,
             cursor: 'pointer'
           };
-          // console.log('%cstyle add hover!!! after:', 'color:red',JSON.stringify(style));
           break;
         default:
           output[prop] = ruleProps[prop];
       }
-      // console.log('props for ref', output.ref, ruleProps.ref);
       return output;
     }, {});
 
     componentProps.id = id;
-
-    // console.log('style', JSON.stringify(style));
-
     var cls = className ? className + ' ' : '';
-    componentProps.className = cls + renderer.renderRule(rule, { theme, style });
-    // if (componentProps.placeholder) {
-      // console.log('PROPS', componentProps);
+    componentProps.className = cls + renderer.renderRule(transformStyle, { theme, style });
 
-    // }
-    return (0, _react.createElement)(type, componentProps, children);
+    return React.createElement(type, componentProps, children);
   };
 
   FelaComponent.contextTypes = {
-    renderer: _react.PropTypes.object,
-    theme: _react.PropTypes.object
+    renderer: React.PropTypes.object,
+    theme: React.PropTypes.object
   };
 
-  // use the rule name as display name to better debug with react inspector
-  FelaComponent.displayName = rule.name && rule.name || 'FelaComponent';
   return FelaComponent;
 }
-module.exports = exports['default'];
+
+export default createComponent

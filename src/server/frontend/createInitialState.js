@@ -1,5 +1,5 @@
-// @flow
-import config from '../config';
+import config from '../config'; // server & common config
+import initialState from '../../common/initialState'
 import deviceReducer from '../../common/device/reducer';
 import appReducer from '../../common/app/reducer';
 import messages from '../../browser/messages'
@@ -11,9 +11,9 @@ const {
   locally,
   mongolab,
   userId,
-  defaultLocale,
-  locales,
 } = config;
+
+const { defaultLocale, locales } = initialState.app
 
 const createInitialState = () => ({
   app: {

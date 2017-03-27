@@ -3,15 +3,15 @@ import React, { Component } from 'react';
 import { Redirect, Miss } from 'react-router';
 import { connect } from 'react-redux';
 import { ThemeProvider } from 'react-fela';
+import Helmet from 'react-helmet';
 
 import * as themes from './themes';
 import Page from './Page';
 
 import Menu from '../../common/__components/Menu';
-import Helmet from 'react-helmet';
 import favicon from '../../common/app/favicon';
 import { appStart, appStop } from '../../common/app/actions';
-import { Alert } from '../../common/__components';
+import showNotify from '../../common/__components/notify';
 
 import { Box, Container } from './components';
 
@@ -37,12 +37,7 @@ class App extends Component {
 
   shouldComponentUpdate({ notify }, nextState) {
     if (notify !== this.props.notify) {
-      setTimeout(
-        () => {
-          let { messages: T } = this.props
-          Alert.alert(T[notify.header], T[notify.message])
-        }, 0
-      )
+      showNotify(notify, this.props.messages)
       return false
     }
     return true

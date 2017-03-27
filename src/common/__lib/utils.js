@@ -1,7 +1,19 @@
 import slugify from 'slugify'
 
+export const compose = (...fns) => (data) => {
+/*  Performs right-to-left function composition.
+    All functions must be unary. */
+  for (let i = 0, len = fns.length; i < len; i++) {
+    data = fns[len - i - 1](data)
+  }
+  return data
+}
+
 export const pick = (obj, props) =>
   props.reduce((o, k) => {o[k] = obj[k]; return o}, {})
+
+export const omit = (obj, props) =>
+  Object.keys(obj).reduce((o, k) => {if (!props.includes(k)) o[k] = obj[k]; return o}, {})
 
 export const fmtCost = cost =>
   Number(cost || 0).toFixed(2).replace(/[.,]00$/, "")

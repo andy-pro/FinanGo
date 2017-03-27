@@ -20,7 +20,7 @@ const reducer = ( state = [], action ) => {
             return addCategoryToPath(state, payload)
           case 'update':
             return updateCategoryByPath(state, payload)
-          case 'delete':
+          case 'del':
             return delCategoryByPath(state, payload)
           case 'replace':
             return payload

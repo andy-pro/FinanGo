@@ -86,7 +86,7 @@ class RenderTransactions extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('we are receive props');
+    console.log('transactions renderer receive props');
     let { transactions, groupMode, date } = nextProps,
         { _transactions, _groupMode, _date } = this.props,
         rescan = transactions !== _transactions || groupMode !== _groupMode

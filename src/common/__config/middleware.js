@@ -4,9 +4,6 @@ import createLoggerMiddleware from 'redux-logger';
 
 import configureDeps from './deps';
 import configureEpics from './epics';
-import configureLocalDB from './localdb';
-
-import config from '../config'
 
 // Like redux-thunk, but with just one argument.
 const injectMiddleware = deps => ({ dispatch, getState }) => next => action =>
@@ -25,10 +22,6 @@ const configureMiddleware = (initialState, platformDeps, platformMiddleware) => 
     epicMiddleware,
     ...platformMiddleware,
   ];
-
-  if (config.storage === 'local') {
-    middleware.push(configureLocalDB.middleware)
-  }
 
 /*
 */

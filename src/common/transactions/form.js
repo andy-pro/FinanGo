@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import shortid from 'shortid'
 
 import { addTransactions } from './actions'
 
@@ -8,7 +9,7 @@ import { Form, View, Text, TextInput, Icon } from '../__components';
 import AutosuggestForm from '../__components/AutosuggestForm';
 
 import { getSuggestions, getAmountTypes } from './utils'
-import { getTimeId } from '../__lib/dateUtils'
+// import { getTimeId } from '../__lib/dateUtils'
 import { removeSpecial, getSlug, slugifyCategory, getValue } from '../__lib/utils'
 
 import RenderTransactions from './render'
@@ -97,7 +98,8 @@ class NewTransactionForm extends Component {
   }
 
   initGroup = () => {
-    this.groupId = getTimeId().pid
+    // this.groupId = getTimeId().pid
+    this.groupId = shortid.generate()
   }
 
   init = () => ({
@@ -237,10 +239,13 @@ class NewTransactionForm extends Component {
   }
 
   addTransaction = (transaction) => {
-    let dt = getTimeId()
-    transaction.date = dt.iso
-    if (locally) transaction.id = dt.pid
-    else transaction.userId = this.props.user.id
+    // let dt = getTimeId()
+    // transaction.date = dt.iso
+    transaction.date = new Date().toISOString()
+    if (!locally)
+      transaction.userId = this.props.user.id
+    // if (locally) transaction.id = dt.pid
+    // else transaction.userId = this.props.user.id
 
     this.props.addTransactions(transaction)
     this.setState(this.init())

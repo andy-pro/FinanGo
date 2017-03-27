@@ -21,7 +21,9 @@ export default {
   'links.me.title': 'Пользователь',
 
   "transactions": "Транзакции",
+  "count.transactions": " (транзакций: {0})",
   "categories": "Категории",
+  "count.categories": " (категорий: {0})",
 
   "placeholders.title": "Имя транзакции",
   "placeholders.category": "Категория транзакции",
@@ -34,7 +36,9 @@ export default {
 
   "export.transactions": "Экспорт транзакций",
   "export.categories": "Экспорт категорий",
-  "success": "Успешно",
+  "import.transactions": "Импорт транзакций",
+  "import.categories": "Импорт категорий",
+  "success": "Успешно!",
 
   "replace.mode": "Замена",
   "merge.mode": "Слияние",

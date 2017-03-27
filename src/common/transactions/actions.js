@@ -1,4 +1,4 @@
-import * as __api from '../__api'
+import { apiTransactions } from '../__api'
 import { Query } from './utils'
 import { dispatchError } from '../app/actions'
 
@@ -18,37 +18,58 @@ export const setDelHandler = handler => ({
 export const clearTransactions = () => ({
   type: 'transactions/CLEAR'
 })
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 export const addTransactions = (transactions, opts) => ({
   type: 'epic/transactions/UPDATE',
-  payload: transactions,
-  api: __api.addTransactions,
+  query: { data: transactions, cmd: '$add' },
   nextType: 'transactions/' + (transactions instanceof Array ? 'ARRAY/' : '') + 'ADDED',
   opts,
 })
 
 export const delTransactions = query => ({
   type: 'epic/transactions/UPDATE',
-  payload: Query(query),
-  api: __api.delTransactions,
+  query: { query: Query(query), cmd: '$del' },
   nextType: 'transactions/DELETED',
 })
 
-const updateTransactionEpic = action$ =>
+export const replaceTransactions = (transactions, opts, query) => ({
+  type: 'epic/transactions/UPDATE',
+  query: {
+    query: Query(query),
+    cmd: transactions.length ? '$replace' : '$del',
+    data: transactions
+  },
+  nextType: 'transactions/REPLACED',
+  opts,
+})
+
+const updateTransactionsEpic = (action$, store) =>
   action$.ofType('epic/transactions/UPDATE')
-    .mergeMap(({ api, nextType, payload, opts={} }) =>
-      api(payload)
-      .map(response => ({
+    .mergeMap(({ query, nextType, opts={} }) =>
+      apiTransactions(query, store)
+      .map(payload => ({
         type: (opts.notify ? 'notify/' : '') + nextType,
-        response,
         payload,
+        query,
         opts,
       }))
       .catch(dispatchError)
     )
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/*
+query:
+
+  undefined - данные за текущий месяц;
+  { date: {year} } - за год;
+  { date: {year, month} } - за указанный месяц;
+  { date: {$gte: {year, month}, $lt: {year, month}} } - за указанный период;
+  { date: {$all: true} } - база данных целиком;
+
+  { id: {$in: [id1, id2, ..., idN]} } - записи с этими id
+*/
 
 export const getTransactions = (query, opts) => ({
   type: 'epic/transactions/GET',
@@ -56,10 +77,10 @@ export const getTransactions = (query, opts) => ({
   opts, // exportName, source: transactions or categories
 })
 
-const getTransactionsEpic = action$ =>
+const getTransactionsEpic = (action$, store) =>
   action$.ofType('epic/transactions/GET')
     .switchMap(({ query, opts={} }) =>
-      __api.getTransactions(query)
+      apiTransactions({ query, cmd: '$get' }, store)
       .map(payload => ({
         type: opts.exportName ? 'db/EXPORT' : 'transactions/GOTTEN',
         payload,
@@ -68,7 +89,6 @@ const getTransactionsEpic = action$ =>
       .catch(dispatchError)
     )
 
-
 // const monthChangedEpic = action$ =>
 //   action$.ofType('MONTH_CHANGED')
 //     .map(({ payload }) => getTransactions(payload))
@@ -76,7 +96,7 @@ const getTransactionsEpic = action$ =>
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 export const epics = [
-  updateTransactionEpic,
+  updateTransactionsEpic,
   getTransactionsEpic,
   // monthChangedEpic,
 ];

@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import chroma from 'chroma-js'
-// import { categoryAction, addCategory, updateCategory, delCategory } from './actions'
+
 import { categoryAction } from './actions'
 import { removeSpecial, getSlug, findDuplicate, testColor } from '../__lib/utils'
 import { Form, View, TextInput, Icon, Checkbox, Alert } from '../__components';
-
-import Checkbox2 from '../__components/Checkbox';
 
 import { mainCSS, iconBtnCSS, checkboxCSS } from '../__themes'
 // import { iconBtn as iconBtnCSS } from '../__themes'
@@ -131,7 +129,6 @@ class CategoryMenu extends Component {
       'Are you shure?',
       [
         {text: 'Cancel', null, style: 'cancel'},
-        // {text: 'OK', onPress: () => this.props.delCategory(category)},
         {text: 'OK', onPress: () => this.props.categoryAction(category, 'del')},
       ],
       { cancelable: false }
@@ -241,9 +238,7 @@ class CategoryMenu extends Component {
 }
 
 export default connect(
-  // ({app}) => ({categoryMapView: app.categoryMapView}),
   null,
-  // { categoryAction, addCategory, updateCategory, delCategory }
   { categoryAction }
 )(CategoryMenu);
 

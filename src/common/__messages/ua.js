@@ -21,7 +21,9 @@ export default {
   'links.me.title': 'Користувач',
 
   "transactions.transaction": "Транзакція",
+  "count.transactions": " (транзакцій: {0})",
   "transactions.delete": "Видалити",
+  "count.categories": " (категорій: {0})",
 
   "placeholders.title": "Ім'я транзакції",
   "placeholders.category": "Категорія транзакції",

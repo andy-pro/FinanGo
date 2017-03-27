@@ -15,6 +15,14 @@ const users = {
     "photoURL": "https://avatars.githubusercontent.com/u/12512653?v=3",
     "currency": "₴"
   },
+  "58580962da7d1f056c935688": {
+    "id" : "58580962da7d1f056c935688",
+    "firstName" : "Федор",
+    "lastName" : "Жопков",
+    "displayName": "Fedya Zadov",
+    "photoURL": "https://avatars.githubusercontent.com/u/12512653?v=3",
+    "currency": "₴"
+  },
 }
 
 export default users

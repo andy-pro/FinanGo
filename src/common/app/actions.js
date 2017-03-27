@@ -1,19 +1,17 @@
 import { REHYDRATE } from 'redux-persist/constants';
 import { Observable } from 'rxjs'
 
-import * as api from '../__api'
+import { apiTransactions } from '../__api'
 import * as dt from '../__lib/dateUtils'
 import { Query } from '../transactions/utils'
-
-export const dispatchError = error => Observable.of({
-  type: 'APP_ERROR',
-  payload: { error }
-})
 
 export const appError = (error: Object) => ({
   type: 'APP_ERROR',
   payload: { error },
 });
+
+export const dispatchError = error =>
+  Observable.of(appError(error))
 
 export const appOnline = (online: boolean) => ({
   type: 'APP_ONLINE',
@@ -65,35 +63,22 @@ export const changeStatsMode = (name) => ({
   config: {appName, appVersion, locally, mongolab: {...}, storage, userId},
   getState(), getUid(), now(), storageEngine, uuid()
 */
-const appStartedFinanGoEpic = action$ =>
+const appStartedFinanGoEpic = (action$, store) =>
   action$.ofType(REHYDRATE)
     // payload - is a data from REHYDRATE, need for restore from localdb to store
     .switchMap(({ payload }) =>
       // Query без параметров - это запрос по дате за текущий месяц
-      api.getUserData(Query(), payload)
+      // store, $init - for localdb
+      // api.getUserData({ query: Query(), data: payload, $op: '$init' }, store)
+      apiTransactions({ query: Query(), data: payload, cmd: '$init' }, store)
         .map(payload => ({
           type: 'user/LOADED',
           payload,
         }))
         .catch(dispatchError)
     )
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-// const appNotifier = action$ => {
-//   return  action$.ofType('APP_NOTIFY')
-//     .map(({ payload }) => Alert.alert(payload))
-// }
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-export const importData = (importName, acceptor) => ({
-  type: 'db/IMPORT',
-  opts: { importName, acceptor }
-})
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const epics = [
   appStartedFinanGoEpic,
-  // appNotifier,
 ];

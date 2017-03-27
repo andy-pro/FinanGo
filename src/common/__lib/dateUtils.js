@@ -15,16 +15,16 @@ const getCurrentDate = () => {
   }
 }
 
-export const getTimeId = () => {
-  let dt = new Date(),
-      id = dt.valueOf()
-  return {
-    dt,
-    id,
-    pid: id.toString(36), // pretty id of the current date
-    iso: dt.toISOString()
-  }
-}
+// export const getTimeId = () => {
+//   let dt = new Date(),
+//       id = dt.valueOf()
+//   return {
+//     dt,
+//     id,
+//     pid: id.toString(36), // pretty id of the current date
+//     iso: dt.toISOString()
+//   }
+// }
 
 const monthForward = (date, restrict=true) => {
   let { month, year } = date

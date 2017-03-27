@@ -9,16 +9,26 @@ import configureFela from '../../common/__config/fela';
 import configureStore from '../../common/__config/store';
 import * as backup from '../backup'
 import messages from '../messages'
+import config from '../../common/config'
 
 import App from './App';
 
 const initialState = window.__INITIAL_STATE__; // eslint-disable-line no-underscore-dangle
 initialState.app.messages = messages
+// server
+// initialState.config = config
+
+// serverless
+// initialState.config.userId = "5856ffa4da7d1f056c935686", // andy pro
+// initialState.config.userId = "58a33d33793e920948fb163c", // faddey
+// initialState.config.userId =  "58580962da7d1f056c935688", // fedya zadov
+config.userId = initialState.config.userId
+initialState.config = config
 
 const store = configureStore({
   initialState,
   platformDeps: {
-    config: initialState.config,
+    config,
     // uuid,
     storageEngine: localforage,
     backup,

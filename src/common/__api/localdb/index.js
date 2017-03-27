@@ -1,18 +1,22 @@
 import { Observable } from 'rxjs'
-
 import constants from './constants'
+import operations from './operations'
 
-const __transactionsQuery = ($op, action) =>
-  Observable.of({
-    type: constants.QUERY,
-    query: { table: 'transactions', $op },
-    payload: action
-  })
+export const apiTransactions = (query, { dispatch, getState }) => {
 
-export const getUserData = action => __transactionsQuery('$init', action)
+  // console.log('localdb query', query)
+  // let __start_time = performance.now()
 
-export const addTransactions = action => __transactionsQuery('$add', action)
+  let file = getState()[constants.filename],
+      $query = { table: 'transactions', query },
+      cursor = operations(file, $query)
 
-export const delTransactions = action => __transactionsQuery('$del', action)
+  // console.log('Operations localdb time', performance.now() - __start_time);
 
-export const getTransactions = action => __transactionsQuery('$get', action)
+  // внесение именений в store.localdb, если необходимо
+  if (cursor.action)
+    dispatch(cursor.action)
+
+  return Observable.of(cursor.payload)
+
+}

@@ -51,8 +51,6 @@ const reducer = (state=initialState, action) => {
     case 'APP_ERROR':
       return { ...state, error: payload.error };
 
-    case 'APP_NOTIFY':
-
     case 'APP_SHOW_MENU':
       return { ...state, menuShown: payload.menuShown };
 
@@ -69,7 +67,9 @@ const reducer = (state=initialState, action) => {
       return { ...state, currentTheme: payload.theme };
 
     case 'persist/REHYDRATE':
-      return setLocale(state, payload.app.currentLocale)
+      if (payload.app && payload.app.currentLocale)
+        return setLocale(state, payload.app.currentLocale)
+      return state
 
     case 'SET_CURRENT_LOCALE':
       return setLocale(state, payload)

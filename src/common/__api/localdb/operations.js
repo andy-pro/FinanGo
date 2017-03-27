@@ -1,89 +1,94 @@
+import shortid from 'shortid'
+
 import constants from './constants'
-import {
-  unshiftItem,
-  pushItem,
-  updateItemById,
-  deleteItemsByIds,
-} from '../../__lib/utils';
-
-import filters from './filters'
-
-import mockData from '../../__mockData'
-import users from '../../__mockData/users'
+import Filter from './filter'
 import config from '../../config'
+import users from '../../__mockData/users'
 
+export default operations = (file, { table, query }) => {
 
-export default (file, _action) => {
-
-/* _action - служебный, имеет структуру:
-
-  action = {
-    "type": "localdb/QUERY",
-    "query": {"table": "transactions", "$op":  "init"},
-    "payload": {  // пользовательский action
-      "type": "USER_LOADED",
-      "payload": {...}
-    }
-  }
-
-*/
-
-  // payload - пользовательский action, переименуем в action для красоты
-  let { query, payload: action } = _action,
-      { table } = query
+  // file - часть store для хранения базы данных
 
   // объект для фиксации данных в store.localdb
-  const modify = {
+  const action = {
     type: constants.STATE,
     payload: file
   }
 
-  // inplace-трансформация объекта action и
-  // внесение именений в state.localdb, если необходимо
+  let __table = file[table],
+      payload, data
 
-  switch (query['$op']) {
+  switch (query.cmd) {
 
     case '$init':
-      let data = action.payload || {},
-          categories = data.categories || [],
+      data = query.data || {}
+      let categories = data.categories || [],
           localdb = data[constants.filename] || {},
           transactions = localdb.transactions || []
-
-      let populate = config.populate && !categories.length && !transactions.length
-      if (populate) {
-        categories = mockData.categories
-        transactions = mockData.transactions
-        file[table] = transactions
-      }
-
-      action.payload = {
+      payload = {
         user: users[config.userId],
         categories,
-        transactions: filters.filterByDate(transactions) // without date - current date
+        transactions: Filter(transactions, query.query, '$pick', 1)
       }
 
-      return populate ? modify : {}
+      // for debug
+      // var __data = payload.transactions[0]
+      // console.log('localdb $get', typeof __data.rawDate, JSON.stringify(__data));
+      // payload.transactions = [__data]
+      // for debug
+
+      return { payload }
 
     case '$add':
-      // immutable or mutable?
-      // console.log(JSON.stringify(action.payload));
-      // file[table] = pushItem(file[table], action.payload)
-      file[table] = pushItem(file[table], Object.assign({}, action.payload))
-      // file[table].push(action.payload)
-      return modify
+      data = query.data
+      data = Array.isArray(data) ? data : [data]
+      file[table] = __table.concat(__copy_and_id(data))
+      return {
+        action,
+        payload: query.data
+      }
+
+    case '$replace':
+      data = __del_and_calc(__table, query.query)
+      // console.log('replace, db after delete', JSON.stringify(data));
+      file[table] = data.payload.concat(__copy_and_id(query.data))
+      // console.log('mode replace, db after add', file[table].length);
+      return {
+        action,
+        payload: {
+          removed: data.removed,
+          added: query.data.length
+        }
+      }
 
     case '$del':
-      file[table] = deleteItemsByIds(file[table], action.payload)
-      return modify
+      data = __del_and_calc(__table, query.query)
+      file[table] = data.payload
+      return {
+        action,
+        payload: { removed: data.removed }
+      }
 
-    // операция get никак не изменяет базу данных,
-    // но должна сделать выборку из file и положить в action.payload
     case '$get':
-      let date = action.payload
-      action.payload = filters.filterByDate(file[table], date)
-      return {}
+      payload = Filter(__table, query.query, '$pick', 1)
+      // console.log('localdb $get', JSON.stringify(payload[0]));
+      return { payload }
 
   }
 
+}
 
+// исходные данные - нужно возвратить тот же объект, но с id;
+// в localdb нужно положить копию
+const __copy_and_id = data => data.map(item => {
+  item.id = shortid.generate()
+  return Object.assign({}, item)
+})
+
+const __del_and_calc = (data, query) => {
+  let payload = Filter(data, query, '$omit')
+  return {
+    payload,
+    removed: data.length - payload.length
+  }
 }

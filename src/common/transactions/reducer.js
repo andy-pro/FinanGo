@@ -20,13 +20,19 @@ const reducer = ( state = [], action ) => {
       return action.payload
 
     case 'transactions/ADDED':
-      return pushItem(state, action.response)
+    // console.log(JSON.stringify(action));
+      return pushItem(state, action.payload)
       // return unshiftItem(state, action.payload) // if order=-1
 
     case 'transactions/DELETED':
-      if (action.payload.date) return [] // delete month
-      let { id } = action.payload
+      // console.log('transactions reducer - delete', JSON.stringify(action));
+      let { query } = action.query
+      if (query.date) return [] // delete month
+      let { id } = query
       if (id && id.$in) return deleteItemsByIds(state, id.$in)
+
+    case 'notify/transactions/REPLACED':
+      console.log('response', JSON.stringify(action.payload));
 
     default:
       return state;

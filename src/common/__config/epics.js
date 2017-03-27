@@ -5,7 +5,7 @@ import { combineEpics } from 'redux-observable';
 import { epics as appEpics } from '../app/actions';
 import { epics as categoriesEpics } from '../categories/actions';
 import { epics as transactionsEpics } from '../transactions/actions';
-import backupEpics from '../backup/epics'
+import { epics as backupEpics } from '../backup/actions'
 
 const epics = [
   ...appEpics,
@@ -14,7 +14,7 @@ const epics = [
   ...backupEpics,
 ];
 
-const configureEpics = (deps: Object) => (action$, { getState }) =>
-  combineEpics(...epics)(action$, { ...deps, getState });
+const configureEpics = deps => (action$, { dispatch, getState }) =>
+  combineEpics(...epics)(action$, { ...deps, dispatch, getState });
 
 export default configureEpics;

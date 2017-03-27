@@ -1,4 +1,6 @@
-import * as __api from '../__api'
+import { Observable } from 'rxjs'
+
+import { apiCategories } from '../__api'
 import config from '../config'
 import { dispatchError } from '../app/actions'
 
@@ -12,9 +14,8 @@ export const changeCategoryView = () => ({
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-const cmdCategoryLocal = ({ payload, cmd }) => {
-  return payload
-}
+const cmdCategoryLocal = payload =>
+  Observable.of(payload)
 
 export const categoryAction = (payload, cmd, opts) => ({
   type: 'epic/categories/UPDATE',
@@ -26,7 +27,7 @@ export const categoryAction = (payload, cmd, opts) => ({
 const cmdEpic = action$ =>
   action$.ofType('epic/categories/UPDATE')
     .mergeMap(({ payload, cmd, opts={} }) => {
-      const api = locally ? cmdCategoryLocal : __api.cmdCategory
+      const api = locally ? cmdCategoryLocal : apiCategories
       return api(payload, cmd)
         .map(response => ({
           type: (opts.notify ? 'notify/' : '') + 'categories/UPDATED',
@@ -39,7 +40,6 @@ const cmdEpic = action$ =>
         .catch(dispatchError)
     })
 
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 export const getCategories = opts => ({
@@ -47,64 +47,22 @@ export const getCategories = opts => ({
   opts, // exportName, source: transactions or categories
 })
 
-const exportEpic = action$ =>
+const exportEpic = (action$, { getState }) =>
   action$.ofType('epic/categories/GET')
-    .mergeMap(({ opts }) =>
-      __api.getCategories()
-      .map(payload => ({
+    .mergeMap(({ opts }) => {
+      const api = locally ?
+        cmdCategoryLocal(getState().categories)
+        :
+        apiCategories(null, 'get')
+      return api.map(payload => ({
         type: 'db/EXPORT',
         payload,
         opts,
       }))
       .catch(dispatchError)
-    )
-// export const addCategory = payload => ({
-//   type: locally ? 'ADD_CATEGORY_LOCAL' : 'epic/UPDATE_CATEGORY',
-//   payload,
-//   $op: 'addCategory',
-// })
-//
-// export const updateCategory = payload => ({
-//   type: locally ? 'UPDATE_CATEGORY_LOCAL' : 'epic/UPDATE_CATEGORY',
-//   payload,
-//   $op: 'updateCategory',
-// })
-//
-// export const delCategory = payload => ({
-//   type: locally ? 'DEL_CATEGORY_LOCAL' : 'epic/UPDATE_CATEGORY',
-//   payload,
-//   $op: 'delCategory',
-// })
-//
-// export const replaceCategories = (payload, opts) => ({
-//   type: locally ? 'REPLACE_CATEGORIES_LOCAL' : 'epic/UPDATE_CATEGORY',
-//   payload,
-//   $op: 'replaceCategory',
-//   opts,
-// })
+    })
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// const updateEpic = action$ =>
-//   action$.ofType('epic/UPDATE_CATEGORY')
-//     .mergeMap(({ payload, $op, opts }) =>
-//       __api.category({
-//         // type: 'CATEGORY_UPDATED',
-//         payload,
-//         $op,
-//       })
-//       .map(payload => ({
-//         type: 'CATEGORY_UPDATED',
-//         payload
-//       }))
-//     )
-
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-
 
 export const epics = [
   cmdEpic,

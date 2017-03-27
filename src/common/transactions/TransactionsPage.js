@@ -38,7 +38,7 @@ class TransactionsPage extends Component {
           return getTransactions()
 
         case '/delete':
-          return getTransactions()
+          return getTransactions({ date })
 
         case '/group':
           if (len) clearTransactions()
@@ -91,7 +91,7 @@ class TransactionsPage extends Component {
     if (deleteMonth) {
       len = transactions.length
     } else {
-      this.props.transactions.forEach(item => {
+      transactions.forEach(item => {
         if (item.delFlag) {
           ids.push(item.id)
         }

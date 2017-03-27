@@ -23,6 +23,11 @@ query:
     switch (key) {
       case 'date':
         let { $all, $gte, $lt, year, month } = _filter
+        if ($all) {
+          // whole database
+          q.date = _filter
+          break
+        }
         if (year && month !== undefined) {
           // запрос за месяц
           _query.$gte = _filter
@@ -38,18 +43,16 @@ query:
           _query.$gte = $gte
           _query.$lt = $lt
         }
-        else if ($all) return // whole database
         q.date = {
           $gte: dt.startMonth(_query.$gte),
           $lt: dt.startMonth(_query.$lt)
         }
         break;
 
+      // для id все остается как есть
       case 'id':
         q.id = _filter
         break
-
-      default:
 
     }
   })

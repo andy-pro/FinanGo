@@ -9,7 +9,7 @@ import uuid from 'react-native-uuid';
 import { AppRegistry, AsyncStorage, Platform } from 'react-native';
 
 const getDefaultDeviceLocale = () => {
-  const { defaultLocale, locales } = initialState.intl;
+  const { defaultLocale, locales } = initialState.app;
   // const deviceLocale = ReactNativeI18n.locale.split('-')[0];
   const deviceLocale = 'en'
   // console.log('dev loc', deviceLocale); // 'en'
@@ -19,15 +19,15 @@ const getDefaultDeviceLocale = () => {
 
 const createNativeInitialState = () => ({
   ...initialState,
+  app: {
+    ...initialState.app,
+    currentLocale: getDefaultDeviceLocale(),
+  },
   device: {
     ...initialState.device,
     isReactNative: true,
     platform: Platform.OS,
-  },
-  intl: {
-    ...initialState.intl,
-    currentLocale: getDefaultDeviceLocale(),
-  },
+  }
 });
 
 const store = configureStore({

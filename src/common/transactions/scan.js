@@ -8,7 +8,7 @@ const scan = (data, groupMode) => {
       length = 0,
       balance = 0
 
-// let q=performance.now()
+let q=performance.now()
 
   const dataBlob = {}
   const sectionIds = []
@@ -27,7 +27,8 @@ const scan = (data, groupMode) => {
 
     try {
       date = item.date
-      dt = new Date(date)
+      dt = item.rawDate || new Date(date)
+      // dt = new Date(date)
       time = dt.toLocaleTimeString()
       day = dt.getDate() // day of the month
       // console.log('day', day, 'index:', i, 'title:', item.title);
@@ -122,6 +123,7 @@ const scan = (data, groupMode) => {
 
   // console.log('result of scan:', JSON.stringify(sectionIds, null ,2));
 
+  console.log('Scan time', performance.now()-q);
   return { dataBlob, sectionIds, rowIds, length, balance }
 
   // let a = { dataBlob, sectionIds, rowIds }

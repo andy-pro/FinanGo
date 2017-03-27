@@ -12,73 +12,83 @@ const jsonHeaders = {
 }
 
 const getUser = () =>
-  ajax({ url: urls.user })
-  .map(norm)
-
-const getTransactions = query =>
-  ajax({ url: urls.transformQuery(query, 1) }) // second arg - order, default by date
-  .map(norm)
-
-export { getUser, getTransactions }
-
-export const getUserData = query =>
-  Observable.forkJoin( getUser(), getTransactions(query) )
-  .map(r => {
-    const { categories, ...user } = r[0]
-    return {
-      user,
-      categories,
-      transactions: r[1],
-    }
+  ajax({
+    url: urls.user(),
+    // test: console.log('get user', new Date()),
   })
+  .map(norm)
 
+const getTransactions = ({ query }) =>
+  ajax({
+    url: urls.transformQuery(query, 1),  // second arg - order, default by date
+    // test: console.log('get transactions', new Date()),
+  })
+  .map(norm)
 
-export const addTransactions = transactions =>
+// export { getUser, getTransactions }
+
+const getUserData = query =>
+  Observable.forkJoin( getUser(), getTransactions(query) )
+  .map(([{categories, ...user}, transactions]) => ({
+    user,
+    categories,
+    transactions,
+  }))
+
+const replaceTransactions = query =>
+  delTransactions(query)
+    .mergeMap(r =>
+      r.removed === undefined ?
+        Observable.throw(new Error('Deleting transactions: error'))
+      :
+        addTransactions(query)
+    )
+
+const addTransactions = ({ data }) =>
   ajax({
     url: urls.transactions,
     method: 'POST',
     headers: jsonHeaders,
-    body: denormalize(transactions)
+    body: denormalize(data),
+    // test: console.log('add transactions', new Date()),
   })
   .map(norm)
 
-export const delTransactions = query =>
+const delTransactions = ({ query }) =>
   ajax({
     url: urls.transformQuery(query),
     method: 'PUT',
     headers: jsonHeaders,
-    body: JSON.stringify([])
+    body: JSON.stringify([]),
+    // test: console.log('del transactions', new Date()),
   })
   .map(({ response }) => response)
 
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-export const cmdCategory = (payload, cmd) =>
-  ajax ({
-    url: urls.user,
+const __api = {
+  $init:    getUserData,
+  $get:     getTransactions,
+  $add:     addTransactions,
+  $del:     delTransactions,
+  $replace: replaceTransactions,
+}
+
+export const apiTransactions = query => __api[query.cmd](query)
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+export const apiCategories = (payload, cmd) => {
+  /* cmd: get, add, update, del */
+  let opts = cmd === 'get' ? {} : {
     method: 'PUT',
     headers: jsonHeaders,
     body: JSON.stringify(urls[cmd+'Category'](payload))
-  })
+  }
+  opts.url = urls.user()
+  return ajax (opts)
   .map(r => r.response.categories)
-  // .map(norm)
-  // .map(r => ({ type, payload: r }))
-  // .catch(dispatchError)
-
-//
-// export const category = ({ type, payload, $op }) =>
-//   ajax ({
-//     url: urls.user,
-//     method: 'PUT',
-//     headers: jsonHeaders,
-//     body: JSON.stringify(urls[$op](payload))
-//   })
-//   .map(norm)
-//   // .map(r => ({ type, payload: r }))
-//   .catch(dispatchError)
-
-export const getCategories = () =>
-  ajax({ url: urls.user })
-  .map(r => r.response.categories)
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

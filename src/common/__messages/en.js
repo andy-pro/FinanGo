@@ -22,7 +22,9 @@ export default {
   'links.notfound.title': 'Page not found',
 
   "transactions": "Transactions",
+  "count.transactions": " (transactions: {0})",
   "categories": "Categories",
+  "count.categories": " (categories: {0})",
 
   "placeholders.title": "Type a transaction title",
   "placeholders.category": "Type a transaction category",
@@ -53,7 +55,7 @@ export default {
   "export.categories": "Export categories",
   "import.transactions": "Import transactions",
   "import.categories": "Import categories",
-  "success": "Success",
+  "success": "Success!",
 
   "replace.mode": "Replace mode",
   "merge.mode": "Merge mode",
