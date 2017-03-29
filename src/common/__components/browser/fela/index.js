@@ -28,6 +28,13 @@ export const TextInput = create(
   ['required', 'placeholder', 'onChangeText', 'value', 'autoFocus', 'onFocus', 'onBlur', '$ref', 'editable', 'type', 'step']
 )
 
+// export const FileInput = props => <TextInput {...props} type='file' />
+export const FileInput = create(
+  'input',
+  ['onChangeText', {type: 'file'}]
+)
+
+
 export const TouchableHighlight = create(
   'div',
   // [{$cmd: 'transform', $set: ['backgroundColor', 'underlayColor']}]
@@ -44,11 +51,6 @@ export const ScrollView = create(
 export const Image = create(
   'img',
   ['source']
-)
-
-export const Input = create(
-  'input',
-  ['type', 'value', 'checked', 'onChange', 'disabled']
 )
 
 const Select = create(

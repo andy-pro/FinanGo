@@ -1,7 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import shortid from 'shortid'
+// import shortid from 'shortid'
+import shortid from 'js-shortid'
 
 import { addTransactions } from './actions'
 
@@ -99,7 +100,8 @@ class NewTransactionForm extends Component {
 
   initGroup = () => {
     // this.groupId = getTimeId().pid
-    this.groupId = shortid.generate()
+    // this.groupId = shortid.generate()
+    this.groupId = shortid.gen()
   }
 
   init = () => ({
@@ -396,13 +398,11 @@ class NewTransactionForm extends Component {
       <Text style={suggestionsCSS.text}>
         {category.path_str}
         {
-          parts.map((part, index) =>
-            <Text
-              style={part.highlight ? suggestionsCSS.highlight : null}
-              key={index}>
-              {part.text}
-            </Text>
-          )
+          parts.map((part, index) => {
+            let props = { key: index }
+            if (part.highlight) props.style = suggestionsCSS.highlight
+            return <Text {...props}>{part.text}</Text>
+          })
         }
       </Text>
     return this.renderItem(item, category.selected)

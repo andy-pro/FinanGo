@@ -38,6 +38,7 @@ const mainCSS = {
   divider: {
     borderBottomColor: 'silver',
     borderBottomWidth: 2,
+    marginBottom: 10,
   },
 
   row: {
@@ -148,6 +149,8 @@ const checkboxCSS = {
 }
 
 const iconBtnCSS = {}
+
+mainCSS.picker = mainCSS.input
 
 export {
   colors,

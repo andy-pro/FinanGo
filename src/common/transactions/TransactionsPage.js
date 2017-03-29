@@ -17,7 +17,7 @@ class TransactionsPage extends Component {
 
   componentWillMount() {
     // this.props.getTransactions()
-    console.log('============ TransactionsPage WILL Mount ==============');
+    // console.log('============ TransactionsPage WILL Mount ==============');
 
     const { date, user, pattern, changeMonth, getTransactions, clearTransactions, setDelHandler, transactions } = this.props
 
@@ -120,7 +120,7 @@ class TransactionsPage extends Component {
 
   render () {
 
-    console.log('!!! Root transactions page render !!!');
+    // console.log('!!! Root transactions page render !!!');
     const renderProps = pick(this.props, ['date', 'user', 'categories', 'transactions', 'isNative', 'pattern'])
 
     if (!renderProps.user) return null

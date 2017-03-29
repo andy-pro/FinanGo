@@ -30,10 +30,10 @@ const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeS
     title: view_names[name].title,
   })
 
-  const DeleteButton = ({ onPress, children }) =>
+  const DeleteButton = ({ onPress, children, bgColor }) =>
     <Icon.Button
       { ...iconStyles.set1 }
-      backgroundColor={iconColors.bgDelete}
+      backgroundColor={bgColor || iconColors.bgDelete}
       color={iconColors.delete}
       name='ios-trash-outline'
       onPress={onPress}
@@ -76,7 +76,7 @@ const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeS
           }
           {_delete &&
             <View style={style.stats}>
-              <DeleteButton onPress={deleteMonth}>
+              <DeleteButton onPress={deleteMonth} bgColor={iconColors.bgDelete}>
                 Month
               </DeleteButton>
               <DeleteButton onPress={delHandler} />

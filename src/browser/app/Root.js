@@ -29,7 +29,6 @@ const store = configureStore({
   initialState,
   platformDeps: {
     config,
-    // uuid,
     storageEngine: localforage,
     backup,
     messages,

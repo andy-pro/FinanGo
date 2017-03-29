@@ -8,7 +8,7 @@ const scan = (data, groupMode) => {
       length = 0,
       balance = 0
 
-let q=performance.now()
+// let q=performance.now()
 
   const dataBlob = {}
   const sectionIds = []
@@ -123,7 +123,7 @@ let q=performance.now()
 
   // console.log('result of scan:', JSON.stringify(sectionIds, null ,2));
 
-  console.log('Scan time', performance.now()-q);
+  // console.log('Scan time', performance.now()-q);
   return { dataBlob, sectionIds, rowIds, length, balance }
 
   // let a = { dataBlob, sectionIds, rowIds }

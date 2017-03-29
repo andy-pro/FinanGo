@@ -26,6 +26,9 @@ export default {
   "categories": "Categories",
   "count.categories": " (categories: {0})",
 
+  'export': 'Export',
+  'import': 'Import',
+
   "placeholders.title": "Type a transaction title",
   "placeholders.category": "Type a transaction category",
   "placeholders.amount": "Amount",

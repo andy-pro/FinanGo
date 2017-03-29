@@ -1,4 +1,4 @@
-import * as dt from '../__lib/dateUtils'
+import { getCurrentDate } from '../__lib/dateUtils'
 
 const initialState = {
   currentTheme: 'defaultTheme',
@@ -8,7 +8,7 @@ const initialState = {
   menuShown: false,
   online: false,
   started: false,
-  date: dt.getCurrentDate(),
+  date: getCurrentDate(),
   categoryMapView: true,
   delHandler: null,
   statsMode: 'table',

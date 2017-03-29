@@ -15,41 +15,42 @@ import Menu from '../../common/__components/Menu';
 // }
 
 import { appStart, appStop, appShowMenu } from '../../common/app/actions';
-
-import messages from '../messages'
+import showNotify from '../../common/__components/notify';
 
 // Pages
 import TransactionsPage from '../../common/transactions/TransactionsPage';
 import CategoriesPage from '../../common/categories/CategoriesPage';
+import BackupPage from '../../common/backup/BackupPage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 
 class App extends Component {
 
-  getChildContext() {
-    return { messages };
-  }
-
   componentDidMount() {
-    const { appStart } = this.props;
     // Must be called after the initial render to match server rendered HTML.
-    appStart();
+    this.props.appStart();
   }
 
   componentWillUnmount() {
-    const { appStop } = this.props;
     // App is rerended on hot reload, therefore we need a proper cleanup.
-    appStop();
+    this.props.appStop();
+  }
+
+  shouldComponentUpdate({ notify }, nextState) {
+    if (notify !== this.props.notify) {
+      showNotify(notify, this.props.messages)
+      return false
+    }
+    return true
   }
 
   render() {
     if (!this.props.appStarted) return null;
-    const { appMenuShown, appShowMenu, currentLocale } = this.props;
-    messages.setLanguage(currentLocale);
+    const { appMenuShown, appShowMenu } = this.props;
 
-    console.log('*******************');
-    console.log('*    Start App    *');
-    console.log('*******************');
+    // console.log('*******************');
+    // console.log('*    Start App    *');
+    // console.log('*******************');
 
     return (
       <Container inverse>
@@ -68,6 +69,7 @@ class App extends Component {
           <Page pattern="/income" component={TransactionsPage} />
           <Page pattern="/delete" component={TransactionsPage} />
           <Page pattern="/categories" component={CategoriesPage} />
+          <Page pattern="/backup" component={BackupPage} />
           <Page pattern="/settings" component={IntlPage} />
           <Page authorized pattern="/me" component={MePage} />
         </SideMenu>
@@ -77,16 +79,13 @@ class App extends Component {
 
 }
 
-App.childContextTypes = {
-  messages: React.PropTypes.object
-};
-
 export default connect(
-  (state) => ({
-    appMenuShown: state.app.menuShown,
-    appStarted: state.app.started,
-    // intl: state.intl,
-    currentLocale: state.intl.currentLocale,
+  ({ app }) => ({
+    notify: app.notify,
+    messages: app.messages,
+    appMenuShown: app.menuShown,
+    appStarted: app.started,
+    // currentLocale: app.currentLocale,
   }),
   { appStart, appStop, appShowMenu }
 )(App);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { getTransactions } from '../transactions/actions'
 import { getCategories } from '../categories/actions'
 import { importData } from './actions'
-import { Form, View, Text, TextInput, Alert, Icon, Picker } from '../__components';
+import { Form, View, Text, TextInput, FileInput, Icon, Picker } from '../__components';
 import { removeSpecial, getValue } from '../__lib/utils'
 
 import { colors, mainCSS } from '../__themes'
@@ -121,7 +121,7 @@ class BackupPage extends Component {
             <Picker
               selectedValue={source}
               onValueChange={e => this.onChange(e, 'source')}
-              style={[mainCSS.input, {marginRight: 10}]}
+              style={[mainCSS.picker, {marginRight: 10}]}
             >
               <Picker.Item label={T["transactions"]} value="trns" />
               <Picker.Item label={T["categories"]} value="ctgs" />
@@ -129,7 +129,7 @@ class BackupPage extends Component {
             <Picker
               selectedValue={period}
               onValueChange={e => this.onChange(e, 'period')}
-              style={mainCSS.input}
+              style={mainCSS.picker}
               enabled={source === 'trns'}
             >
               <Picker.Item label={T["cur.month"]} value="month" />
@@ -151,20 +151,20 @@ class BackupPage extends Component {
               backgroundColor={color}
               onPress={this.onExportSubmit}
             >
-              {' '}Export
+              {T['export']}
             </Icon.Button>
           </View>
         </Form>
 
-        <View style={[mainCSS.divider, {marginBottom: 10}]} />
+        <View style={mainCSS.divider} />
 
         <Form
           style={mainCSS.form}
           onSubmit={this.onImportSubmit}
         >
           <View style={mainCSS.row}>
-            <TextInput
-              type='file'
+            <FileInput
+              value={importName}
               style={mainCSS.input}
               onChangeText={this.importChange}
             />
@@ -174,7 +174,7 @@ class BackupPage extends Component {
             <Picker
               selectedValue={mode}
               onValueChange={e => this.onChange(e, 'mode')}
-              style={[mainCSS.input, {marginRight: 10}]}
+              style={[mainCSS.picker, {marginRight: 10}]}
               enabled={Boolean(importName)}
             >
               <Picker.Item label={T["replace.mode"]} value="replace" />
@@ -185,10 +185,12 @@ class BackupPage extends Component {
               backgroundColor={importName ? color : colors.disabled}
               onPress={this.onImportSubmit}
             >
-              {' '}Import
+              {T['import']}
             </Icon.Button>
           </View>
         </Form>
+
+        <View style={mainCSS.divider} />
 
       </View>
 

@@ -44,7 +44,7 @@ class RenderTransactions extends Component {
   */
 
   componentWillMount() {
-    console.log('transactions renderer mount!!!!');
+    // console.log('transactions renderer mount!!!!');
     const { transactions, groupMode } = this.props
     this.state = {
       ds: this.scanAndClone(transactions, groupMode, 0)
@@ -86,7 +86,7 @@ class RenderTransactions extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('transactions renderer receive props');
+    // console.log('transactions renderer receive props');
     let { transactions, groupMode, date } = nextProps,
         { _transactions, _groupMode, _date } = this.props,
         rescan = transactions !== _transactions || groupMode !== _groupMode
@@ -155,7 +155,7 @@ class RenderTransactions extends Component {
   render() {
 //=====================================
     let { user, categories, transactions, groupMode, delHandler } = this.props
-    console.log('%crender transactions, count:', 'color:blue;font-weight:bold', transactions.length);
+    // console.log('%crender transactions, count:', 'color:blue;font-weight:bold', transactions.length);
     if (!user || !transactions.length) return null
     const { currency } = user
 
@@ -210,7 +210,7 @@ class RenderTransactions extends Component {
 
     const renderRow = (item, sectionId) => {
 
-      // console.log('render row', item.title);
+      // console.log('render row', item.title, categories);
 
       if (!item.shown) {
         return item.last ? renderSummaryDay(sectionId) : null

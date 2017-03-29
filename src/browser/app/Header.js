@@ -19,7 +19,7 @@ let iconColors = {
   disabled: '#fff',
   bgActive: colors.active,
   bgDisabled: colors.disabled,
-  bgDelete: '#d66',
+  bgDelete: colors.alarm,
   delete: '#fff',
 }
 

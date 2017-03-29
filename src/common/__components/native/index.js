@@ -6,6 +6,7 @@ import { View as Form } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Link from './Link'
 import MenuLink from './MenuLink'
+import FileInput from './FileInput'
 // import DatePicker from './DatePicker'
 // import AutosuggestForm from './AutosuggestForm';
 
@@ -32,6 +33,7 @@ export {
   ListView,
   // StyleSheet,
   TextInput,
+  FileInput,
   ScrollView,
   Image,
   TouchableHighlight,

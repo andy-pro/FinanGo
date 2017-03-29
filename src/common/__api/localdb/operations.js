@@ -1,4 +1,5 @@
-import shortid from 'shortid'
+// import shortid from 'shortid'
+import shortid from 'js-shortid'
 
 import constants from './constants'
 import Filter from './filter'
@@ -81,7 +82,8 @@ export default operations = (file, { table, query }) => {
 // исходные данные - нужно возвратить тот же объект, но с id;
 // в localdb нужно положить копию
 const __copy_and_id = data => data.map(item => {
-  item.id = shortid.generate()
+  // item.id = shortid.generate()
+  item.id = shortid.gen()
   return Object.assign({}, item)
 })
 

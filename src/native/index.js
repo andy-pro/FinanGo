@@ -1,42 +1,10 @@
-// @flow
-// import FBSDK from 'react-native-fbsdk';
 import React from 'react';
-// import ReactNativeI18n from 'react-native-i18n';
+import { AppRegistry } from 'react-native';
+
 import Root from './app/Root';
-import configureStore from '../common/__config/store';
-import initialState from '../common/initialState';
-import uuid from 'react-native-uuid';
-import { AppRegistry, AsyncStorage, Platform } from 'react-native';
-
-const getDefaultDeviceLocale = () => {
-  const { defaultLocale, locales } = initialState.app;
-  // const deviceLocale = ReactNativeI18n.locale.split('-')[0];
-  const deviceLocale = 'en'
-  // console.log('dev loc', deviceLocale); // 'en'
-  const isSupported = locales.indexOf(deviceLocale) !== -1;
-  return isSupported ? deviceLocale : defaultLocale;
-};
-
-const createNativeInitialState = () => ({
-  ...initialState,
-  app: {
-    ...initialState.app,
-    currentLocale: getDefaultDeviceLocale(),
-  },
-  device: {
-    ...initialState.device,
-    isReactNative: true,
-    platform: Platform.OS,
-  }
-});
-
-const store = configureStore({
-  initialState: createNativeInitialState(),
-  platformDeps: { /*FBSDK,*/ uuid, storageEngine: AsyncStorage },
-});
 
 const FinanGo = () => (
-  <Root store={store} />
+  <Root />
 );
 
 AppRegistry.registerComponent('FinanGo', () => FinanGo);

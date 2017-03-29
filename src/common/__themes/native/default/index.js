@@ -73,6 +73,14 @@ const mainCSS = StyleSheet.create({
     marginTop: 4
   },
 
+  picker: {
+    flex: 1,
+    // flexDirection: 'row',
+    // paddingHorizontal: 8,
+    // paddingVertical: 2,
+    // marginTop: 4
+  },
+
   menu: {
     padding: 10
   },

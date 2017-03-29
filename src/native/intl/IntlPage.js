@@ -3,7 +3,7 @@ import React from 'react';
 import theme from '../app/themes/initial';
 import { Text, ScrollView, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { setCurrentLocale } from '../../common/intl/actions';
+import { setCurrentLocale } from '../../common/app/actions';
 import {
   Container,
   // FormattedDate,
@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
 });
 
 const IntlPage = ({ currentLocale, locales, setCurrentLocale }) => {
-  const componentRenderedAt = Date.now();
   return (
     <ScrollView>
       <Container style={styles.container}>
@@ -42,9 +41,9 @@ const IntlPage = ({ currentLocale, locales, setCurrentLocale }) => {
 };
 
 export default connect(
-  (state) => ({
-    currentLocale: state.intl.currentLocale,
-    locales: state.intl.locales,
+  ({ app }) => ({
+    currentLocale: app.currentLocale,
+    locales: app.locales,
   }),
   { setCurrentLocale },
 )(IntlPage);

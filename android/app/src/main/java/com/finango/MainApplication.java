@@ -2,6 +2,7 @@ package com.finango;
 
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.babisoft.ReactNativeLocalization.ReactNativeLocalizationPackage;
+import com.rnfs.RNFSPackage;
 
 import android.app.Application;
 import android.util.Log;
@@ -29,7 +30,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new VectorIconsPackage(),
-          new ReactNativeLocalizationPackage()
+          new ReactNativeLocalizationPackage(),
+          new RNFSPackage()
       );
     }
   };
