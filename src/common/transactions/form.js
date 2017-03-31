@@ -7,6 +7,7 @@ import shortid from 'js-shortid'
 import { addTransactions } from './actions'
 
 import { Form, View, Text, TextInput, Icon } from '../__components';
+import formWrapper from '../__lib/formWrapper';
 import AutosuggestForm from '../__components/AutosuggestForm';
 
 import { getSuggestions, getAmountTypes } from './utils'
@@ -30,16 +31,9 @@ class NewTransactionForm extends Component {
 
   constructor(props) {
     super(props);
-    // console.log('new trans page constructor');
-
+    // console.log('new trans page constructor', props.fields);
     const { isNative } = props
-    let refName = isNative ? 'ref' : '$ref'
-    this.refhack = {
-      title: {[refName]: c => this.fields.title.ref = c},
-      category: {[refName]: c => this.fields.category.ref = c},
-      amount: {[refName]: c => this.fields.amount.ref = c},
-      cost: {[refName]: c => this.fields.cost.ref = c}
-    }
+    // const isNative = navigator && navigator.product === 'ReactNative'
 
     this.fields = {
       title: {
@@ -49,12 +43,11 @@ class NewTransactionForm extends Component {
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
           // console.log('onSelect title', suggestion);
-          this.setState({
+          this.props.fields.$setMany({
             title: suggestion.title,
-            category: suggestion.path_str.trim().replace(/\s*\/$/, ''),
-            showList: false,
+            category: suggestion.path_str.trim().replace(/\s*\/$/, '')
           })
-          this.fields.amount.ref.focus()
+          this.props.fields.__refs.amount.focus()
         }
       },
       category: {
@@ -63,11 +56,12 @@ class NewTransactionForm extends Component {
         getSuggestions: query => getSuggestions(this.props.categories, query, -1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
-          this.setState({
-            category: suggestion.path_str + suggestion.title,
-            showList: false,
-          })
-          this.fields.amount.ref.focus()
+          this.props.fields.category.onChangeText(suggestion.path_str + suggestion.title)
+          // this.setState({
+          //   category: suggestion.path_str + suggestion.title,
+          //   // showList: false,
+          // })
+          this.props.fields.__refs.amount.focus()
         }
       },
       amount: {
@@ -77,20 +71,31 @@ class NewTransactionForm extends Component {
         renderSuggestion: this.renderAmount,
         onSelect: suggestion => {
           // this.state.suggestions.forEach(item => item.selected = item === suggestion)
-          this.setState({
-            // amount: this.state.query + suggestion.title,
-            amount: this.state.query.split(' ')[0] + ' ' + suggestion.title,
-            showList: false,
-          })
-          this.fields.cost.ref.focus()
+          this.props.fields.amount.onChangeText(this.props.fields.__query.split(' ')[0] + ' ' + suggestion.title)
+          // this.setState({
+          //   // amount: this.state.query + suggestion.title,
+          //   amount: this.state.query.split(' ')[0] + ' ' + suggestion.title,
+          //   // showList: false,
+          // })
+          this.props.fields.__refs.cost.focus()
         }
       },
       cost: {
         name: 'cost'
+      },
+      groupTitle: {
+        name: 'groupTitle'
       }
     }
 
-    this.state = this.init()
+    // this.state = this.init()
+    this.state = {
+      // fields: props.fields,
+      // ...props.fields,
+      field: this.fields.title,
+      suggestions: [],
+      showList: false,
+    }
 
     if (props.groupMode) {
       this.initGroup()
@@ -105,35 +110,16 @@ class NewTransactionForm extends Component {
   }
 
   init = () => ({
-    query: '',
-    title: '',
-    category: '',
-    amount: '',
-    cost: '',
-    groupTitle: '',
+    // query: '',
+    // title: '',
+    // category: '',
+    // amount: '',
+    // cost: '',
+    // groupTitle: '',
     field: this.fields.title,
     suggestions: [],
     showList: false,
   })
-
-  // componentWillMount() {
-  //   if (this.groupId && this.props.user && this.props.transactions.length) {
-  //     // clear array of transactions in edit group mode
-  //     this.props.clearTransactions()
-  //   }
-  // }
-
-  // componentWillUnmount(props) {
-  //   console.log('unmount', props);
-  //   // this.props.setMonthToNow()
-  // }
-
-  // onFocus = (e) => {
-  //   // console.log('focus', this.state.field.name, e, this.refs);
-  //   if (this.state.showList) {
-  //     // this.setState({ showList: false })
-  //   }
-  // }
 
   onBlur = () => {
     if (this.state.showList) {
@@ -141,33 +127,22 @@ class NewTransactionForm extends Component {
     }
   }
 
-  // change 01.03.2017 nextState.field, при переходе по полям клавишей ТАБ:
-  // если содержимое полей одинаковое, то не перерисовывалось меню.
-  // попытка упростить: nextState !== state
-  //
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return nextState.showList !== this.state.showList ||
-  //   nextState.query !== this.state.query ||
-  //   nextState.field !== this.state.field ||
-  //   // nextState.groupTitle !== this.state.groupTitle ||
-  //   nextState.selectedIndex !== this.state.selectedIndex ||
-  //   nextProps.transactions !== this.props.transactions ||
-  //   nextProps.user !== this.props.user
-  // }
+  componentWillReceiveProps(nextProps) {
+    // console.log('transactions form: componentWillReceiveProps', nextProps);
+    let { fields } = nextProps
+    if (fields !== this.props.fields) {
+      this.fieldChanged(fields)
+    }
+  }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return nextState !== this.state ||
-  //   // nextProps.transactions !== this.props.transactions ||
-  //   nextProps.user !== this.props.user
-  // }
-
-  onChange = (query, name) => {
-    query = getValue(query)
-    // console.log('val', query);
-    const field = this.fields[name]
-    // console.log('Change: ', name, ' query:', query);
-    let suggestions = (query.length && field.getSuggestions) ? field.getSuggestions(query) : []
+  fieldChanged = fields => {
+    let { __query, __name } = fields
+    // query = getValue(query)
+    const field = this.fields[__name]
+    // console.log('Change field:', field, 'name', __name, ' query:', __query);
+    let suggestions = (__query.length && field && field.getSuggestions) ? field.getSuggestions(__query) : []
     let len = suggestions.length
+    // console.log('val', __name, __query, 'sugg. len', len);
     let showList = Boolean(len)
     let si = -1
     if (showList) {
@@ -180,78 +155,38 @@ class NewTransactionForm extends Component {
       }
     }
     this.setState({
-      query,
-      [name]: query,
       field,
       suggestions,
       selectedIndex: si,
-      // focused: name,
-      showList
+      showList,
     })
   }
 
-  onGroupTitleChange = (query) =>
-    this.setState({
-      query,
-      groupTitle: getValue(query)
-    })
-
-  onSubmit = e => {
-    e.preventDefault()
-    let keys = Object.keys(this.fields)
-    let fields = {}
-    for (let i = 0, len = keys.length; i < len; i++) {
-      let key = keys[i]
-      let field = this.state[key].trim()
-
-      let error = !field || (key === 'cost' && !/^\d*\.?\d+$/.test(field))
-      if (error) return this.fields[key].ref.focus()
-
-      // if (!field) return this.fields[key].ref.focus()
-      // if (key === 'cost') {
-      //   if (!/^\d*[\.]?\d+$/.test(field)) {
-      //     return this.fields[key].ref.focus()
-      //   }
-      // }
-
-      fields[key] = field
+  onTransactionSubmit = e => {
+    let transaction = this.props.fields.__submits.onTransactionSubmit(e)
+    if (transaction) {
+      if (this.groupId) transaction.groupId = this.groupId
+      this.addTransaction(transaction)
     }
-    let transaction = {
-      title: removeSpecial(fields.title),
-      category: slugifyCategory(fields.category),
-      cost: fields.cost,
-      amount: fields.amount,
-    }
-    if (this.groupId) {
-      transaction.groupId = this.groupId
-    }
-    this.addTransaction(transaction)
   }
 
   onGroupSubmit = e => {
-    e.preventDefault()
-    let { groupTitle } = this.state
-    if (!groupTitle) return
-    this.addTransaction({
-      title: removeSpecial(groupTitle),
-      groupId: this.groupId,
-      groupMaster: 1
-    })
-    this.initGroup()
+    let group = this.props.fields.__submits.onGroupSubmit(e)
+    if (group) {
+      this.addTransaction({
+        title: group.groupTitle,
+        groupId: this.groupId,
+        groupMaster: 1
+      })
+      this.initGroup()
+    }
   }
 
   addTransaction = (transaction) => {
-    // let dt = getTimeId()
-    // transaction.date = dt.iso
     transaction.date = new Date().toISOString()
-    if (!locally)
-      transaction.userId = this.props.user.id
-    // if (locally) transaction.id = dt.pid
-    // else transaction.userId = this.props.user.id
-
+    if (!locally) transaction.userId = this.props.user.id
     this.props.addTransactions(transaction)
-    this.setState(this.init())
-    this.fields.title.ref.focus()
+    this.props.fields.$reset('all')
   }
 
   onKeyDown = e => {
@@ -290,30 +225,27 @@ class NewTransactionForm extends Component {
   render() {
     // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.state);
     // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.props.transactions.length);
-    // console.log('!!! Form for new transactions !!!');
-    const { suggestions, showList, field } = this.state
+    console.log('!!! Form for new transactions !!!');
+    let { suggestions, showList, field } = this.state
+    // let { refhack, fields } = this.props
+    let { fields } = this.props
     return (
-
       <AutosuggestForm
         showList={showList}
         suggestions={suggestions}
         field={field}
         style={suggestionsCSS}
       >
-
         <Form
           style={mainCSS.form}
           onKeyDown={this.onKeyDown}
-          onSubmit={this.onSubmit}
+          onSubmit={this.onTransactionSubmit}
         >
 
           <View style={mainCSS.row}>
             <TextInput
-              autoFocus
               placeholder='Type a transaction title'
-              value={this.state.title}
-              onChangeText={e => this.onChange(e, 'title')}
-              {...this.refhack.title}
+              {...fields.title}
               {...this.propSet1}
             />
           </View>
@@ -321,9 +253,7 @@ class NewTransactionForm extends Component {
           <View style={mainCSS.row}>
             <TextInput
               placeholder='Type a transaction category'
-              value={this.state.category}
-              onChangeText={e => this.onChange(e, 'category')}
-              {...this.refhack.category}
+              {...fields.category}
               {...this.propSet1}
             />
           </View>
@@ -331,25 +261,21 @@ class NewTransactionForm extends Component {
           <View style={mainCSS.row}>
             <TextInput
               placeholder='Amount'
-              value={this.state.amount}
-              onChangeText={e => this.onChange(e, 'amount')}
-              returnKeyType='next'
-              {...this.refhack.amount}
+              {...fields.amount}
               {...this.propSet2}
+              returnKeyType='next'
             />
             <TextInput
               placeholder="Cost"
-              value={this.state.cost}
-              onChangeText={e => this.onChange(e, 'cost')}
-              returnKeyType='done'
-              {...this.refhack.cost}
+              {...fields.cost}
               {...this.propSet2}
+              returnKeyType='done'
             />
 
             <Icon.Button
               name="ios-paper-plane-outline"
               backgroundColor={colors.header}
-              onPress={this.onSubmit}
+              onPress={this.onTransactionSubmit}
             >
               OK
             </Icon.Button>
@@ -365,11 +291,9 @@ class NewTransactionForm extends Component {
             <View style={mainCSS.row}>
               <TextInput
                 placeholder='Group title'
-                value={this.state.groupTitle}
-                onChangeText={this.onGroupTitleChange}
-                returnKeyType='done'
-                {...this.refhack.groupTitle}
+                {...fields.groupTitle}
                 {...this.propSet2}
+                returnKeyType='done'
               />
               <Icon.Button
                 name="ios-list-box-outline"
@@ -387,12 +311,12 @@ class NewTransactionForm extends Component {
         {this.props.children}
 
       </AutosuggestForm>
-
     )
   }
 
   renderCategory = category => {
-    const matches = [[0, this.state.query.length]];
+    // const matches = [[0, this.state.query.length]];
+    const matches = [[0, this.props.fields.__query.length]];
     const parts = AutosuggestHighlightParse(category.title, matches);
     const item =
       <Text style={suggestionsCSS.text}>
@@ -421,13 +345,8 @@ class NewTransactionForm extends Component {
       {item}
     </View>
 
-  propSet0 = {
-    onBlur: this.onBlur,
-    // required: true
-  }
-
   propSet1 = {
-    ...this.propSet0,
+    onBlur: this.onBlur,
     style: mainCSS.input,
     keyboardType: 'default',
     returnKeyType: 'next',
@@ -436,7 +355,7 @@ class NewTransactionForm extends Component {
   }
 
   propSet2 = {
-    ...this.propSet0,
+    onBlur: this.onBlur,
     style: [mainCSS.input, {marginRight: 10}],
     keyboardType: 'numeric',
     autoCapitalize: 'none',
@@ -445,7 +364,39 @@ class NewTransactionForm extends Component {
 
 }
 
-export default connect(
+export default formWrapper([
+  {
+    submit: 'onTransactionSubmit',
+    fields: [
+      // { fn: fieldName, vd: validator, init: initialValue, af: autoFocus, pp: postProcessing }
+      { fn: 'title', vd: 'required', af: true, pp: removeSpecial },
+      { fn: 'category', vd: 'required', pp: slugifyCategory },
+      { fn: 'amount', vd: 'required' },
+      { fn: 'cost', vd: 'isDecimal' }
+    ]
+  }, {
+    submit: 'onGroupSubmit',
+    fields: [
+      { fn: 'groupTitle', vd: 'required', pp: removeSpecial }
+    ]
+  }
+])(connect(
   null,
   { addTransactions }
-)(NewTransactionForm);
+)(NewTransactionForm))
+
+//
+// export default connect(
+//   null,
+//   { addTransactions, fake }
+// )(
+//   popup({
+//     fields: [
+//       // [ field name, initialState ]
+//       [ 'title', 'ququ' ],
+//       [ 'category', '' ],
+//       [ 'amount', '' ],
+//       [ 'cost', '' ],
+//     ]
+//   })(NewTransactionForm)
+// );
