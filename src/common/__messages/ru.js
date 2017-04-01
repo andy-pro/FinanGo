@@ -25,6 +25,9 @@ export default {
   "categories": "Категории",
   "count.categories": " (категорий: {0})",
 
+  'export': 'Экспорт',
+  'import': 'Импорт',
+
   "placeholders.title": "Имя транзакции",
   "placeholders.category": "Категория транзакции",
   "placeholders.amount": "Количество",

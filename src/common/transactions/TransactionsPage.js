@@ -8,6 +8,7 @@ import Form from './form'
 import { changeMonth } from '../app/actions'
 import { getTransactions, clearTransactions, delTransactions, setDelHandler } from './actions'
 import { Alert } from '../__components';
+import PopupMenu from '../__components/PopupMenu';
 import { pick } from '../__lib/utils'
 import { isCurrentMonth } from '../__lib/dateUtils'
 
@@ -139,9 +140,11 @@ class TransactionsPage extends Component {
     }
 
     return (
-      <Form { ...renderProps }>
-        <RenderTransactions { ...renderProps } />
-      </Form>
+      <PopupMenu isNative={this.props.isNative}>
+        <Form { ...renderProps }>
+          <RenderTransactions { ...renderProps } />
+        </Form>
+      </PopupMenu>
     )
 
   }

@@ -7,7 +7,6 @@ import Link from '../../../browser/app/components/Link'
 import MenuLink from './MenuLink'
 // import Picker from './Picker'
 // import DatePicker from './DatePicker'
-// import AutosuggestForm from './AutosuggestForm';
 
 import {
   Text,
@@ -53,5 +52,4 @@ export {
   MenuLink,
   Picker,
   // DatePicker,
-  // AutosuggestForm,
 }

@@ -17,11 +17,13 @@ export default function createIconButtonComponent(Icon) {
         paddingLeft: 2,
         paddingRight: 2,
       }
-      if (children) style.paddingRight = 8
       props.style = props.style || {}
-      // props.style.marginRight = 0
       props.style.marginTop = -4
       props.size = 24
+      if (children) {
+        style.paddingRight = 6
+        props.style.marginRight = 2
+      }
       return (
         <Button style={style} onClick={onPress} type={type} title={title}>
           <Icon {...props} />

@@ -8,7 +8,6 @@ import Link from './Link'
 import MenuLink from './MenuLink'
 import FileInput from './FileInput'
 // import DatePicker from './DatePicker'
-// import AutosuggestForm from './AutosuggestForm';
 
 import {
   Text,
@@ -48,5 +47,4 @@ export {
   Picker,
   // Modal,
   // DatePicker,
-  // AutosuggestForm,
 }

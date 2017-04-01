@@ -14,34 +14,21 @@ import scan from './scan'
 
 import { colors, mainCSS, transactionsCSS as styles, iconBtnCSS } from '../__themes'
 
-let ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 !== r2,
-  sectionHeaderHasChanged : (s1, s2) => s1 !== s2,
-  getSectionHeaderData: (dataBlob, sectionId) => dataBlob[sectionId],
-  getRowData: (dataBlob, sectionId, rowId) => dataBlob[rowId]
-});
-
-// var qwer = 0
-// console.log('get rend module, qwer:', qwer);
 
 class RenderTransactions extends Component {
 
-
-  /*
   constructor(props) {
     super(props);
-    qwer = qwer + 1
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    console.log('~ render transactions constructor ~');
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    console.log('class count:', qwer, 'transactions count:', props.transactions.length);
-
-    // const { transactions, groupMode } = props
-    // this.state = {
-    //   dataSource: this.scanAndClone(transactions, groupMode, 0)
-    // }
+    this.ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+      sectionHeaderHasChanged : (s1, s2) => s1 !== s2,
+      getSectionHeaderData: (dataBlob, sectionId) => dataBlob[sectionId],
+      getRowData: (dataBlob, sectionId, rowId) => dataBlob[rowId]
+    });
+    // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    // console.log('~ render transactions constructor ~');
+    // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
   }
-  */
 
   componentWillMount() {
     // console.log('transactions renderer mount!!!!');
@@ -63,14 +50,14 @@ class RenderTransactions extends Component {
       let blob = dataBlob[sid]
       this.setItemsShown(blob, dataBlob, rowIds, true)
     }
-    return ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
+    return this.ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
   }
 
   onSectionPress = blob => {
     let { _dataBlob, sectionIdentities, rowIdentities } = this.state.ds
     this.setItemsShown(blob, _dataBlob, rowIdentities) // toggle
     this.setState({
-      ds: ds.cloneWithRowsAndSections(_dataBlob, sectionIdentities, rowIdentities)
+      ds: this.ds.cloneWithRowsAndSections(_dataBlob, sectionIdentities, rowIdentities)
     })
   }
 
@@ -82,7 +69,7 @@ class RenderTransactions extends Component {
   }
 
   cloneData = ({ dataBlob, sectionIds, rowIds }) => {
-    return ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
+    return this.ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -104,32 +91,6 @@ class RenderTransactions extends Component {
     }
   }
 
-  // deleteTransactions = () => {
-  //   let { _dataBlob, sectionIdentities, rowIdentities } = this.state.ds
-  //   const ids = []
-  //   rowIdentities.forEach(days => {
-  //     days.forEach(row => {
-  //       let item = _dataBlob[row]
-  //       if (item.delFlag) ids.push(item.id)
-  //     })
-  //   })
-  //
-  //   // return this.props.delTransactions(ids)
-  //
-  //   let args, len = ids.length
-  //   if (len) {
-  //     args =[
-  //       `Are you shure? (${len} items)`,
-  //       [
-  //         { text: 'Cancel', null, style: 'cancel' },
-  //         { text: 'OK', onPress: () => this.props.delTransactions(ids) },
-  //       ],
-  //       { cancelable: false }
-  //     ]
-  //   } else args = ['Nothing to remove']
-  //   Alert.alert('Delete transactions', ...args)
-  // }
-
   toggleDelBlob = (blob, sectionId) => {
     let { _dataBlob, sectionIdentities, rowIdentities } = this.state.ds
     let children = rowIdentities[_dataBlob[sectionId].rows]
@@ -147,7 +108,7 @@ class RenderTransactions extends Component {
       })
     }
     this.setState({
-      ds: ds.cloneWithRowsAndSections(_dataBlob, sectionIdentities, rowIdentities)
+      ds: this.ds.cloneWithRowsAndSections(_dataBlob, sectionIdentities, rowIdentities)
     })
   }
 
@@ -332,8 +293,6 @@ class RenderTransactions extends Component {
   }
 
 }
-
-// export default RenderTransactions
 
 export default connect(
   ({app}) => ({

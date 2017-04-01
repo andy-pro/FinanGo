@@ -25,6 +25,9 @@ export default {
   "transactions.delete": "Видалити",
   "count.categories": " (категорій: {0})",
 
+  'export': 'Экспорт',
+  'import': 'Імпорт',
+
   "placeholders.title": "Ім'я транзакції",
   "placeholders.category": "Категорія транзакції",
   "placeholders.amount": "Кількість",

@@ -110,3 +110,22 @@ export const getAmountTypes = query => {
   }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+const shops = [
+  {title: 'Реликвия'},
+  {title: 'Арсен'},
+  {title: 'Ашан'},
+  {title: 'АТБ'},
+  {title: 'Сільпо'},
+  {title: 'Метро'},
+  {title: 'Эпицентр'},
+]
+
+export const getShops = query => {
+  query = query.toLowerCase()
+  return shops
+    .filter(item => item.title.toLowerCase().startsWith(query))
+    .map(({ title }) => ({ title }))
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

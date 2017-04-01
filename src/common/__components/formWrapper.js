@@ -1,6 +1,6 @@
 import React from 'react';
 
-import validator from './validator'
+import validator from '../__lib/validator'
 
 // let isNative =
 //   typeof navigator === 'object' &&
@@ -42,12 +42,15 @@ const wrapper = forms => WrappedComponent => {
     }
 
     onChange = (e, name) => {
-      let value = typeof e === 'object' ? e.target.value : e
+      let element = e.target
+      let value = typeof e === 'object' ? element.value : e
+          // value = element.value
       // console.log('zdrasti from popup', e, name);
       let { fields } = this.state
       fields[name].value = value
       fields.__name = name
       fields.__query = value
+      fields.__element = element
       this.setState({ fields: { ...fields } })
     }
 
