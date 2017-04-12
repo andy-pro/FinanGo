@@ -1,36 +1,62 @@
 import React from 'react';
 
 import validator from '../__lib/validator'
+import { convToArray } from '../__lib/utils'
+import __config from '../config'
 
-// let isNative =
-//   typeof navigator === 'object' &&
-//   navigator.product === 'ReactNative';
+// { fn: fieldName, type: [text(default), checkbox, picker], vd: validator, init: initialValue, af: autoFocus, pp: postProcessing }
 
 const wrapper = forms => WrappedComponent => {
 
   return class FormWrapper extends React.Component {
 
+    static TYPES = {
+      text: {
+        handler: 'onChangeText',
+        value: 'value'
+      },
+      file: {
+        handler: 'onChangeText',
+        value: 'value'
+      },
+      checkbox: {
+        handler: 'onPress',
+        value: 'checked'
+      },
+      picker: {
+        handler: 'onValueChange',
+        value: 'selectedValue'
+      }
+    }
+
     constructor(props) {
       super(props)
-      // let isNative = navigator && navigator.product === 'ReactNative'
-      const { isNative } = props
-      let refName = isNative ? 'ref' : '$ref'
+      let { isNative } = __config,
+          refName = isNative ? 'ref' : '$ref'
       let fields = {
         __query: '',
         __refs: {},
         __submits: {},
-        $setMany: this.onSetMany,
-        $reset: this.onReset,
+        __types: {},
+        __state: {},
+        __setState: nextFields => this.setFields('set', nextFields),
+        // index - index of form on page to reset, if 'all' - all forms will be resetted
+        __resetState: index => this.setFields('reset', index)
       }
-      forms = Array.isArray(forms) ? forms : [forms]
+      forms = convToArray(forms)
       forms.forEach(form => {
         fields.__submits[form.submit] = this.onSubmit(form)
+        form.fields = convToArray(form.fields)
         form.fields.forEach(field => {
-          let { fn, init='', af } = field
+          let { fn, type='text', init='', af } = field,
+              { handler, value } = FormWrapper.TYPES[type]
+          fields.__types[fn] = type
+          fields.__state[fn] = init
           fields[fn] = {
-            onChangeText: e => this.onChange(e, fn),
-            value: init,
-            [refName]: c => fields.__refs[fn] = c
+            [handler]: e => this.setFields('change', { e, fn }),
+            [value]: init,
+            [isNative && type === 'file' ? '$ref' : refName]: c => fields.__refs[fn] = c
+            // [refName]: c => { if (c) fields.__refs[fn] = c }
           }
           if (af) {
             fields.__name = fn
@@ -41,40 +67,73 @@ const wrapper = forms => WrappedComponent => {
       this.state = { fields }
     }
 
-    onChange = (e, name) => {
-      let element = e.target
-      let value = typeof e === 'object' ? element.value : e
-          // value = element.value
-      // console.log('zdrasti from popup', e, name);
-      let { fields } = this.state
-      fields[name].value = value
-      fields.__name = name
-      fields.__query = value
-      fields.__element = element
-      this.setState({ fields: { ...fields } })
-    }
+    setFields = (cmd, opts) => {
+      let { fields } = this.state,
+          { __types } = fields,
+          TYPES = this.constructor.TYPES,
+          { isNative } = __config,
+          common
 
-    onSetMany = nextFields => {
-      let { fields } = this.state
-      Object.keys(nextFields).forEach(name => fields[name].value = nextFields[name])
-      fields.__name = ''
-      fields.__query = ''
-      this.setState({ fields: { ...fields } })
-    }
+      if (cmd === 'change') {
+        let { e, fn } = opts,
+            field = fields[fn],
+            type = __types[fn],
+            { value } = TYPES[type],
+            el,
+            q
+        if (type === 'checkbox') {
+          q = !field[value]
+        } else {
+          el = e.target
+          if (type === 'file' && !isNative) {
+            let { files } = el
+            q = (files && files[0]) ? files[0] : ''
+          } else {
+            if (el) {
+              q = el.value
+            } else {
+              q = e
+              el = fields.__refs[fn]
+            }
+            // q = el ? el.value : e
+          }
+        }
+        field[value] = q
+        fields.__state[fn] = q
+        // console.log('Form Wrapper onChange:', fn, q);
+        common = { __name: fn, __query: q, __element: el }
 
-    onReset = index => {
-      // index - index of form on page to reset, if 'all' - all forms will be resetted
-      // get resetted forms
-      let rfs = index === 'all' ? forms : [forms[index]]
-      let { fields } = this.state
-      rfs.forEach(rf => {
-        rf.fields.forEach(({ fn, init='', af }) => {
-          fields[fn].value = init
-          if (af) fields.__refs[fn].focus()
-        })
-      })
-      fields.__name = ''
-      fields.__query = ''
+      } else {
+
+        common = { __name: '', __query: '', __element: '' }
+
+        if (cmd === 'set') {
+          Object.keys(opts).forEach(fn => {
+            let v = opts[fn],
+                t = __types[fn]
+            fields[fn][TYPES[t].value] = v
+            fields.__state[fn] = v
+            if (!isNative && t === 'file') {
+              fields.__refs[fn].value = v
+            }
+          })
+
+        } else
+
+        if (cmd === 'reset') {
+          // get resetted forms
+          let rfs = opts === 'all' ? forms : [forms[opts]]
+          rfs.forEach(rf => {
+            rf.fields.forEach(({ fn, type='text', init='', af }) => {
+              fields[fn][TYPES[type].value] = init
+              fields.__state[fn] = init
+              if (af) fields.__refs[fn].focus()
+            })
+          })
+        }
+
+      }
+      Object.assign(fields, common)
       this.setState({ fields: { ...fields } })
     }
 
@@ -82,11 +141,17 @@ const wrapper = forms => WrappedComponent => {
       e.preventDefault()
       let keys = form.fields,
           { fields } = this.state,
-          __fields = {}
+          __fields = {},
+          TYPES = this.constructor.TYPES
       for (var i = 0, len = keys.length; i < len; i++) {
-        let { fn, vd, pp } = keys[i],
-            value = fields[fn].value.trim()
-        if (pp) value = pp(value) // postProcessing
+        let { fn, type='text', vd, pp } = keys[i],
+            field = fields[fn],
+            { value } = TYPES[type]
+        value = field[value]
+        if (type === 'text') {
+          value = value.trim()
+          if (pp) value = pp(value) // postProcessing
+        }
         let valid = vd ? validator[vd](value) : true
         if (!valid) {
           this.state.fields.__refs[fn].focus()
@@ -98,7 +163,6 @@ const wrapper = forms => WrappedComponent => {
     }
 
     render() {
-      // console.log('rnd form wrapped', this.state.fields);
       return (
         <WrappedComponent {...this.props} fields={this.state.fields} />
       );

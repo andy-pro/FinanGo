@@ -45,7 +45,7 @@ class App extends Component {
 
   render() {
     const { theme, themeName, currentLocale } = this.props
-    console.log('%cApp render', 'color:blue;font-weight:bold', currentLocale)
+    // console.log('%cApp render', 'color:blue;font-weight:bold', currentLocale)
     return (
       <ThemeProvider
         key={themeName} // Enforce rerender.
@@ -66,7 +66,7 @@ class App extends Component {
             ]}
           />
           <Menu />
-          <Box marginLeft={6} padding={1}>
+          <Box marginLeft={6} padding={1} position='relative'>
             <Page pattern="/" exactly component={TransactionsPage} />
             <Page pattern="/single" component={TransactionsPage} />
             <Page pattern="/group" component={TransactionsPage} />

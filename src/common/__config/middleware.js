@@ -4,6 +4,7 @@ import createLoggerMiddleware from 'redux-logger';
 
 import configureDeps from './deps';
 import configureEpics from './epics';
+import __config from '../config'
 
 // Like redux-thunk, but with just one argument.
 const injectMiddleware = deps => ({ dispatch, getState }) => next => action =>
@@ -41,7 +42,7 @@ const configureMiddleware = (initialState, platformDeps, platformMiddleware) => 
 
 
   if (module.hot && typeof module.hot.accept === 'function') {
-    if (initialState.device.isReactNative) {
+    if (__config.isNative) {
       module.hot.accept(() => {
         const configureEpics = require('./epics').default;
         epicMiddleware.replaceEpic(configureEpics(deps));

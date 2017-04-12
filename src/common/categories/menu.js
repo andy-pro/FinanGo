@@ -4,85 +4,74 @@ import chroma from 'chroma-js'
 
 import { categoryAction } from './actions'
 import { removeSpecial, getSlug, findDuplicate, testColor } from '../__lib/utils'
-import { Form, View, TextInput, Icon, Checkbox, Alert } from '../__components';
+import { Form, View, TextInput, Icon, Checkbox, Alert, FormWrapper } from '../__components';
 
 import { mainCSS, iconBtnCSS, checkboxCSS } from '../__themes'
 // import { iconBtn as iconBtnCSS } from '../__themes'
 
 class CategoryMenu extends Component {
 
-  constructor(props) {
-    super(props);
-    let { category } = props
-    this.state = {
-      add: '',
-      title: category.title || '',
-      color: category.color || '',
-      preserve: false
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.category !== this.props.category) {
+      const { isChild, title, color } = nextProps.category
+      this.props.fields.__setState({
+        add: '',
+        title: isChild ? title : '',
+        color: (isChild && color) ? color : '',
+        preserve: false
+      })
+      setTimeout(this.setFocus)
+      return false
     }
-    this.fields = { add: {} }
-    let refName = props.isNative ? 'ref' : '$ref'
-    this.refhack = {
-      add: {[refName]: c => this.fields.add.ref = c},
-    }
+    return true
   }
 
-  componentWillReceiveProps(nextProps) {
-  // componentWillUpdate(nextProps, nextState) {
-    // console.log('menu will update!', this.fields);
-    // if (!nextProps.enable) nextProps.category = {}
-    const { isChild, title, color } = nextProps.category
-    this.state.add = ''
-    this.state.title = isChild ? title : ''
-    this.state.color = (isChild && color) ? color : ''
-    this.state.preserve = false
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   // console.log('update', prevProps);
+  //   if (prevProps.category !== this.props.category) this.setFocus()
+  // }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.category !== this.props.category) this.setFocus()
-  }
-
-  componentDidMount() {
-    this.setFocus()
-  }
+  componentDidMount() { this.setFocus() }
 
   setFocus = () => {
-    if (this.props.enable) this.fields.add.ref.focus()
+    if (this.props.enable) this.props.fields.__refs.add.focus()
   }
 
-  onChange = (query, field) => {
-    if (typeof query === 'object')
-      query = query.target.value
-    this.setState({ [field]: query })
+  onAddSubmit = e => {
+    let data = this.props.fields.__submits.onAddSubmit(e)
+    if (data) this.onSubmit(data)
   }
 
-  onAddSubmit   = e => this.onSubmit(e, 'add')
-  onTitleSubmit = e => this.onSubmit(e, 'title')
-  onColorSubmit = e => this.onSubmit(e, 'color', false)
+  onTitleSubmit = e => {
+    let data = this.props.fields.__submits.onTitleSubmit(e)
+    if (data) this.onSubmit(data)
+  }
 
-  onSubmit = (e, field, required=true) => {
-    e.preventDefault()
-    let value = this.state[field].trim()
+  onColorSubmit = e => {
+    let data = this.props.fields.__submits.onColorSubmit(e)
+    this.onSubmit(data)
+  }
+
+  onSubmit = data => {
+    let field = Object.keys(data)[0],
+        value = data[field]
     const { category, enable } = this.props;
     let { path, parentPath, isChild } = category
     if (!enable) return
     if (value === category[field]) return
-    if (required && !value) return
-    // let action, data = {}
-    let cmd, data = {}
+    let cmd
+    data = {}
 
     switch (field) {
       case 'add':
         path = path + (isChild ? '.sub' : '')
         parentPath = path
-        // action = this.props.addCategory
         cmd = 'add'
         // data.color = ?
         // console.log('add', JSON.stringify(category));
         break
       case 'title':
         if (!isChild) return
-        // action = this.props.updateCategory
         cmd = 'update'
         break
       case 'color':
@@ -92,37 +81,25 @@ class CategoryMenu extends Component {
           value = checkColor(value)
           if (!value) return
         }
-        // action = this.props.updateCategory
         cmd = 'update'
         data.color = value
     }
 
     if (field === 'add' || field === 'title') {
-      let _value = removeSpecial(value)
-      if (value !== _value) {
-        return Alert.alert('Error!', 'Unacceptable symbols /|?&<>')
-      }
       let slug = getSlug(value)
       if (findDuplicate(category.categories, slug, parentPath)) {
         return Alert.alert('The same category already exists!')
       }
       data.title = value
       data.slug = slug
-      /*
-      let color = this.state.color
-      if (color) {
-        color = checkColor(color)
-        if (!color) return
-        data.color = color
-      }
-      */
     }
 
-    // action({
     this.props.categoryAction({ path, data }, cmd)
   }
 
-  onDelete = () => {
+  onDelete = e => {
+    let data = this.props.fields.__submits.onDelete(e)
+    // console.log(JSON.stringify(data));
     let {category} = this.props
     Alert.alert(
       `Delete category "${category.title}"`,
@@ -135,12 +112,10 @@ class CategoryMenu extends Component {
     )
   }
 
-  onPreserveChange = () => this.setState({ preserve: !this.state.preserve })
-
   render() {
-    const { category, enable } = this.props;
+    const { fields, category, enable } = this.props;
     const isChild = Boolean(category.isChild)
-    // console.log('category menu render', category, this.state);
+    // console.log('category menu render', fields.add);
 
     return (
         <View style={mainCSS.form}>
@@ -150,12 +125,9 @@ class CategoryMenu extends Component {
             onSubmit={this.onAddSubmit}
           >
             <TextInput
-              required
               placeholder={isChild ? 'New subcategory' : 'New category'}
               editable={enable}
-              value={this.state.add}
-              onChangeText={e => this.onChange(e, 'add')}
-              {...this.refhack.add}
+              { ...fields.add }
               { ...this.propSet0 }
             />
             <Icon.Button
@@ -171,11 +143,9 @@ class CategoryMenu extends Component {
             onSubmit={this.onTitleSubmit}
           >
             <TextInput
-              required
               placeholder={'Rename'}
               editable={isChild}
-              value={this.state.title}
-              onChangeText={e => this.onChange(e, 'title')}
+              { ...fields.title }
               { ...this.propSet0 }
             />
             <Icon.Button
@@ -193,13 +163,12 @@ class CategoryMenu extends Component {
             <TextInput
               placeholder={'Color'}
               editable={isChild}
-              value={this.state.color}
-              onChangeText={e => this.onChange(e, 'color')}
+              { ...fields.color }
               { ...this.propSet0 }
             />
             <Icon.Button
               name='ios-color-palette-outline'
-              backgroundColor={isChild ? checkColor(this.state.color, '#ddd') : '#ddd'}
+              backgroundColor={isChild ? checkColor(fields.color.value, '#ddd') : '#ddd'}
               onPress={this.onColorSubmit}
               style={iconBtnCSS}
             />
@@ -209,8 +178,7 @@ class CategoryMenu extends Component {
             <Checkbox
               label='Preserve references'
               disabled={!isChild}
-              checked={this.state.preserve}
-              onPress={this.onPreserveChange}
+              { ...fields.preserve }
             />
             <Icon.Button
               name='ios-remove-circle-outline'
@@ -237,12 +205,13 @@ class CategoryMenu extends Component {
 
 }
 
-export default connect(
-  null,
-  { categoryAction }
-)(CategoryMenu);
+export default FormWrapper([
+  { submit: 'onAddSubmit', fields: { fn: 'add', vd: 'required', pp: removeSpecial } },
+  { submit: 'onTitleSubmit', fields: { fn: 'title', vd: 'required', pp: removeSpecial } },
+  { submit: 'onColorSubmit', fields: { fn: 'color' } },
+  { submit: 'onDelete', fields: { fn: 'preserve', type: 'checkbox', init: false } },
+])(connect(null, { categoryAction })(CategoryMenu))
 
-//
 // const previewColor = (v, defv) =>
 //   testColor(v) ? '#'+ v : defv
 

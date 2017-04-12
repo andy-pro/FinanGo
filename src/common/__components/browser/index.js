@@ -1,6 +1,7 @@
 import HeaderBar from '../HeaderBar'
 import Match from '../Match'
 import Checkbox from '../Checkbox'
+import FormWrapper from '../FormWrapper'
 import ListView from './ListView'
 import Icon from './icons/Ionicons';
 import Link from '../../../browser/app/components/Link'
@@ -51,5 +52,6 @@ export {
   Link,
   MenuLink,
   Picker,
+  FormWrapper,
   // DatePicker,
 }

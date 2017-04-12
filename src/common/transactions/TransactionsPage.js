@@ -8,7 +8,7 @@ import Form from './form'
 import { changeMonth } from '../app/actions'
 import { getTransactions, clearTransactions, delTransactions, setDelHandler } from './actions'
 import { Alert } from '../__components';
-import PopupMenu from '../__components/PopupMenu';
+
 import { pick } from '../__lib/utils'
 import { isCurrentMonth } from '../__lib/dateUtils'
 
@@ -101,7 +101,7 @@ class TransactionsPage extends Component {
     }
     let details = ` (${len} items)`
     // if (len < LIMIT || deleteMonth) {
-    if (len && len < LIMIT) {
+    if (len && (len < LIMIT || deleteMonth)) {
       args =[
         `Are you shure?${details}`,
         [
@@ -113,16 +113,17 @@ class TransactionsPage extends Component {
         ],
         { cancelable: false }
       ]
+    } else {
+      if (len >= LIMIT) args = [`Request-URI Too Long.${details}`]
+      else args = ['Nothing to remove']
     }
-    else if (len >= LIMIT) args = [`Request-URI Too Long.${details}`]
-    else args = ['Nothing to remove']
     Alert.alert('Delete transactions', ...args)
   }
 
   render () {
 
     // console.log('!!! Root transactions page render !!!');
-    const renderProps = pick(this.props, ['date', 'user', 'categories', 'transactions', 'isNative', 'pattern'])
+    const renderProps = pick(this.props, ['date', 'user', 'categories', 'transactions', 'pattern'])
 
     if (!renderProps.user) return null
 
@@ -140,11 +141,11 @@ class TransactionsPage extends Component {
     }
 
     return (
-      <PopupMenu isNative={this.props.isNative}>
+
         <Form { ...renderProps }>
           <RenderTransactions { ...renderProps } />
         </Form>
-      </PopupMenu>
+
     )
 
   }
@@ -152,13 +153,12 @@ class TransactionsPage extends Component {
 }
 
 export default connect(
-  ({ app, device, user, categories, transactions }) => ({
+  ({ app, user, categories, transactions }) => ({
     date: app.date,
     messages: app.messages,
     user,
     categories,
     transactions,
-    isNative: device.isReactNative,
   }),
   { changeMonth, getTransactions, clearTransactions, delTransactions, setDelHandler }
 )(TransactionsPage);

@@ -7,7 +7,7 @@ const suggestions = StyleSheet.create({
   },
   list: {
     position: 'absolute',
-    top: 42,
+    // top: 42,
     left: 16,
     maxHeight: 174,
     backgroundColor: '#f0f0f0',
@@ -19,7 +19,7 @@ const suggestions = StyleSheet.create({
     overflow: 'scroll',
     padding: 2,
     minWidth: 150,
-    // zIndex: 2
+    zIndex: 1,
   },
 
   view: {

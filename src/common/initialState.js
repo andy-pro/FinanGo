@@ -4,12 +4,7 @@ const initialState = {
     "currentLocale": "en",
     "defaultLocale": "en",
     "locales": [ "en", "ru", "ua" ],
-  },
-  "device": {
-    "host": "",
-    "isReactNative": false,
-    "platform": ""
-  },
+  }
 };
 
 export default initialState

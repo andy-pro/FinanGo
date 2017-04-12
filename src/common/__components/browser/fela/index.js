@@ -31,7 +31,7 @@ export const TextInput = create(
 // export const FileInput = props => <TextInput {...props} type='file' />
 export const FileInput = create(
   'input',
-  ['onChangeText', {type: 'file'}]
+  ['onChangeText', '$ref', {type: 'file'}]
 )
 
 

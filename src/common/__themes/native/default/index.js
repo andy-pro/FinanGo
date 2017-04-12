@@ -65,7 +65,7 @@ const mainCSS = StyleSheet.create({
     // width: 100,
     flex: 1,
     fontSize: 16,
-    flexDirection: 'row',
+    // flexDirection: 'row',
     // marginVertical: 5,
     // height: 50,
     paddingHorizontal: 8,

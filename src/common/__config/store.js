@@ -5,6 +5,7 @@ import { persistStore, autoRehydrate } from 'redux-persist';
 import configureMiddleware from './middleware';
 import configureReducer from './reducer';
 import configureStorage from './storage';
+import __config from '../config'
 
 const configureStore = options => {
   const {
@@ -31,16 +32,15 @@ const configureStore = options => {
   );
 
   if (platformDeps.storageEngine) {
-    const config = configureStorage(
-      initialState.config.appName,
+    persistStore(store, configureStorage(
+      __config.appName,
       platformDeps.storageEngine,
-    );
-    persistStore(store, config);
+    ))
   }
 
   // Enable hot reloading for reducers.
   if (module.hot && typeof module.hot.accept === 'function') {
-    if (initialState.device.isReactNative) {
+    if (__config.isNative) {
       // React Native for some reason needs accept without the explicit path.
       // facebook.github.io/react-native/blog/2016/03/24/introducing-hot-reloading.html
       module.hot.accept(() => {

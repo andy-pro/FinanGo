@@ -4,40 +4,32 @@ import { connect } from 'react-redux'
 import { getTransactions } from '../transactions/actions'
 import { getCategories } from '../categories/actions'
 import { importData } from './actions'
-import { Form, View, Text, TextInput, FileInput, Icon, Picker } from '../__components';
+import { Form, View, Text, TextInput, FileInput, Icon, Picker, FormWrapper } from '../__components';
 import { removeSpecial, getValue } from '../__lib/utils'
 
 import { colors, mainCSS } from '../__themes'
 
 class BackupPage extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      source: 'trns',
-      period: 'month',
-      mode: 'replace',
-    }
-    Object.assign(this.state, this.init())
+  componentDidMount() {
+    this.props.fields.__setState(this.init())
   }
 
-  init = date => {
-    if (this.importField) this.importField.value = ''
-    return {
-      exportName: this.exportName({ source: this.state.source, date }),
-      importName: '',
-    }
-  }
+  init = date => ({
+    exportName: this.getExportName({ date })
+  })
 
-  exportName = ({ source=this.state.source, date=this.props.date, period=this.state.period }) => {
-    const dt = source === 'trns' ? this.transformDate(date, period) : {}
+  getExportName = ({ state=this.props.fields.__state, date=this.props.date }) => {
+    let { source, period } = state
+    const dt = source === 'transactions' ? this.transformDate(period, date) : {}
     dt.month = dt.month === undefined ? '' : `-${+dt.month + 1}`
     dt.year = dt.year === undefined ? '' : `-${dt.year}`
-    return `finango-${source}${dt.month}${dt.year}.json`
+    // return `finango-${source}${dt.month}${dt.year}.json`
+    return `${source}${dt.month}${dt.year}`
   }
 
-  transformDate = (date, period) => {
-    let dt = { ...date }
+  transformDate = (period, date) => {
+    let dt = { ...date } // copy of date
     switch (period) {
       case 'year':
         delete dt.month
@@ -48,147 +40,133 @@ class BackupPage extends Component {
     return dt
   }
 
-  componentWillReceiveProps(nextProps) {
-    let { date } = nextProps
-    if (date !== this.props.date) {
-      this.setState(this.init(date))
+  shouldComponentUpdate(nextProps, nextState) {
+    let { date, fields } = nextProps
+    // console.log('backup page update', fields.__name, JSON.stringify(fields.__state));
+    // console.log('backup page update', fields.importName, fields.__refs);
+    if (fields !== this.props.fields) {
+      let { __name, __state } = fields
+      if (__name === 'source' || __name ==='period') {
+        this.props.fields.__setState({
+          exportName: this.getExportName({ state: __state })
+        })
+        return false
+      }
     }
+    if (date !== this.props.date) {
+      this.props.fields.__setState(this.init(date))
+      return false
+    }
+    return true
   }
 
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-  onChange = (query, field) => {
-    query = getValue(query)
-    let state = { [field]: query }
-    if (field === 'source' || field ==='period')
-      state.exportName = this.exportName(state)
-      // console.log('onChange', state);
-    this.setState(state)
-  }
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   onExportSubmit = e => {
-    e.preventDefault()
-    let { exportName, source } = this.state
-    exportName = removeSpecial(exportName)
-    if (this.props.disabled || !exportName) return
-    let opts = { exportName }
-    if (source === 'trns') {
-      let date = this.transformDate(this.props.date, this.state.period)
+    let opts = this.props.fields.__submits.onExportSubmit(e)
+    if (this.props.disabled || !opts) return
+    if (opts.source === 'transactions') {
+      let date = this.transformDate(opts.period, this.props.date)
       opts.period = date
-      opts.source = 'transactions'
+      // opts.source = 'transactions'
       this.props.getTransactions({ date }, opts)
     } else {
-      opts.source = 'categories'
+      // opts.source = 'categories'
       this.props.getCategories(opts)
     }
   }
 
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-  importChange = e => {
-    let { target } = e,
-        { files } = target,
-        importName = (files && files[0]) ? files[0] : ''
-    this.importField = target
-    this.setState({ importName })
-  }
 
   onImportSubmit = e => {
-    e.preventDefault()
-    let { importField } = this
-    let { importName } = this.state
-    if (importField && importName) {
-      this.props.importData({ importName, mode: this.state.mode })
-      importField.value = ''
-      this.setState({ importName: '' })
-    }
+    let importForm = this.props.fields.__submits.onImportSubmit(e)
+    if (this.props.disabled || !importForm) return
+    this.props.importData(importForm)
+    this.props.fields.__setState({ importName: '' })
   }
 
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   render() {
-    let { messages: T, disabled } = this.props
+    let { fields, messages: T, disabled } = this.props
     let color = disabled ? colors.disabled : colors.header
-    let { source, period, mode, exportName, importName } = this.state
-
+    let { importName, mode, source, period, exportName } = fields
+    // console.log('render backup form');
     return (
       <View>
 
-        <Form
-          style={mainCSS.form}
-          onSubmit={this.onExportSubmit}
-        >
-          <View style={mainCSS.row}>
-            <Picker
-              selectedValue={source}
-              onValueChange={e => this.onChange(e, 'source')}
-              style={[mainCSS.picker, {marginRight: 10}]}
-            >
-              <Picker.Item label={T["transactions"]} value="trns" />
-              <Picker.Item label={T["categories"]} value="ctgs" />
-            </Picker>
-            <Picker
-              selectedValue={period}
-              onValueChange={e => this.onChange(e, 'period')}
-              style={mainCSS.picker}
-              enabled={source === 'trns'}
-            >
-              <Picker.Item label={T["cur.month"]} value="month" />
-              <Picker.Item label={T["cur.year"]} value="year" />
-              <Picker.Item label={T["whole.db"]} value="whole" />
-            </Picker>
-          </View>
+          <Form
+            style={mainCSS.form}
+            onSubmit={this.onImportSubmit}
+          >
+            <View style={mainCSS.row}>
+              <FileInput
+                placeholder='Select file'
+                {...importName}
+                style={mainCSS.input}
+                fields={fields}
+              />
+            </View>
 
-          <View style={mainCSS.row}>
-            <TextInput
-              style={[mainCSS.input, {marginRight: 10}]}
-              placeholder='Type a filename'
-              value={exportName}
-              onChangeText={e => this.onChange(e, 'exportName')}
-              keyboardType='default'
-            />
-            <Icon.Button
-              name='md-cloud-upload'
-              backgroundColor={color}
-              onPress={this.onExportSubmit}
-            >
-              {T['export']}
-            </Icon.Button>
-          </View>
-        </Form>
+            <View style={mainCSS.row}>
+              <Picker
+                { ...mode }
+                style={[mainCSS.picker, {marginRight: 10}]}
+                enabled={Boolean(importName.value)}
+              >
+                <Picker.Item label={T["replace.mode"]} value="replace" />
+                <Picker.Item label={T["merge.mode"]} value="merge" />
+              </Picker>
+              <Icon.Button
+                name='md-cloud-download'
+                backgroundColor={importName.value ? color : colors.disabled}
+                onPress={this.onImportSubmit}
+              >
+                {T['import']}
+              </Icon.Button>
+            </View>
+          </Form>
 
         <View style={mainCSS.divider} />
 
-        <Form
-          style={mainCSS.form}
-          onSubmit={this.onImportSubmit}
-        >
-          <View style={mainCSS.row}>
-            <FileInput
-              value={importName}
-              style={mainCSS.input}
-              onChangeText={this.importChange}
-            />
-          </View>
+          <Form
+            style={mainCSS.form}
+            onSubmit={this.onExportSubmit}
+          >
+            <View style={mainCSS.row}>
+              <Picker
+                { ...source }
+                style={[mainCSS.picker, {marginRight: 10}]}
+              >
+                <Picker.Item label={T["transactions"]} value="transactions" />
+                <Picker.Item label={T["categories"]} value="categories" />
+              </Picker>
+              <Picker
+                { ...period }
+                style={mainCSS.picker}
+                enabled={source.selectedValue === 'transactions'}
+              >
+                <Picker.Item label={T["cur.month"]} value="month" />
+                <Picker.Item label={T["cur.year"]} value="year" />
+                <Picker.Item label={T["whole.db"]} value="whole" />
+              </Picker>
+            </View>
 
-          <View style={mainCSS.row}>
-            <Picker
-              selectedValue={mode}
-              onValueChange={e => this.onChange(e, 'mode')}
-              style={[mainCSS.picker, {marginRight: 10}]}
-              enabled={Boolean(importName)}
-            >
-              <Picker.Item label={T["replace.mode"]} value="replace" />
-              <Picker.Item label={T["merge.mode"]} value="merge" />
-            </Picker>
-            <Icon.Button
-              name='md-cloud-download'
-              backgroundColor={importName ? color : colors.disabled}
-              onPress={this.onImportSubmit}
-            >
-              {T['import']}
-            </Icon.Button>
-          </View>
-        </Form>
+            <View style={mainCSS.row}>
+              <TextInput
+                style={[mainCSS.input, {marginRight: 10}]}
+                placeholder='Type a filename'
+                { ...exportName }
+                keyboardType='default'
+              />
+              <Icon.Button
+                name='md-cloud-upload'
+                backgroundColor={exportName.value ? color : colors.disabled}
+                onPress={this.onExportSubmit}
+              >
+                {T['export']}
+              </Icon.Button>
+            </View>
+          </Form>
 
         <View style={mainCSS.divider} />
 
@@ -199,11 +177,26 @@ class BackupPage extends Component {
 
 }
 
-export default connect(
+export default FormWrapper([
+  {
+    submit: 'onImportSubmit',
+    fields: [
+      { fn: 'importName', type: 'file', vd: 'required' },
+      { fn: 'mode', type: 'picker', init: 'replace' },
+    ]
+  }, {
+    submit: 'onExportSubmit',
+    fields: [
+      { fn: 'source', type: 'picker', init: 'transactions' },
+      { fn: 'period', type: 'picker', init: 'month' },
+      { fn: 'exportName', vd: 'required', pp: removeSpecial },
+    ]
+  }
+])(connect(
   ({ app }) => ({
     messages: app.messages,
     date: app.date,
     disabled: app.fetching,
   }),
   { getTransactions, getCategories, importData }
-)(BackupPage)
+)(BackupPage))

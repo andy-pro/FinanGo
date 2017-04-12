@@ -2,9 +2,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { Platform, StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { appShowMenu } from '../../common/app/actions'
-import messages from '../messages'
 import { colors, headerCSS } from '../../common/__themes'
 import { HeaderBar } from '../../common/__components'
 
@@ -35,7 +34,7 @@ let iconColors = {
   delete: '#fff',
 }
 
-const Header = ({ menuShown, appShowMenu, pattern }) => (
+const Header = ({ menuShown, messages, appShowMenu, pattern }) => (
   <View style={headerCSS.header}>
     <Icon.Button
       { ...iconStyles.set1 }
@@ -54,8 +53,9 @@ const Header = ({ menuShown, appShowMenu, pattern }) => (
 );
 
 export default connect(
-  state => ({
-    menuShown: state.app.menuShown,
+  ({ app }) => ({
+    menuShown: app.menuShown,
+    messages: app.messages,
   }),
-  { appShowMenu },
+  { appShowMenu }
 )(Header);

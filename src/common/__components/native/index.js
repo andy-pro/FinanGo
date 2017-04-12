@@ -2,6 +2,7 @@ import HeaderBar from '../HeaderBar'
 import Match from '../Match'
 // import Modal from './Modal'
 import Checkbox from '../Checkbox'
+import FormWrapper from '../FormWrapper'
 import { View as Form } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Link from './Link'
@@ -45,6 +46,7 @@ export {
   Link,
   MenuLink,
   Picker,
+  FormWrapper,
   // Modal,
   // DatePicker,
 }

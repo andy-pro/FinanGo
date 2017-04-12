@@ -14,7 +14,7 @@ const exportEpic = (action$, { config, backup }) =>
   action$.ofType('db/EXPORT')
     .mergeMap(({ type, payload, opts }) => {
       let data = __api_export(payload, opts)
-      backup.download(stringify(data), opts.exportName)
+      backup.download(stringify(data), opts.exportName + '.fgo')
       return Observable.of({
         type: 'notify/' + type,
         opts: __api_notify('export.', opts.source, payload),

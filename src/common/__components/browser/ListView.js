@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import { View } from './fela'
 
-class ListView extends Component {
+class ListView extends React.Component {
 
   static DataSource = function(methods) {
 

@@ -1,32 +1,50 @@
 // @flow
 import React from 'react';
-import { StyleSheet } from 'react-native'
+import { Text, TouchableHighlight, StyleSheet } from 'react-native'
+import { Match } from 'react-router';
 import { connect } from 'react-redux';
 
 import { appShowMenu } from '../../app/actions'
-import Link from './Link';
 
 const styles = StyleSheet.create({
-  link: {
+  text: {
     color: '#ccc',
     fontSize: 18,
     padding: 8,
   },
+  link: {
+    // color: '#ccc',
+    // fontSize: 18,
+    // padding: 8,
+  },
   linkActive: {
-    color: '#fff',
-    backgroundColor: '#393939',
+    // color: '#fff',
+    backgroundColor: '#444',
   },
 });
 
-let MenuLink = ({ appShowMenu, message, ...props }) => (
-  <Link
-    {...props}
-    style={styles}
-    onPress={() => setTimeout(() => appShowMenu(false), 0)}
-  >
-    {message}
-  </Link>
-)
+let MenuLink = ({ exactly, to, action, appShowMenu, message, ...props }, { router }) =>
+  <Match exactly={exactly} pattern={to}>
+    {({ matched }) => (
+      <TouchableHighlight
+        onPress={() => {
+          if (action) action()
+          else router.transitionTo(to);
+          setTimeout(() => appShowMenu(false), 0)
+        }}
+        underlayColor='#333'
+        style={[styles.link, matched && styles.linkActive]}
+      >
+        <Text style={styles.text}>
+          {message}
+        </Text>
+      </TouchableHighlight>
+    )}
+  </Match>
+
+MenuLink.contextTypes = {
+  router: React.PropTypes.object,
+};
 
 export default connect(
   null,

@@ -9,25 +9,16 @@ import { splitOnce, getCategoryByPath } from '../__lib/utils'
 import CategoryMenu from './menu'
 
 import { mainCSS, categoriesCSS as styles } from '../__themes'
-// import { mainCSS } from '../__themes'
+import __config from '../config'
 
 const ROOT_PATH = 'categories'
 
 class Categories extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = this.init()
-  }
-
-  init = () => ({
+  state = {
     category: {},
     showMenu: false,
-  })
-
-  // componentWillReceiveProps(nextProps) {
-    // this.setState(this.init())
-  // }
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     let hideMenu =  nextProps.categories !== this.props.categories ||
@@ -44,8 +35,6 @@ class Categories extends Component {
             nextState.category !== this.state.category
             // categoriesChanged
   }
-
-  // state = this.init()
 
   onClickList = (path) => {
 
@@ -76,8 +65,8 @@ class Categories extends Component {
 
   render() {
     // console.log('%cCategories render', 'color:#048;font-weight:bold', this.props);
-    let {categories, mapView, isNative} = this.props
-    let showMenu = isNative ? this.state.showMenu : true
+    let { categories, mapView } = this.props
+    let showMenu = __config.isNative ? this.state.showMenu : true
     // console.log('categories page render', categories);
 
     const createList = (data, _path, clr) => {
@@ -135,7 +124,6 @@ class Categories extends Component {
             <CategoryMenu
               category={this.state.category}
               enable={this.state.showMenu}
-              isNative={isNative}
             />
           </View>
         }
@@ -160,9 +148,8 @@ class Categories extends Component {
 
 }
 export default connect(
-  ({app, device, categories}) => ({
+  ({app, categories}) => ({
     categories,
     mapView: app.categoryMapView,
-    isNative: device.isReactNative,
   })
 )(Categories)

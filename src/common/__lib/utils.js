@@ -1,5 +1,7 @@
 import slugify from 'slugify'
 
+export const convToArray = obj => Array.isArray(obj) ? obj : [obj]
+
 export const compose = (...fns) => (data) => {
 /*  Performs right-to-left function composition.
     All functions must be unary. */

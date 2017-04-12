@@ -1,7 +1,9 @@
-// @flow
-import React, { Component } from 'react';
-import { Button, View, Text , Picker} from 'react-native'
+import React from 'react';
+import { View, Text, TextInput , Picker} from 'react-native'
 import { connect } from 'react-redux';
+
+import { PopupMenu, RenderSimple, RenderHighlight } from '../PopupMenu';
+import { appError } from '../../app/actions'
 
 // import RNFS from 'react-native-fs'
 const RNFS = require('react-native-fs');
@@ -62,99 +64,88 @@ const getFSInfoTest = () => {
   });
 }
 
-class FileInput extends Component {
+class FileInput extends React.Component {
+// const FileInput = (__props) => {
+  componentWillMount() {
+    this.popups = {
 
-  constructor(props) {
-    super(props)
-    this.state = this.init
+      importName: {
+        pos: { maxHeight: 146 },
+        getSuggestions: () => [{title: 'qwer'}, {title: 'asdfg'}, {title: 'zxcvb'}, {title: 'poiuyt'}, {title: 'lkjhgf'}, {title: 'mnbvc'}],
+        renderSuggestion: RenderSimple,
+        onSelect: suggestion => {
+          // this.props.fields.groupTitle.onChangeText(suggestion.title)
+          // this.props.fields.__refs.groupTitle.focus()
+        }
+      }
+
+    }
   }
 
-  init = {
-    listIndex: undefined,
-    fileList: [],
-    pickerList: []
+  componentWillReceiveProps(nextProps) {
+    let { fields } = nextProps
+    console.log('file input query', fields.__query);
+    if (fields.__query === 'e') {
+      this.props.appError(new Error('QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! QUQUQUQUQU-SYAKA!!! '))
+    }
   }
 
-  componentDidMount() {
-    this.readAppDir()
-  }
+  render() {
+    // let { placeholder, value, style, onChangeText, $ref } = this.props
+    // let props = { placeholder, value, style, onChangeText, ref: $ref }
+    // console.log('prorprorrp', Object.keys(this.props), props.ref, this.props.ref, this.props.$ref);
 
-  readAppDir = () => {
-    let root = RNFS.ExternalStorageDirectoryPath + '/FinanGo'
-    // let root = RNFS.DocumentDirectoryPath
-    // console.log('root', root);
 
-    RNFS.readDir(root)
-      .then((fileList) => {
-        // console.log('GOT RESULT', JSON.stringify(fileList))
-        let data
-        if (fileList.length) {
-          fileList.unshift({name: 'Select file'})
-          fileList.forEach((item, i) => item.index = i)
-          data = {
-            listIndex: 0,
-            fileList,
-            pickerList: fileList.map((item, i) => <Picker.Item key={i} label={item.name} value={i} />),
-          }
-        } else data = this.init
-        // console.log('GOT RESULT', JSON.stringify(data.fileList))
-        this.setState(data)
-      })
-      .catch((err) => {
-        console.log(err.message, err.code);
-      });
-  }
+    // let { fields, $ref, ...props } = this.props
+    // props.ref = $ref
 
-  readAppFile = () => {
-    let { index } = this.props.value
-    if (!index) return
-    importFile(this.state.fileList[index].path)
-  }
+    let { fields, placeholder, value, style, onChangeText, $ref } = this.props
+    let props = { placeholder, value, style, onChangeText, ref: $ref }
 
-  onValueChange = index => {
-    this.props.onChangeText({
-      // target: { files: index ? [this.state.fileList[index]] : '' }
-      target: { files: index ? [this.state.fileList[index]] : '' }
-    })
-    // this.setState({ index })
-  }
 
-  render () {
+    // console.log('props', Object.keys(props), Object.keys(fields), fields.__name);
+
+
+    // let props = Object.assign({}, this.props)
+    // props.ref = this.props.$ref // rename $ref -> ref
+    // delete props.$ref
+    //
+    // let fields = {
+    //   __name: importName,
+    // }
+    //     popup = this.props.popups[fields.__name]
+    // // console.log('cwrp6 menu, name:', fields.__name, 'new:', fields.__query, 'old:', this.popup && this.popup.query);
+    // // console.log('popup el:', fields.element);
+    // this.popup = popup
+    // if (popup) {
+    //   popup.query = fields.__query
+    //   popup.element = fields.__element
+
+
     return (
-      <View style={{flex: 1}}>
-        <Button
-          onPress={makeDir}
-          title="make app dir"
-          color="#bbb"
+      <PopupMenu
+        popups={this.popups}
+        fields={fields}
+      >
+        <View style={{flexDirection: 'row'}}>
+
+        <TextInput
+          { ...props }
+          returnKeyType='done'
+          keyboardType='default'
         />
-        <Button
-          onPress={writeTest}
-          title="write file"
-          color="#abc"
-        />
-        <Button
-          onPress={this.readAppFile}
-          title="Read file"
-          color="#bbb"
-        />
-        <Picker
-          selectedValue={this.props.value.index || 0}
-          onValueChange={this.onValueChange}
-        >
-          {this.state.pickerList}
-        </Picker>
-      </View>
+    </View>
+      </PopupMenu>
+
     )
   }
 
 }
 
 export default connect(
-  ({ app }) => ({
-    messages: app.messages
-  })
-)(FileInput);
-
+  null,
+  { appError }
+)(FileInput)
 
 const importFile = path => {
   Promise.all([RNFS.stat(path), path])
@@ -173,4 +164,60 @@ const importFile = path => {
     .catch((err) => {
       console.log(err.message, err.code);
     });
+}
+
+//
+// constructor(props) {
+//   super(props)
+//   this.state = this.init
+// }
+
+init = {
+  listIndex: undefined,
+  fileList: [],
+  pickerList: []
+}
+
+// componentDidMount() {
+//   this.readAppDir()
+// }
+
+readAppDir = () => {
+  let root = RNFS.ExternalStorageDirectoryPath + '/FinanGo'
+  // let root = RNFS.DocumentDirectoryPath
+  // console.log('root', root);
+
+  RNFS.readDir(root)
+    .then((fileList) => {
+      // console.log('GOT RESULT', JSON.stringify(fileList))
+      let data
+      if (fileList.length) {
+        fileList.unshift({name: 'Select file'})
+        fileList.forEach((item, i) => item.index = i)
+        data = {
+          listIndex: 0,
+          fileList,
+          pickerList: fileList.map((item, i) => <Picker.Item key={i} label={item.name} value={i} />),
+        }
+      } else data = this.init
+      // console.log('GOT RESULT', JSON.stringify(data.fileList))
+      this.setState(data)
+    })
+    .catch((err) => {
+      console.log(err.message, err.code);
+    });
+}
+
+readAppFile = () => {
+  let { index } = this.props.value
+  if (!index) return
+  importFile(this.state.fileList[index].path)
+}
+
+onValueChange = index => {
+  this.props.onChangeText({
+    // target: { files: index ? [this.state.fileList[index]] : '' }
+    target: { files: index ? [this.state.fileList[index]] : '' }
+  })
+  // this.setState({ index })
 }

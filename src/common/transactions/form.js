@@ -5,32 +5,43 @@ import { connect } from 'react-redux';
 import shortid from 'js-shortid'
 
 import { addTransactions } from './actions'
-import { Form, View, TextInput, Icon } from '../__components';
-import formWrapper from '../__components/formWrapper';
+
+import { Form, View, TextInput, Icon, FormWrapper } from '../__components';
+import { PopupMenu, RenderSimple, RenderHighlight } from '../__components/PopupMenu';
+
 import { getSuggestions, getAmountTypes, getShops } from './utils'
 import { removeSpecial, slugifyCategory } from '../__lib/utils'
 
-import config from '../config'
+import __config from '../config'
 import { colors, mainCSS } from '../__themes'
 
 class NewTransactionForm extends React.Component {
 
   // props.pattern: /single, /group, /income
 
-  componentWillMount() {
+  componentDidMount() {
+  }
 
-    const { isNative } = this.props
+  componentWillMount() {
+    // console.log('context popup', this.context.popup.color);
+
+    const { isNative } = __config
     // const isNative = navigator && navigator.product === 'ReactNative'
-    // console.log('new trans page constructor', props.fields);
+    // console.log('form trans page mount', this.context.popup);
+    // this.popupContext = PopupMenu.getContext()
 
     this.popups = {
+      /* методы __onKeyDown и __onBlur назначаются конструктором PopupMenu компонента */
+      __onKeyDown2: this.context.popup.onKeyDown,
+      __onKeyDown: null,
+      __onBlur: null,
       title: {
         // pos: {top: isNative ? 42 : 36, maxHeight: isNative ? 202 : 286},
         pos: {maxHeight: isNative ? 202 : 286},
         getSuggestions: query => getSuggestions(this.props.categories, query, 1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
-          this.props.fields.$setMany({
+          this.props.fields.__setState({
             title: suggestion.title,
             category: suggestion.path_str.trim().replace(/\s*\/$/, '')
           })
@@ -51,7 +62,8 @@ class NewTransactionForm extends React.Component {
         // pos: isNative ? {top: 118, maxHeight: 146} : {top: 108},
         pos: isNative ? {maxHeight: 146} : {},
         getSuggestions: getAmountTypes,
-        renderSuggestion: this.context.popup.renderSimple,
+        // renderSuggestion: PopupMenu.renderSimple,
+        renderSuggestion: RenderSimple,
         onSelect: suggestion => {
           this.props.fields.amount.onChangeText(this.props.fields.__query.split(' ')[0] + ' ' + suggestion.title)
           this.props.fields.__refs.cost.focus()
@@ -60,9 +72,11 @@ class NewTransactionForm extends React.Component {
       groupTitle: {
         pos: isNative ? {maxHeight: 146} : {},
         getSuggestions: getShops,
-        renderSuggestion: this.context.popup.renderHighlight,
+        // renderSuggestion: PopupMenu.renderHighlight,
+        renderSuggestion: RenderHighlight,
         onSelect: suggestion => {
           this.props.fields.groupTitle.onChangeText(suggestion.title)
+          this.props.fields.__refs.groupTitle.focus()
         }
       }
     }
@@ -76,29 +90,12 @@ class NewTransactionForm extends React.Component {
     this.groupId = shortid.gen()
   }
 
-  componentWillReceiveProps(nextProps) {
-    let { fields } = nextProps
-    if (fields !== this.props.fields) {
-      this.fieldChanged(fields)
-    }
-  }
-
-  fieldChanged = fields => {
-    let { __query, __name } = fields,
-        popup = this.popups[__name]
-    if (popup) {
-      popup.element = fields.__element
-      popup.query = __query
-      this.context.popup.triggerAutosuggestMenu(popup)
-    }
-  }
-
   onTransactionSubmit = e => {
     let transaction = this.props.fields.__submits.onTransactionSubmit(e)
     if (transaction) {
       if (this.groupId) transaction.groupId = this.groupId
       this.addTransaction(transaction)
-      this.props.fields.$reset(0)
+      this.props.fields.__resetState(0)
     }
   }
 
@@ -110,30 +107,32 @@ class NewTransactionForm extends React.Component {
         groupId: this.groupId,
         groupMaster: 1
       })
-      this.props.fields.$reset(1)
+      this.props.fields.__resetState(1)
       this.initGroup()
     }
   }
 
   addTransaction = (transaction) => {
     transaction.date = new Date().toISOString()
-    if (!config.locally) transaction.userId = this.props.user.id
+    if (!__config.locally) transaction.userId = this.props.user.id
     this.props.addTransactions(transaction)
   }
 
   render() {
     // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;');
     // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.props.transactions.length);
-    // console.log('!!! Form for new transactions !!!');
-    let { fields } = this.props
+    // console.log('!!! Form for new transactions !!!', this.context.popup);
+    let { fields, children } = this.props
     return (
-      <View>
+      <PopupMenu
+        popups={this.popups}
+        fields={fields}
+      >
         <Form
           style={mainCSS.form}
-          onKeyDown={this.context.popup.onKeyDown}
+          onKeyDown={this.popups.__onKeyDown2}
           onSubmit={this.onTransactionSubmit}
         >
-
           <View style={mainCSS.row}>
             <TextInput
               placeholder='Type a transaction title'
@@ -178,7 +177,7 @@ class NewTransactionForm extends React.Component {
         {this.groupId &&
           <Form
             style={mainCSS.form}
-            onKeyDown={this.context.popup.onKeyDown}
+            onKeyDown={this.popups.__onKeyDown}
             onSubmit={this.onGroupSubmit}
           >
             <View style={mainCSS.row}>
@@ -187,6 +186,7 @@ class NewTransactionForm extends React.Component {
                 {...fields.groupTitle}
                 {...this.propSet2}
                 returnKeyType='done'
+                keyboardType='default'
               />
               <Icon.Button
                 name="ios-list-box-outline"
@@ -201,24 +201,25 @@ class NewTransactionForm extends React.Component {
 
         <View style={mainCSS.divider} />
 
-        {this.props.children}
+        {children}
 
-      </View>
+      </PopupMenu>
     )
   }
 
-  renderCategory = (item, popup) => this.context.popup.renderHighlight({
+  // renderCategory = (item, popup) => PopupMenu.renderHighlight({
+  renderCategory = (item, popup) => RenderHighlight({
     title: [item.path_str, {highlight: item.title}],
     selected: item.selected
   }, popup)
 
-  onBlur = e => this.context.popup.onTargetBlur(e)
+  onBlur = e => this.popups.__onBlur(e)
 
   propSet1 = {
     onBlur: this.onBlur,
     style: mainCSS.input,
     keyboardType: 'default',
-    returnKeyType: 'next',
+    returnKeyType: 'done', // next
     autoCapitalize: 'sentences',
     // autoCorrect: true  // true is default
   }
@@ -238,11 +239,11 @@ NewTransactionForm.contextTypes = {
 };
 
 
-export default formWrapper([
+export default FormWrapper([
   {
     submit: 'onTransactionSubmit',
     fields: [
-      // { fn: fieldName, vd: validator, init: initialValue, af: autoFocus, pp: postProcessing }
+      // { fn: fieldName, type: [text(default), checkbox, picker], vd: validator, init: initialValue, af: autoFocus, pp: postProcessing }
       { fn: 'title', vd: 'required', af: true, pp: removeSpecial },
       { fn: 'category', vd: 'required', pp: slugifyCategory },
       { fn: 'amount', vd: 'required' },
@@ -250,9 +251,7 @@ export default formWrapper([
     ]
   }, {
     submit: 'onGroupSubmit',
-    fields: [
-      { fn: 'groupTitle', vd: 'required', pp: removeSpecial }
-    ]
+    fields: { fn: 'groupTitle', vd: 'required', pp: removeSpecial }
   }
 ])(connect(null, { addTransactions })(NewTransactionForm))
 

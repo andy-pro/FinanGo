@@ -171,7 +171,7 @@ class RenderTransactions extends Component {
 
     const renderRow = (item, sectionId) => {
 
-      // console.log('render row', item.title, categories);
+      // console.log('render row', item.title, item.shown);
 
       if (!item.shown) {
         return item.last ? renderSummaryDay(sectionId) : null
@@ -281,7 +281,7 @@ class RenderTransactions extends Component {
 
     return (
       <ListView
-        style={mainCSS.container}
+        style={styles.root}
         dataSource={this.state.ds}
         renderRow={renderRow}
         renderSectionHeader={renderSectionHeader}

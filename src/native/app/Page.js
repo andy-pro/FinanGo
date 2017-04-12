@@ -4,6 +4,7 @@ import Header from './Header';
 
 import { Alert } from './components';
 import { View, Match } from '../../common/__components';
+import Popup from '../../common/__components/Popup';
 import RoundButton from '../../common/__components/native/RoundButton';
 import { mainCSS } from '../../common/__themes'
 
@@ -17,6 +18,7 @@ const Page = ({ component: Component, pattern, ...props }) => (
         <Alert />
         <Component {...renderProps} />
         {pattern === '/' && <RoundButton to='/single' />}
+        <Popup />
       </View>
     )}
   />

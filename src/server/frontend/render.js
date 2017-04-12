@@ -52,9 +52,6 @@ const createStore = req => {
       app: {
         ...app,
         currentLocale,
-      },
-      device: {
-        ...initialState.device,
         host: getHost(req),
       }
     },

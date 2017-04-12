@@ -8,7 +8,7 @@ import { AsyncStorage, Platform } from 'react-native';
 import configureStore from '../../common/__config/store';
 import * as backup from '../backup'
 import messages from '../messages'
-import config from '../../common/config'
+import __config from '../../common/config'
 import initialState from '../../common/initialState';
 import { getCurrentDate } from '../../common/__lib/dateUtils'
 
@@ -16,7 +16,9 @@ import App from './App'
 
 initialState.app.messages = messages
 initialState.app.date = getCurrentDate()
-initialState.config = config
+// initialState.config = config
+__config.isNative = true
+__config.platform = Platform.OS
 
 const getDefaultDeviceLocale = () => {
   const { defaultLocale, locales } = initialState.app;
@@ -32,18 +34,13 @@ const createNativeInitialState = () => ({
   app: {
     ...initialState.app,
     currentLocale: getDefaultDeviceLocale(),
-  },
-  device: {
-    ...initialState.device,
-    isReactNative: true,
-    platform: Platform.OS,
   }
 });
 
 const store = configureStore({
   initialState: createNativeInitialState(),
   platformDeps: {
-    config,
+    config: __config,
     storageEngine: AsyncStorage,
     backup,
     messages,

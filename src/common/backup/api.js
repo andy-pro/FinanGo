@@ -47,7 +47,7 @@ const pickCategories = data =>
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 export const __api_import = (data, mode) => {
-  console.log('import data', data, config);
+  // console.log('import data', data, config);
   // data check
   if (data) {
     let { type, period, appName, payload } = data

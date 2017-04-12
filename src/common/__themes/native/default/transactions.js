@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native'
 import * as CONST from './_const'
 
 const transactions = StyleSheet.create({
-  // root: {
-  //   flex: 1,
-  //   paddingHorizontal: 15
-  // },
+  root: {
+    // flex: 1,
+    paddingHorizontal: 15
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
