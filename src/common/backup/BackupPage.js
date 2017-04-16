@@ -80,6 +80,7 @@ class BackupPage extends Component {
 
   onImportSubmit = e => {
     let importForm = this.props.fields.__submits.onImportSubmit(e)
+    console.log('import submit', importForm);
     if (this.props.disabled || !importForm) return
     this.props.importData(importForm)
     this.props.fields.__setState({ importName: '' })
@@ -90,7 +91,7 @@ class BackupPage extends Component {
     let { fields, messages: T, disabled } = this.props
     let color = disabled ? colors.disabled : colors.header
     let { importName, mode, source, period, exportName } = fields
-    // console.log('render backup form');
+    console.log('render backup form', source);
     return (
       <View>
 
@@ -103,7 +104,6 @@ class BackupPage extends Component {
                 placeholder='Select file'
                 {...importName}
                 style={mainCSS.input}
-                fields={fields}
               />
             </View>
 

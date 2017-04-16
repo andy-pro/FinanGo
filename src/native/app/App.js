@@ -20,7 +20,7 @@ import showNotify from '../../common/__components/notify';
 // Pages
 import TransactionsPage from '../../common/transactions/TransactionsPage';
 import CategoriesPage from '../../common/categories/CategoriesPage';
-import BackupPage from '../../common/backup/BackupPage';
+import BackupPage from '../backup/BackupPage';
 import IntlPage from '../intl/IntlPage';
 import MePage from '../me/MePage';
 

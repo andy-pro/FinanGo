@@ -174,3 +174,79 @@ const importFile = path => {
       console.log(err.message, err.code);
     });
 }
+
+
+const importFile = path => {
+  Promise.all([RNFS.stat(path), path])
+    .then((statResult) => {
+      if (statResult[0].isFile()) {
+        // if we have a file, read it
+        return RNFS.readFile(statResult[1], 'utf8');
+      }
+
+      return 'no file';
+    })
+    .then((contents) => {
+      // log the file contents
+      console.log(contents);
+    })
+    .catch((err) => {
+      console.log(err.message, err.code);
+    });
+}
+
+//
+// constructor(props) {
+//   super(props)
+//   this.state = this.init
+// }
+
+init = {
+  listIndex: undefined,
+  fileList: [],
+  pickerList: []
+}
+
+// componentDidMount() {
+//   this.readAppDir()
+// }
+
+readAppDir = () => {
+  let root = RNFS.ExternalStorageDirectoryPath + '/FinanGo'
+  // let root = RNFS.DocumentDirectoryPath
+  // console.log('root', root);
+
+  RNFS.readDir(root)
+    .then((fileList) => {
+      // console.log('GOT RESULT', JSON.stringify(fileList))
+      let data
+      if (fileList.length) {
+        fileList.unshift({name: 'Select file'})
+        fileList.forEach((item, i) => item.index = i)
+        data = {
+          listIndex: 0,
+          fileList,
+          pickerList: fileList.map((item, i) => <Picker.Item key={i} label={item.name} value={i} />),
+        }
+      } else data = this.init
+      // console.log('GOT RESULT', JSON.stringify(data.fileList))
+      this.setState(data)
+    })
+    .catch((err) => {
+      console.log(err.message, err.code);
+    });
+}
+
+readAppFile = () => {
+  let { index } = this.props.value
+  if (!index) return
+  importFile(this.state.fileList[index].path)
+}
+
+onValueChange = index => {
+  this.props.onChangeText({
+    // target: { files: index ? [this.state.fileList[index]] : '' }
+    target: { files: index ? [this.state.fileList[index]] : '' }
+  })
+  // this.setState({ index })
+}

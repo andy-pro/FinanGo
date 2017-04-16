@@ -49,14 +49,19 @@ const wrapper = forms => WrappedComponent => {
         form.fields = convToArray(form.fields)
         form.fields.forEach(field => {
           let { fn, type='text', init='', af } = field,
-              { handler, value } = FormWrapper.TYPES[type]
+              { handler, value } = FormWrapper.TYPES[type],
+              fileNative = isNative && type === 'file'
           fields.__types[fn] = type
           fields.__state[fn] = init
           fields[fn] = {
             [handler]: e => this.setFields('change', { e, fn }),
             [value]: init,
-            [isNative && type === 'file' ? '$ref' : refName]: c => fields.__refs[fn] = c
+            [fileNative ? '$ref' : refName]: c => fields.__refs[fn] = c
             // [refName]: c => { if (c) fields.__refs[fn] = c }
+          }
+          if (fileNative) {
+            fields[fn].getElement = () => {console.log('QUQUQUQU', fn);return fields.__refs[fn]}
+            fields[fn].setFileList = fl => fields[fn].fileList = fl
           }
           if (af) {
             fields.__name = fn
@@ -73,7 +78,6 @@ const wrapper = forms => WrappedComponent => {
           TYPES = this.constructor.TYPES,
           { isNative } = __config,
           common
-
       if (cmd === 'change') {
         let { e, fn } = opts,
             field = fields[fn],
@@ -81,6 +85,7 @@ const wrapper = forms => WrappedComponent => {
             { value } = TYPES[type],
             el,
             q
+        console.log('ch:', fn);
         if (type === 'checkbox') {
           q = !field[value]
         } else {
@@ -151,6 +156,11 @@ const wrapper = forms => WrappedComponent => {
         if (type === 'text') {
           value = value.trim()
           if (pp) value = pp(value) // postProcessing
+        } else
+        if (type === 'file' && __config.isNative) {
+          let n = value.trim()
+          value = field.fileList.find(item => item.name === n)
+          // value = fields[fn].fileList.find(item => item.name === n)
         }
         let valid = vd ? validator[vd](value) : true
         if (!valid) {

@@ -8,6 +8,7 @@ import Form from './form'
 import { changeMonth } from '../app/actions'
 import { getTransactions, clearTransactions, delTransactions, setDelHandler } from './actions'
 import { Alert } from '../__components';
+import { Popup } from '../__components/Popup';
 
 import { pick } from '../__lib/utils'
 import { isCurrentMonth } from '../__lib/dateUtils'
@@ -141,11 +142,11 @@ class TransactionsPage extends Component {
     }
 
     return (
-
+      <Popup>
         <Form { ...renderProps }>
           <RenderTransactions { ...renderProps } />
         </Form>
-
+      </Popup>
     )
 
   }

@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from './Header';
 import { View, Text, Match } from '../../common/__components';
-import Popup from '../../common/__components/Popup';
+// import { Popup } from '../../common/__components/Popup';
 import { mainCSS } from '../../common/__themes'
 
 export default Page = ({ component: Component, pattern, ...props }) => (
@@ -12,9 +12,7 @@ export default Page = ({ component: Component, pattern, ...props }) => (
     render={renderProps => ( // renderProps: isExact, location, params, pathname, pattern
       <View style={mainCSS.root}>
         <Header pattern={pattern} />
-        <Popup>
         <Component {...renderProps} />
-        </Popup>
       </View>
     )}
   />

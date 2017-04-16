@@ -7,7 +7,8 @@ import shortid from 'js-shortid'
 import { addTransactions } from './actions'
 
 import { Form, View, TextInput, Icon, FormWrapper } from '../__components';
-import { PopupMenu, RenderSimple, RenderHighlight } from '../__components/PopupMenu';
+// import { PopupMenu, RenderSimple, RenderHighlight } from '../__components/PopupMenu';
+import { RenderSimple, RenderHighlight } from '../__components/Popup';
 
 import { getSuggestions, getAmountTypes, getShops } from './utils'
 import { removeSpecial, slugifyCategory } from '../__lib/utils'
@@ -19,9 +20,6 @@ class NewTransactionForm extends React.Component {
 
   // props.pattern: /single, /group, /income
 
-  componentDidMount() {
-  }
-
   componentWillMount() {
     // console.log('context popup', this.context.popup.color);
 
@@ -31,8 +29,7 @@ class NewTransactionForm extends React.Component {
     // this.popupContext = PopupMenu.getContext()
 
     this.popups = {
-      /* методы __onKeyDown и __onBlur назначаются конструктором PopupMenu компонента */
-      __onKeyDown2: this.context.popup.onKeyDown,
+      /* методы __onKeyDown и __onBlur назначаются методом init Popup компонента */
       __onKeyDown: null,
       __onBlur: null,
       title: {
@@ -50,7 +47,7 @@ class NewTransactionForm extends React.Component {
       },
       category: {
         // pos: {top: isNative ? 80 : 72, maxHeight: 174},
-        pos: {maxHeight: 174},
+        pos: {maxHeight: isNative ? 174 : 258},
         getSuggestions: query => getSuggestions(this.props.categories, query, -1),
         renderSuggestion: this.renderCategory,
         onSelect: suggestion => {
@@ -84,6 +81,9 @@ class NewTransactionForm extends React.Component {
     if (this.props.groupMode) {
       this.initGroup()
     }
+
+    this.popupMenu = this.context.popup.init(this.popups)
+
   }
 
   initGroup = () => {
@@ -118,19 +118,21 @@ class NewTransactionForm extends React.Component {
     this.props.addTransactions(transaction)
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.popupMenu(nextProps.fields)
+  }
+
   render() {
     // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;');
     // console.log('%cNew transaction page render!!!', 'color:#a00;font-weight:bold;', this.props.transactions.length);
-    // console.log('!!! Form for new transactions !!!', this.context.popup);
+    // console.log('!!! Form for new transactions !!!');
     let { fields, children } = this.props
     return (
-      <PopupMenu
-        popups={this.popups}
-        fields={fields}
-      >
+      <View>
+
         <Form
           style={mainCSS.form}
-          onKeyDown={this.popups.__onKeyDown2}
+          onKeyDown={this.popups.__onKeyDown}
           onSubmit={this.onTransactionSubmit}
         >
           <View style={mainCSS.row}>
@@ -203,7 +205,7 @@ class NewTransactionForm extends React.Component {
 
         {children}
 
-      </PopupMenu>
+      </View>
     )
   }
 

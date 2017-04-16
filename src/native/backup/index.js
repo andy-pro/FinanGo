@@ -2,8 +2,25 @@
 
 import { Observable } from 'rxjs'
 
-// import RNFS from 'react-native-fs'
-const RNFS = require('react-native-fs');
+import RNFS from 'react-native-fs'
+
+export const readAppDir = (appName, cb) => {
+  let root = RNFS.ExternalStorageDirectoryPath + '/' + appName
+
+  RNFS.readDir(root)
+    .then(fileList => cb(fileList))
+    .catch((err) => {
+      console.log(err.message, err.code);
+    });
+}
+
+
+
+
+
+
+
+
 
 function download(data, filename) {}
 //     var a = document.createElement("a"),
