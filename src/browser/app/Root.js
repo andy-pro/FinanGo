@@ -13,6 +13,12 @@ import config from '../../common/config'
 
 import App from './App';
 
+var start_time = performance.now()
+process.__elapsed = (msg) => {
+  console.info(msg, performance.now() - start_time)
+  start_time = performance.now()
+}
+
 const initialState = window.__INITIAL_STATE__; // eslint-disable-line no-underscore-dangle
 initialState.app.messages = messages
 
@@ -26,6 +32,7 @@ initialState.app.messages = messages
 // config.userId = initialState.config.userId
 // initialState.config = config
 
+
 const store = configureStore({
   initialState,
   platformDeps: {
@@ -35,6 +42,15 @@ const store = configureStore({
     messages,
   },
 });
+
+if (config.storage === 'mongodb') {
+  require('../../common/__api/mongodb')
+    .init({
+      // http - ws; https - wss
+      url: location.origin.replace(/^http/, 'ws'),
+      dispatch: store.dispatch
+    })
+}
 
 // This should be part of Fela.
 // TODO: https://github.com/rofrischmann/fela/issues/125

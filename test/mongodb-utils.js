@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 
-var utils = require('../src/common/__api/mongodb/utils');
+var utils = require('../src/common/__api/mongolab/utils');
 
 let { normalize, denormalize } = utils
 

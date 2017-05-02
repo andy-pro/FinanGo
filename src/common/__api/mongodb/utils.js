@@ -6,20 +6,9 @@ const normalize_rules = [
         userId: {$oid: "xxxxxxxxxx"} -> userId
         date: {$date: "xxxxxxxxxx"}  -> date
   */
-  ['_id', item => {item.id = item._id.$oid; delete item._id}],
-  ['userId', item => item.userId = item.userId.$oid],
-  ['date', item => item.date = item.date.$date]
-];
-
-const denormalize_rules = [
-  /*  rules for denormalize (from client to server):
-        id    -> _id: {$oid: "xxxxxxxxxx"}
-        userId -> userId: {$oid: "xxxxxxxxxx"}
-        date   -> date: {$date: "xxxxxxxxxx"}
-  */
-  ['id', item => {item._id = {$oid: item.id}; delete item.id}],
-  ['userId', item => item.userId = {$oid: item.userId}],
-  ['date', item => item.date = {$date: item.date}]
+  ['_id', item => {item.id = item._id; delete item._id}],
+  // ['userId', item => item.userId = item.userId.$oid],
+  // ['date', item => item.date = item.date.$date]
 ];
 
 const convert = function(data, rules) {
@@ -38,19 +27,46 @@ export const normalize = function(data) {
   return convert(data, normalize_rules)
 }
 
-export const denormalize = function(data, stringify=true) {
-/* denormalize & optional stringify object
-   or collection before send to MongoDB */
-  convert(data, denormalize_rules)
-  return stringify ? JSON.stringify(data) : data
-}
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+export const addCategory = category => ({
+  $addToSet: { [category.path]: category.data }
+})
 /*
-export const convertCategoryPath = function(path, sub='') {
-  path = isNaN(parseInt(path)) ? '' : '.' + path.split(',').join('.sub.');
-  if (!path) {
-    sub = '';
+{
+  $addToSet: {
+    [category.path] : {
+      title: category.title,
+      slug: category.slug,
+      color: category.color
+    }
   }
-  return 'categories' + path + sub;
 }
 */
+
+export const updateCategory = category => ({
+  $set: setBodyFields(category)
+})
+/*
+{
+  $set: {
+    [category.path + '.title']: category.title,
+    [category.path + '.slug']: category.slug,
+    [category.path + '.color']: category.color
+  }
+}
+*/
+const setBodyFields = ({data, path}) =>
+  Object.keys(data).reduce((res, field) => {
+    res[path + '.' + field] = data[field]
+    return res
+  }, {})
+
+export const delCategory = category => ({
+  $pull: { [category.parentPath]: {title: category.title} }
+})
+
+export const replaceCategory = categories => ({
+  $set: { categories }
+})
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

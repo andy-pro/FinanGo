@@ -32,7 +32,8 @@ const reducer = ( state = [], action ) => {
       if (id && id.$in) return deleteItemsByIds(state, id.$in)
 
     case 'notify/transactions/REPLACED':
-      console.log('response', JSON.stringify(action.payload));
+      // console.log('response', JSON.stringify(action.payload));
+      // console.log('response', JSON.stringify(action));
 
     default:
       return state;

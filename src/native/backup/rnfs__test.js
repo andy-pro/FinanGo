@@ -8,14 +8,7 @@ const RNFS = require('react-native-fs');
 
 const readRootDir = () => {
   // get a list of files and directories in the main bundle
-  // console.log('test-m', RNFS.MainBundlePath)
-  // console.log('test-c', RNFS.CachesDirectoryPath)
-  // console.log('test-d', RNFS.DocumentDirectoryPath)
-  // console.log('test-e', RNFS.ExternalDirectoryPath)
-  // console.log('test-es', RNFS.ExternalStorageDirectoryPath)
-  // console.log('test-t', RNFS.TemporaryDirectoryPath)
-  // console.log('test-L', RNFS.LibraryDirectoryPath)
-  // console.log('test-P', RNFS.PicturesDirectoryPath)
+
 
 
   let root = RNFS.ExternalStorageDirectoryPath + '/FinanGo'
@@ -154,26 +147,6 @@ export default connect(
     messages: app.messages
   })
 )(FileInput);
-
-
-const importFile = path => {
-  Promise.all([RNFS.stat(path), path])
-    .then((statResult) => {
-      if (statResult[0].isFile()) {
-        // if we have a file, read it
-        return RNFS.readFile(statResult[1], 'utf8');
-      }
-
-      return 'no file';
-    })
-    .then((contents) => {
-      // log the file contents
-      console.log(contents);
-    })
-    .catch((err) => {
-      console.log(err.message, err.code);
-    });
-}
 
 
 const importFile = path => {

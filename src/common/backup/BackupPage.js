@@ -40,24 +40,28 @@ class BackupPage extends Component {
     return dt
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  // shouldComponentUpdate(nextProps, nextState) {
+  componentWillReceiveProps(nextProps) {
     let { date, fields } = nextProps
-    // console.log('backup page update', fields.__name, JSON.stringify(fields.__state));
+    // console.log('backup page update', Date.now());
     // console.log('backup page update', fields.importName, fields.__refs);
     if (fields !== this.props.fields) {
-      let { __name, __state } = fields
+      let { __name, __query, __state } = fields
+      // console.log('fields state', __state);
       if (__name === 'source' || __name ==='period') {
         this.props.fields.__setState({
-          exportName: this.getExportName({ state: __state })
+          exportName: this.getExportName({ state: __state }),
+          // [__name]: __query
         })
-        return false
+        // return
+        // return true
       }
-    }
+    } else
     if (date !== this.props.date) {
       this.props.fields.__setState(this.init(date))
-      return false
+      // return false
     }
-    return true
+    // return true
   }
 
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -80,7 +84,7 @@ class BackupPage extends Component {
 
   onImportSubmit = e => {
     let importForm = this.props.fields.__submits.onImportSubmit(e)
-    console.log('import submit', importForm);
+    // console.log('import submit', importForm);
     if (this.props.disabled || !importForm) return
     this.props.importData(importForm)
     this.props.fields.__setState({ importName: '' })
@@ -91,7 +95,8 @@ class BackupPage extends Component {
     let { fields, messages: T, disabled } = this.props
     let color = disabled ? colors.disabled : colors.header
     let { importName, mode, source, period, exportName } = fields
-    console.log('render backup form', source);
+    // console.log('render backup form', source);
+    // console.log('render backup form', fields.__name, fields.__query);
     return (
       <View>
 
@@ -174,6 +179,8 @@ class BackupPage extends Component {
 
     )
   }
+
+  state = {language: 'java'}
 
 }
 

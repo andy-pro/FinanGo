@@ -60,7 +60,7 @@ const wrapper = forms => WrappedComponent => {
             // [refName]: c => { if (c) fields.__refs[fn] = c }
           }
           if (fileNative) {
-            fields[fn].getElement = () => {console.log('QUQUQUQU', fn);return fields.__refs[fn]}
+            fields[fn].getElement = () => fields.__refs[fn]
             fields[fn].setFileList = fl => fields[fn].fileList = fl
           }
           if (af) {
@@ -85,7 +85,6 @@ const wrapper = forms => WrappedComponent => {
             { value } = TYPES[type],
             el,
             q
-        console.log('ch:', fn);
         if (type === 'checkbox') {
           q = !field[value]
         } else {
@@ -139,6 +138,7 @@ const wrapper = forms => WrappedComponent => {
 
       }
       Object.assign(fields, common)
+      // console.log(cmd, 'Form Wrapper set state:', fields.__name, fields.__query);
       this.setState({ fields: { ...fields } })
     }
 

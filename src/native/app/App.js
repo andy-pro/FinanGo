@@ -63,7 +63,7 @@ class App extends Component {
           onClose={() => appShowMenu(false)}
           tapToClose
         >
-          <Page exactly pattern="/" component={BackupPage} />
+          <Page exactly pattern="/" component={TransactionsPage} />
           <Page pattern="/single" component={TransactionsPage} />
           <Page pattern="/group" component={TransactionsPage} />
           <Page pattern="/income" component={TransactionsPage} />

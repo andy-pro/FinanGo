@@ -22,7 +22,7 @@ export default operations = (file, { table, query }) => {
   switch (query.cmd) {
 
     case '$init':
-      data = query.data || {}
+      data = query.localdb || {}
       let categories = data.categories || [],
           localdb = data[constants.filename] || {},
           transactions = localdb.transactions || []

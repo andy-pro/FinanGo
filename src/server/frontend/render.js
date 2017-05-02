@@ -111,7 +111,7 @@ const renderHtml = (state, body) => {
 };
 
 // react-router.now.sh/ServerRouter
-const render = async (req: Object, res: Object, next: Function) => {
+const render = async (req, res, next) => {
   try {
     const context = createServerRenderContext();
     const store = createStore(req);

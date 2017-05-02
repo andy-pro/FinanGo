@@ -5,6 +5,14 @@ import { Observable } from 'rxjs'
 import RNFS from 'react-native-fs'
 
 export const readAppDir = (appName, cb) => {
+  // console.log('test-m', RNFS.MainBundlePath)
+  // console.log('test-c', RNFS.CachesDirectoryPath)
+  // console.log('test-d', RNFS.DocumentDirectoryPath)
+  // console.log('test-e', RNFS.ExternalDirectoryPath)
+  // console.log('test-es', RNFS.ExternalStorageDirectoryPath)
+  // console.log('test-t', RNFS.TemporaryDirectoryPath)
+  // console.log('test-L', RNFS.LibraryDirectoryPath)
+  // console.log('test-P', RNFS.PicturesDirectoryPath)
   let root = RNFS.ExternalStorageDirectoryPath + '/' + appName
 
   RNFS.readDir(root)
@@ -22,7 +30,7 @@ export const readAppDir = (appName, cb) => {
 
 
 
-function download(data, filename) {}
+export const download = (data, filename) => {}
 //     var a = document.createElement("a"),
 //         file = new Blob([data], {type: 'text/plain;charset=utf-8'});
 //     if (window.navigator.msSaveOrOpenBlob) // IE10+
@@ -55,7 +63,7 @@ function download(data, filename) {}
 
 
 
-function upload({ path }) {
+export const upload = ({ path }) => {
 
   return Observable.fromPromise(Promise.all([RNFS.stat(path), path]))
     .flatMap(stat => {
@@ -93,5 +101,3 @@ function upload({ path }) {
   //       return err
   //     })
   // )
-
-export { download, upload }

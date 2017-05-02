@@ -1,22 +1,21 @@
 import config from '../config'
 
-let localdb = require('./localdb')
-let fakedb = require('./fakedb')
-let mongodb = require('./mongodb')
-
 let api
 
 /* set necessary adapter */
 
 switch (config.storage) {
   case 'local':
-    api = localdb
-    break;
+    api = require('./localdb')
+    break
   case 'localfake':
-    api = fakedb
-    break;
+    api = require('./fakedb')
+    break
   case 'mongolab':
-    api = mongodb
+    api = require('./mongolab')
+    break
+  case 'mongodb':
+    api = require('./mongodb')
 }
 
 module.exports = api

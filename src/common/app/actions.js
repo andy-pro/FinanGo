@@ -69,11 +69,10 @@ const appStartedFinanGoEpic = (action$, store) =>
     .switchMap(({ payload }) =>
       // Query без параметров - это запрос по дате за текущий месяц
       // store, $init - for localdb
-      // api.getUserData({ query: Query(), data: payload, $op: '$init' }, store)
-      apiTransactions({ query: Query(), data: payload, cmd: '$init' }, store)
+      apiTransactions({ query: Query(), localdb: payload, cmd: '$init' }, store)
         .map(payload => ({
           type: 'user/LOADED',
-          payload,
+          payload
         }))
         .catch(dispatchError)
     )

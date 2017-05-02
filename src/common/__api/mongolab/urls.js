@@ -16,14 +16,16 @@ import config from '../../config'
 
 const {apiKey: __apiKey, databaseURL: __dbURL } = config.mongolab
 const __usersURL = __dbURL + 'users';
-const __transactions = `${__dbURL}transactions?${__apiKey}`;
+
+// const __transactions = `${__dbURL}transactions?${__apiKey}`;
+const __transactions = config.agent ? __dbURL + 'transactions' : `${__dbURL}transactions?${__apiKey}`;
 
 const __query = (q, sort='') => {
   if (sort) sort = `&s=${JSON.stringify(sort)}`
-  return `${__transactions}&q=${JSON.stringify(q)}${sort}`
+  return config.agent ? `${__transactions}?q=${JSON.stringify(q)}${sort}` : `${__transactions}&q=${JSON.stringify(q)}${sort}`
 }
 
-export const user = () => `${__usersURL}/${config.userId}?${__apiKey}`
+export const user = () => config.agent ? `${__usersURL}/${config.userId}` : `${__usersURL}/${config.userId}?${__apiKey}`
 
 export const transformQuery = (query, order) => {
 
@@ -67,16 +69,6 @@ export const transformQuery = (query, order) => {
 }
 
 export { __transactions as transactions }
-//
-// export const delTransactionURL = id =>
-//   `${__transactions}/${id}?${__apiKey}`
-
-// export const delTransactions = ids => {
-//   let q = {
-//     _id: { $in: ids.map(id => ({ $oid: id })) }
-//   }
-//   return __query(q)
-// }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const addCategory = category => ({

@@ -27,6 +27,7 @@ const configureMiddleware = (initialState, platformDeps, platformMiddleware) => 
 /*
 */
   const enableLogger = process.env.NODE_ENV !== 'production' && process.env.IS_BROWSER
+  // const enableLogger = false
 
   // const enableLogger = process.env.NODE_ENV !== 'production' && (
   //   process.env.IS_BROWSER || initialState.device.isReactNative

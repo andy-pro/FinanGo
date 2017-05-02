@@ -27,8 +27,35 @@ var print = function() {
 
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
-config.storage = 'mongolab'
+
 config.locally = false
+
+const MODE = process.env.MONGO_ACCESS
+if (MODE === 'DIRECT') {
+  config.storage = 'mongolab'
+  config.agent = false
+  config.mongolab = {
+    "apiKey": "apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD",
+    "databaseURL": "https://api.mlab.com/api/1/databases/shop/collections/"
+  }
+} else if (MODE === 'AGENT') {
+  config.agent = true
+  config.storage = 'mongolab'
+  config.mongolab = {
+    apiKey: '',
+    // databaseURL: 'api/'
+    databaseURL: 'https://finan-go.herokuapp.com/api/'
+  }
+} else if (MODE === 'WS') {
+  config.storage = 'mongodb'
+  global.WebSocket = require('ws')
+  require('../src/common/__api/mongodb')
+    .init({
+      // http - ws; https - wss
+      url: 'ws://localhost:3000',
+      dispatch: () => {}
+    })
+}
 
 const app_actions = require('../src/common/app/actions')
 const trns_actions = require('../src/common/transactions/actions')
@@ -207,7 +234,7 @@ describe('FinanGo epics test, mongolab storage, transactions', function() {
     return updateTransactionsEpic(action$).toPromise()
       .then(actionReceived => {
         let { type, payload } = actionReceived
-        // console.log(actionReceived);
+        // console.log('===================', actionReceived);
         assert.equal(type, 'transactions/ARRAY/ADDED')
         assert.equal(array_before.length, payload.n)
         // delete response.id
