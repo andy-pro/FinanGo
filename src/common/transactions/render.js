@@ -6,7 +6,7 @@ import { setBalance, setDelHandler } from './actions'
 
 import { View, Text, TouchableHighlight, TouchableOpacity, ListView, Icon, Checkbox } from '../__components';
 
-import { getCategoryBySlug, fmtCost } from '../__lib/utils'
+import { fmtCost } from '../__lib/utils'
 import Summary from './summary'
 
 import scan from './scan'
@@ -39,10 +39,11 @@ class RenderTransactions extends Component {
   }
 
   scanAndClone = (transactions, groupMode, shownId) => {
-    let data = scan(transactions, groupMode)
-    if (this.props.pattern === '/') {
+    let { pattern, categories, setBalance } = this.props
+    let data = scan(transactions, categories, groupMode)
+    if (pattern === '/' || pattern === '/delete') {
       // let balance = calcBalance(transactions)
-      this.props.setBalance(data.balance)
+      setBalance(data.balance)
     }
     let { dataBlob, sectionIds, rowIds } = data
     if (shownId !== undefined && data.length) {
@@ -115,7 +116,7 @@ class RenderTransactions extends Component {
 //=====================================
   render() {
 //=====================================
-    let { user, categories, transactions, groupMode, delHandler } = this.props
+    let { user, transactions, groupMode, delHandler } = this.props
     // console.log('%crender transactions, count:', 'color:blue;font-weight:bold', transactions.length);
     if (!user || !transactions.length) return null
     const { currency } = user
@@ -139,14 +140,14 @@ class RenderTransactions extends Component {
             }
           </View>
           <View style={styles.summaryView}>
-            <Summary value={item.summary} />
+            <Summary value={item.summary} style={styles.summaryR} />
           </View>
         </View>
       )
     }
 
     const renderGroupInfo = ({ amount, summary }) => {
-      return `Покупок: ${amount} на сумму: ${summary} ${currency}`
+      return `Покупок: ${amount} на сумму: ${fmtCost(summary)} ${currency}`
     }
 
     const renderSectionHeader = (blob, sectionId) => {
@@ -244,7 +245,7 @@ class RenderTransactions extends Component {
 
                   <View>
                     <Text style={styles.category}>
-                      {item.category && getCategoryBySlug(item.category, categories)}
+                      {item._category}
                     </Text>
 
                     {/*<Text style={{fontSize: 10, color: '#808'}}> id: {item.groupId}</Text>*/}
@@ -255,7 +256,7 @@ class RenderTransactions extends Component {
 
               <View style={mainCSS.row}>
                 {!item.groupMaster &&
-                  <Text style={styles.cost}>
+                  <Text style={[styles.cost, item.income ? styles.income : null]}>
                     {fmtCost(item.cost)} {currency}
                   </Text>
                 }

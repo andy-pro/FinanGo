@@ -129,3 +129,18 @@ export const getShops = query => {
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+const incomes = [
+  {title: 'Зарплата'},
+  {title: 'Аванс'},
+  {title: 'Премия'},
+]
+
+export const getIncomes = query => {
+  query = query.toLowerCase()
+  return incomes
+    .filter(item => item.title.toLowerCase().startsWith(query))
+    .map(({ title }) => ({ title }))
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

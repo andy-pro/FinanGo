@@ -5,13 +5,16 @@ import { connect } from 'react-redux';
 import shortid from 'js-shortid'
 
 import { addTransactions } from './actions'
+import { categoryAction } from '../categories/actions'
 
 import { Form, View, TextInput, Icon, FormWrapper } from '../__components';
 // import { PopupMenu, RenderSimple, RenderHighlight } from '../__components/PopupMenu';
 import { RenderSimple, RenderHighlight } from '../__components/Popup';
 
-import { getSuggestions, getAmountTypes, getShops } from './utils'
-import { removeSpecial, slugifyCategory } from '../__lib/utils'
+import { getSuggestions, getAmountTypes, getShops, getIncomes } from './utils'
+
+// removeSpecial, splitCategory, getSlug, slugifyCategory, getCategoryBySlug, findDuplicate, firstToUpper
+import * as utils from '../__lib/utils'
 
 import __config from '../config'
 import { colors, mainCSS } from '../__themes'
@@ -22,16 +25,38 @@ class NewTransactionForm extends React.Component {
 
   componentWillMount() {
     // console.log('context popup', this.context.popup.color);
-
+    this.incomeMode = this.props.pattern === '/income'
     const { isNative } = __config
     // const isNative = navigator && navigator.product === 'ReactNative'
     // console.log('form trans page mount', this.context.popup);
     // this.popupContext = PopupMenu.getContext()
 
-    this.popups = {
-      /* методы __onKeyDown и __onBlur назначаются методом init Popup компонента */
-      __onKeyDown: null,
-      __onBlur: null,
+    this.popups = this.incomeMode ? 
+    {
+      title: {
+        // pos: {top: isNative ? 42 : 36, maxHeight: isNative ? 202 : 286},
+        pos: {maxHeight: isNative ? 202 : 286},
+        // getSuggestions: getIncomes,
+
+        getSuggestions: query => {
+          let { user } = this.props
+          if (!user.incomes) {
+            return []
+          }
+          console.log('incomes', user.incomes);
+          query = query.toLowerCase()
+          return user.incomes
+            .filter(item => item.title.toLowerCase().startsWith(query))
+            .map(({ title }) => ({ title }))
+        },
+
+        renderSuggestion: RenderHighlight,
+        onSelect: suggestion => {
+          this.props.fields.title.onChangeText(suggestion.title)
+          this.props.fields.__refs.cost.focus()
+        }
+      }
+    } : {
       title: {
         // pos: {top: isNative ? 42 : 36, maxHeight: isNative ? 202 : 286},
         pos: {maxHeight: isNative ? 202 : 286},
@@ -82,6 +107,9 @@ class NewTransactionForm extends React.Component {
       this.initGroup()
     }
 
+    /* методы __onKeyDown и __onBlur назначаются методом init Popup компонента */
+    this.popups.__onKeyDown = null
+    this.popups.__onBlur = null
     this.popupMenu = this.context.popup.init(this.popups)
 
   }
@@ -92,9 +120,68 @@ class NewTransactionForm extends React.Component {
 
   onTransactionSubmit = e => {
     let transaction = this.props.fields.__submits.onTransactionSubmit(e)
+    console.log('transaction', JSON.stringify(transaction));
     if (transaction) {
       if (this.groupId) transaction.groupId = this.groupId
+
+      let { title, category } = transaction
+      title = utils.firstToUpper(title)
+      transaction.title = title
+
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if (this.incomeMode) {
+        transaction.income = 1
+
+        let { user } = this.props,
+            { title } = transaction
+        if (!user.incomes) {
+          user.incomes = []
+        }
+        if (!user.incomes.find(item => item.title === title)) {
+          // console.log('title', title);
+          user.incomes.push({ title })
+        }
+      }
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      if (category) {
+        let categorySlug = utils.slugifyCategory(category),
+            { categories } = this.props,
+            r = utils.getCategoryBySlug(categorySlug, categories),
+            {category: c, path, errLevel } = r,
+            isWord = !/\s/.test(title), // название транзакции состоит из одного слова
+            data
+
+        transaction.category = categorySlug
+        // console.log('category', category, categorySlug, r);
+        
+        if (errLevel === 1) { // new subcategory (by category field)
+          let i = c.length - 1,
+              categoryTitle = utils.splitCategory(category)[i]
+              
+          data = { title: categoryTitle, slug: c[i] }          
+          if (isWord) { // sub sub category
+            data.sub = [{
+              title,
+              slug: utils.getSlug(title),
+            }]
+          }
+
+        } else if (errLevel === 0 && isWord) { // new subcategory (by title field)
+          let slug = utils.getSlug(title)
+
+          if (!utils.findDuplicate(categories, slug, path)) {
+            data = { title, slug }
+          }
+
+        }
+
+        if (data) this.props.categoryAction({ path, data }, 'add')
+
+      }
+
       this.addTransaction(transaction)
+
       this.props.fields.__resetState(0)
     }
   }
@@ -143,21 +230,25 @@ class NewTransactionForm extends React.Component {
             />
           </View>
 
-          <View style={mainCSS.row}>
-            <TextInput
-              placeholder='Type a transaction category'
-              {...fields.category}
-              {...this.propSet1}
-            />
-          </View>
+          {!this.incomeMode &&
+            <View style={mainCSS.row}>
+              <TextInput
+                placeholder='Type a transaction category'
+                {...fields.category}
+                {...this.propSet1}
+              />
+            </View>
+          }
 
           <View style={mainCSS.row}>
-            <TextInput
-              placeholder='Amount'
-              {...fields.amount}
-              {...this.propSet2}
-              returnKeyType='next'
-            />
+            {!this.incomeMode &&
+              <TextInput
+                placeholder='Amount'
+                {...fields.amount}
+                {...this.propSet2}
+                returnKeyType='next'
+              />
+            }
             <TextInput
               placeholder="Cost"
               {...fields.cost}
@@ -246,16 +337,16 @@ export default FormWrapper([
     submit: 'onTransactionSubmit',
     fields: [
       // { fn: fieldName, type: [text(default), checkbox, picker], vd: validator, init: initialValue, af: autoFocus, pp: postProcessing }
-      { fn: 'title', vd: 'required', af: true, pp: removeSpecial },
-      { fn: 'category', vd: 'required', pp: slugifyCategory },
+      { fn: 'title', vd: 'required', af: true, pp: utils.removeSpecial },
+      { fn: 'category', vd: 'required' },
       { fn: 'amount', vd: 'required' },
       { fn: 'cost', vd: 'isDecimal' }
     ]
   }, {
     submit: 'onGroupSubmit',
-    fields: { fn: 'groupTitle', vd: 'required', pp: removeSpecial }
+    fields: { fn: 'groupTitle', vd: 'required', pp: utils.removeSpecial }
   }
-])(connect(null, { addTransactions })(NewTransactionForm))
+])(connect(null, { addTransactions, categoryAction })(NewTransactionForm))
 
 //
 // export default connect(

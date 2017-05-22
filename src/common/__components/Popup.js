@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, Children } from 'react'
+import React from 'react'
 
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 
@@ -7,7 +7,7 @@ import { suggestionsCSS as styles } from '../__themes'
 import __config from '../config'
 
 
-export class Popup extends Component {
+export class Popup extends React.Component {
   getChildContext() {
     return {
       popup: {
@@ -198,7 +198,7 @@ export class Popup extends Component {
 }
 
 Popup.childContextTypes = {
-  popup: PropTypes.object
+  popup: React.PropTypes.object
 }
 
 

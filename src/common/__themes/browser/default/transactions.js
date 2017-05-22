@@ -61,6 +61,11 @@ const transactions = {
     color: 'red',
     paddingRight: 10,
   },
+  income: {
+    color: '#4a4',
+    // fontWeight: 'bold',
+  },
+
 
   resumeTitle: {
     fontSize: 14,
@@ -88,12 +93,17 @@ const transactions = {
   },
   summary: {
     fontSize: 14,
-    backgroundColor: '#e99',
     color: '#fff',
     padding: 5,
     borderRadius: 6,
     // borderColor: '#fff',
     // borderWidth: 1,
+  },
+  summaryR: {
+    backgroundColor: '#e99',
+  },
+  summaryG: {
+    backgroundColor: '#6b6',
   },
   summaryView: {
     display: 'flex',

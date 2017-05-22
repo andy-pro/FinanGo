@@ -3,7 +3,8 @@ import * as CONST from './_const'
 const categories = {
   container: {
     // paddingHorizontal: 15,
-    maxHeight: 450,
+    // maxHeight: 450,
+    maxHeight: 'calc(100vh - 260px)',
     overflow: 'auto',
   },
   header: {

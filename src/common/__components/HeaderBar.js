@@ -50,7 +50,7 @@ const HeaderBar = ({ title, pattern, currentBalance, changeCategoryView, changeS
         <Text style={style.title}>
           {title}
         </Text>
-        {_home &&
+        {(_home || _delete) &&
           <View style={style.summary}>
             <Summary value={currentBalance} />
           </View>

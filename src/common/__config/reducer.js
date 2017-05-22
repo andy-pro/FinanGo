@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 
 import app from '../app/reducer';
 import user from '../user/reducer';
-import categories from '../categories/reducer';
+// import categories from '../categories/reducer';
 import transactions from '../transactions/reducer';
 
 import configureLocalDB from './localdb';
@@ -26,7 +26,7 @@ const configureReducer = initialState => {
   let reducer = {
     app,
     user,
-    categories,
+    // categories,
     transactions,
   }
 

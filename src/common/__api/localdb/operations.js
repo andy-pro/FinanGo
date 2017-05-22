@@ -6,6 +6,8 @@ import Filter from './filter'
 import config from '../../config'
 import users from '../../__mockData/users'
 
+import _cate from '../../__mockData/categories'
+
 export default operations = (file, { table, query }) => {
 
   // file - часть store для хранения базы данных
@@ -26,9 +28,19 @@ export default operations = (file, { table, query }) => {
       let categories = data.categories || [],
           localdb = data[constants.filename] || {},
           transactions = localdb.transactions || []
+      // payload = {
+      //   user: users[config.userId],
+      //   categories,
+      //   transactions: Filter(transactions, query.query, '$pick', 1)
+      // }
+      let user = users[config.userId]
+      
+      // user.categories = categories
+      // console.log('_cate', _cate);
+      user.categories = {title: 'Categories', sub: _cate},
+
       payload = {
-        user: users[config.userId],
-        categories,
+        user,
         transactions: Filter(transactions, query.query, '$pick', 1)
       }
 

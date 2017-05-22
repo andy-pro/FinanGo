@@ -150,7 +150,9 @@ const wrapper = forms => WrappedComponent => {
           TYPES = this.constructor.TYPES
       for (var i = 0, len = keys.length; i < len; i++) {
         let { fn, type='text', vd, pp } = keys[i],
-            field = fields[fn],
+            el = fields.__refs[fn]
+        if (!el) continue
+        let field = fields[fn],
             { value } = TYPES[type]
         value = field[value]
         if (type === 'text') {
@@ -164,7 +166,9 @@ const wrapper = forms => WrappedComponent => {
         }
         let valid = vd ? validator[vd](value) : true
         if (!valid) {
-          this.state.fields.__refs[fn].focus()
+          // this.state.fields.__refs[fn].focus()
+          // fields.__refs[fn].focus()
+          el.focus()
           return false
         }
         __fields[fn] = value

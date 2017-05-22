@@ -8,8 +8,8 @@ const reducer = ( state = [], action ) => {
 
   switch (action.type) {
 
-    case 'user/LOADED':
-      return action.payload.categories
+    // case 'user/LOADED':
+      // return action.payload.categories
 
     case 'categories/UPDATED':
     case 'notify/categories/UPDATED':

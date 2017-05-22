@@ -1,4 +1,6 @@
-const scan = (data, groupMode) => {
+import { getCategoryBySlug } from '../__lib/utils'
+
+const scan = (data, categories, groupMode) => {
 
   let group,
       prevItem,
@@ -8,7 +10,7 @@ const scan = (data, groupMode) => {
       length = 0,
       balance = 0
 
-// let q=performance.now()
+  // let q=performance.now()
 
   const dataBlob = {}
   const sectionIds = []
@@ -70,9 +72,13 @@ const scan = (data, groupMode) => {
     let cost = parseFloat(item.cost)
 
     if (cost) {
-      blob.summary += cost
-      balance += cost
-      blob.amount++
+      if (item.income) {
+        balance += cost
+      } else {
+        blob.summary += cost
+        balance -= cost
+        blob.amount++
+      }
     }
 
     if (item.shown) blob.shown = true
@@ -88,6 +94,16 @@ const scan = (data, groupMode) => {
       blob.resume.push(group.title)
 
     } else {
+
+      if (item.category) {
+        item._category = getCategoryBySlug(item.category, categories).title
+        // console.log('category', item._category);
+      } else {
+        if (item._category === undefined) {
+          item._category = ''          
+        }
+      }
+      delete item.category
 
       if (group) {
 
@@ -123,7 +139,7 @@ const scan = (data, groupMode) => {
 
   // console.log('result of scan:', JSON.stringify(sectionIds, null ,2));
 
-  // console.log('Scan time', performance.now()-q);
+  // console.info('Scan time', performance.now()-q);
   return { dataBlob, sectionIds, rowIds, length, balance }
 
   // let a = { dataBlob, sectionIds, rowIds }

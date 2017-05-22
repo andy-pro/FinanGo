@@ -1,7 +1,10 @@
 import mongodb from 'mongodb'
-import __config from '../../common/config'
+import __config from '../config'
 
-let { MongoClient, ObjectId } = mongodb
+// const mongodb = require('mongodb');
+// const __config  = require('../../common/config');
+
+const { MongoClient, ObjectId } = mongodb
 let db_users, db_transactions
 
 const rules = [
@@ -32,7 +35,7 @@ const denormalize = data => {
   else object_convert(data)
   return data
 }
-
+// console.log('mongodb.url', __config.mongodb.url);
 MongoClient.connect(__config.mongodb.url, function(err, db) {
 
   if (err) return console.log('mongodb connection error', err)
@@ -43,47 +46,50 @@ MongoClient.connect(__config.mongodb.url, function(err, db) {
 
 });
 
-export default {
+module.exports = {
 
   message: (msg, client, wss) => {
     // console.log('ok, data is:', msg, ws, wss);
-    // console.log('request', msg);
-
-    let { cmd, userId, __requestId, query={}, data={} } = JSON.parse(msg)
-    query.userId = userId
-    denormalize(query)
-    // find user filter (by ObjectId)
-    let f_user = { _id: query.userId }
-    // console.log('query', cmd, query);
+    // console.log('request', client);
+    try {
+      var { cmd, userId, __requestId, query={}, data={} } = JSON.parse(msg);
+      // console.log('request', cmd, msg);
+      if (!(cmd && cmd.startsWith('$') && userId && userId.length === 24 && __requestId > 0)) {
+        return error();
+      }
+      var raw_query = JSON.stringify(query);
+      query.userId = userId;
+      client.__userId = userId;
+      denormalize(query);
+      // find user filter (by ObjectId)
+      var f_user = { _id: query.userId };
+      // console.log('query', cmd, query);
+    } catch (err) {
+      return error(err);
+    }
 
     switch (cmd) {
       case '$init':
         db_users.findOne(f_user, (err, user) => {
-          db_transactions.find(query).sort({date: 1}).toArray((err, transactions) => {
-            user.transactions = transactions
-            send(user);
-          })
+          if (err) return error(err)
+          if (!(user && user._id)) return error('Invalid user')
+          // console.log('init req', user._id, typeof user._id, query)          
+          getTransactions(query, user)
         });
         break;
 
       case '$get':
-        db_transactions.find(query).sort({date: 1}).toArray((err, transactions) => {
-          if (err) return error(err)
-          // console.log('cmd: get', transactions);
-          send(transactions);
-        })
-        break;
+        return getTransactions(query);
 
       case '$add':
-        add(data)
-        break;
+        return add(data);
 
       case '$del':
         db_transactions.deleteMany(query, (err, r) => {
           if (err) return error(err)
-          // console.log(r);
+          // console.log('=== delete query', query);
           // send({ result: r.result })
-          send({ removed: r.deletedCount })
+          send({ removed: r.deletedCount }, 'transactions/DELETED', { query: { query: JSON.parse(raw_query) } })
         })
         break;
 
@@ -113,26 +119,58 @@ export default {
         break;
 
       default:
-        error(new Error('Invalid message'))
+        error()
     }
 
     function error(err) {
+      if (!err) err = 'Invalid message'
+      if (typeof err === 'string') err = new Error(err)
       console.log('*** mongodb error ***');
-      console.log(err.message);
+      console.error(err.message);
       console.log('*** *** ***** *** ***');
     }
 
-    function send(payload, type) {
-      let data = JSON.stringify({
-        __requestId,
-        cmd,
-        payload
+    function getTransactions(query, carrier) {
+      db_transactions.find(query).sort({date: 1}).toArray((err, transactions) => {
+        if (err) return error(err)
+        // console.log('cmd: get', transactions);
+        if (carrier) carrier.transactions = transactions
+        else carrier = transactions
+        send(carrier);
       })
-      // console.log('send stringified data', data);
-      if (type) {
-        let cast = JSON.stringify({ type, payload })
-        wss.clients.forEach(c => c.send(c === client ? data : cast))
-      } else client.send(data)
+    }
+
+    function send(payload, type, extra) {
+      // console.log('~~~~ current ws client', client, 'client ~~~~~~~~~~')
+      try {
+        let data = JSON.stringify({
+          __requestId,
+          cmd,
+          payload
+        })
+        const _send = (_c, _d) => {
+          // if (_c.readyState !== 1) throw new Error('Client is not connected')
+          if (_c.readyState === 1) _c.send(_d)
+        }
+        // console.log('send stringified data', data);
+        if (type) {
+          let cast
+          wss.clients.forEach(c => {
+            if (c === client) _send(c, data)
+            else {
+              if (c.__userId === userId) {
+                if (cast === undefined) {
+                  cast = JSON.stringify(Object.assign({type, payload}, extra))
+                }
+                // console.log('=== cast', cast)
+                _send(c, cast)
+              }
+            }
+          })
+        } else _send(client, data)
+      } catch(err) {
+        error(err)
+      }
     }
 
     function add(data) {
@@ -142,21 +180,19 @@ export default {
       db_transactions[op](denormalize(data), (err, r) => {
         // console.log('insert res', arr, r);
         // send(arr ? { result: r.result } : r.ops[0])
-        send(arr ? r.result : r.ops[0])
+        if (arr) send(r.result)
+        else send(r.ops[0], 'transactions/ADDED')
       })
     }
 
     function check(data) {
-      try {
-        function _check(s) {
-          if (!s.userId) throw 'userId is absent!'
-        }
-        if (data instanceof Array) data.forEach(_check)
-        else _check(data)
-        return true
-      } catch (e) {
-        return false
+      var _data = Array.isArray(data) ? data : [data]
+      // console.log('data', _data)
+      for (var i = 0; i < _data.length; i++) {
+        var id = _data[i].userId
+        if (!id || id !== userId ) return false
       }
+      return true
     }
 
   }

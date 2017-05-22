@@ -107,14 +107,14 @@ const buttonCSS = {
   backgroundColor: '#888',
   color: 'white',
   // paddingVertical: 5,
-  paddingTop: 5,
+  // paddingTop: 5,
   // paddingBottom: 1,
   // paddingHorizontal: 0,
   outline: 0,
   border: 0,
   borderRadius: 4,
   // cursor: 'pointer',
-  height: 26,
+  // height: 26,
   // verticalAlign: 'center'
 }
 

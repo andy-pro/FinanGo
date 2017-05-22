@@ -1,6 +1,5 @@
 // @flow weak
 import { createTransform } from 'redux-persist';
-// import { pick } from 'ramda';
 import { pick } from '../__lib/utils';
 
 import configureLocalDB from './localdb';
@@ -16,7 +15,8 @@ const paths = [
 
 if (config.storage === 'local') {
   paths.push(
-    ['categories'],
+    // ['categories'],
+    ['user'],
     [configureLocalDB.filename]
   )
 }

@@ -21,7 +21,30 @@ const users = {
     "lastName" : "Жопков",
     "displayName": "Fedya Zadov",
     "photoURL": "https://avatars.githubusercontent.com/u/12512653?v=3",
-    "currency": "₴"
+    "currency": "₴",
+    "shops": {
+      title: 'Shops',
+      sub: [
+        {title: 'Реликвия'},
+        {title: 'Арсен'},
+        {title: 'Ашан'},
+        {title: 'АТБ'},
+        {title: 'Сільпо'},
+        {title: 'Метро'},
+        {title: 'Эпицентр'},
+      ]
+    },
+    "amountTypes": {
+      title: 'Amount types',
+      sub: [
+        {title: 'кг'},
+        {title: 'г'},
+        {title: 'л'},
+        {title: 'мл'},
+        {title: 'шт'},
+        {title: 'м.п.'}
+      ]
+    }
   },
 }
 

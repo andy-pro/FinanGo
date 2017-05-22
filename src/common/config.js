@@ -4,23 +4,19 @@ const config = {
   // "userId" : "58a33d33793e920948fb163c", // faddey
   "userId" : "58580962da7d1f056c935688", // fedya zadov
 
-  // "storage": "local",
+  "storage": "local",
   // "storage": "localfake",
   // "storage": "mongolab",
-  "storage": "mongodb",
+  // "storage": "mongodb",
 
   // "agent": true,
 
   // "populate": true,
 
-  "mongolab": {
-    "apiKey": "apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD",
-    "databaseURL": "https://api.mlab.com/api/1/databases/shop/collections/"
-  },
-
-  "mongodb": {
-    "url": "mongodb://andy.pro.shop:andy.pro.shop@ds119548.mlab.com:19548/shop"
-  },
+  // "mongolab": {
+  //   "apiKey": "apiKey=i4YcHo-NCAiwpVEdLLVkPzNZdo-bzsJD",
+  //   "databaseURL": "https://api.mlab.com/api/1/databases/shop/collections/"
+  // },
 
   "appName": "FinanGo",
 

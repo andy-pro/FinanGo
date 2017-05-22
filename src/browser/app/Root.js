@@ -48,7 +48,8 @@ if (config.storage === 'mongodb') {
     .init({
       // http - ws; https - wss
       url: location.origin.replace(/^http/, 'ws'),
-      dispatch: store.dispatch
+      // dispatch: store.dispatch
+      store,
     })
 }
 

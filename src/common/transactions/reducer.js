@@ -5,6 +5,7 @@ import {
   deleteItemById,
   deleteItemsByIds
 } from '../__lib/utils';
+import { Query } from './utils'
 
 const reducer = ( state = [], action ) => {
 
@@ -27,7 +28,15 @@ const reducer = ( state = [], action ) => {
     case 'transactions/DELETED':
       // console.log('transactions reducer - delete', JSON.stringify(action));
       let { query } = action.query
-      if (query.date) return [] // delete month
+      if (query.date) {
+        if (action.store) {
+          // message from websocket broadcast
+          let date = Query({ date: action.store.getState().app.date }).date
+          if (date.$gte.toISOString() !== query.date.$gte || date.$lt.toISOString() !== query.date.$lt)
+            return state
+        }
+        return [] // delete month
+      }
       let { id } = query
       if (id && id.$in) return deleteItemsByIds(state, id.$in)
 

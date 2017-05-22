@@ -17,6 +17,10 @@ nconf.defaults({
   googleAnalyticsId: 'UA-XXXXXXX-X',
   isProduction: process.env.NODE_ENV === 'production',
   port: process.env.PORT || 3000,
+  mongodb: {
+    url: "mongodb://andy.pro.shop:andy.pro.shop@ds119548.mlab.com:19548/shop",
+    // url: `mongodb://${process.env.DB_USR}:${process.env.DB_PSW}@ds119548.mlab.com:19548/shop`,
+  },
   // Enable hot reload on remote device. Note it prevents offline testing,
   // because it depends on ip.address(), which doesn't work with disabled wifi.
   // How do we access a website running on localhost from mobile browser?

@@ -12,8 +12,8 @@ import { mainCSS, iconBtnCSS, checkboxCSS } from '../__themes'
 class CategoryMenu extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.category !== this.props.category) {
-      const { isChild, title, color } = nextProps.category
+    if (nextProps.entry !== this.props.entry) {
+      const { isChild, title, color } = nextProps.entry
       this.props.fields.__setState({
         add: '',
         title: isChild ? title : '',
@@ -25,11 +25,6 @@ class CategoryMenu extends Component {
     }
     return true
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   // console.log('update', prevProps);
-  //   if (prevProps.category !== this.props.category) this.setFocus()
-  // }
 
   componentDidMount() { this.setFocus() }
 
@@ -55,10 +50,10 @@ class CategoryMenu extends Component {
   onSubmit = data => {
     let field = Object.keys(data)[0],
         value = data[field]
-    const { category, enable } = this.props;
-    let { path, parentPath, isChild } = category
+    const { entry, enable } = this.props;
+    let { path, parentPath, isChild } = entry
     if (!enable) return
-    if (value === category[field]) return
+    if (value === entry[field]) return
     let cmd
     data = {}
 
@@ -68,7 +63,7 @@ class CategoryMenu extends Component {
         parentPath = path
         cmd = 'add'
         // data.color = ?
-        // console.log('add', JSON.stringify(category));
+        // console.log('add', JSON.stringify(entry));
         break
       case 'title':
         if (!isChild) return
@@ -76,7 +71,7 @@ class CategoryMenu extends Component {
         break
       case 'color':
         if (!isChild) return
-        // console.log('colors:', value, category[field]);
+        // console.log('colors:', value, entry[field]);
         if (value) {
           value = checkColor(value)
           if (!value) return
@@ -87,11 +82,14 @@ class CategoryMenu extends Component {
 
     if (field === 'add' || field === 'title') {
       let slug = getSlug(value)
-      if (findDuplicate(category.categories, slug, parentPath)) {
-        return Alert.alert('The same category already exists!')
+      if (findDuplicate(entry.list, slug, parentPath, value)) {
+        return Alert.alert('The same entry already exists!')
       }
       data.title = value
-      data.slug = slug
+      if (entry.rootPath === 'categories') {
+        data.slug = slug        
+      }
+      // console.log('entry', entry);
     }
 
     this.props.categoryAction({ path, data }, cmd)
@@ -100,21 +98,21 @@ class CategoryMenu extends Component {
   onDelete = e => {
     let data = this.props.fields.__submits.onDelete(e)
     // console.log(JSON.stringify(data));
-    let {category} = this.props
+    let {entry} = this.props
     Alert.alert(
-      `Delete category "${category.title}"`,
+      `Delete entry "${entry.title}"`,
       'Are you shure?',
       [
-        {text: 'Cancel', null, style: 'cancel'},
-        {text: 'OK', onPress: () => this.props.categoryAction(category, 'del')},
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'OK', onPress: () => this.props.categoryAction(entry, 'del')},
       ],
       { cancelable: false }
     )
   }
 
   render() {
-    const { fields, category, enable } = this.props;
-    const isChild = Boolean(category.isChild)
+    const { fields, entry, enable } = this.props;
+    const isChild = Boolean(entry.isChild)
     // console.log('category menu render', fields.add);
 
     return (
@@ -125,7 +123,7 @@ class CategoryMenu extends Component {
             onSubmit={this.onAddSubmit}
           >
             <TextInput
-              placeholder={isChild ? 'New subcategory' : 'New category'}
+              placeholder={isChild ? 'New subentry' : 'New entry'}
               editable={enable}
               { ...fields.add }
               { ...this.propSet0 }

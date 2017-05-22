@@ -1,4 +1,6 @@
 import { Observable } from 'rxjs';
+import shortid from 'js-shortid'
+
 import * as utils from './utils'
 import __config from '../../config'
 
@@ -8,45 +10,82 @@ let { normalize } = utils
 
 var socket,
     url,
-    dispatch,
-    __requestId,
-    __resolve
+    // dispatch,
+    store,
+    reqs
+    // __requestId,
+    // __resolve
 
 export const init = opts => {
   // console.log('url', url);
   url = opts.url
-  dispatch = opts.dispatch
+  // dispatch = opts.dispatch
+  store = opts.store
   connect()
 }
 
 const connect = () => {
   if (socket) socket.close();
   // var time_start = performance.now();
+  reqs = [];
   socket = new WebSocket(url);
+
+
+  // socket.onmessage = e => {
+  //   let data = JSON.parse(e.data)
+  //   console.log('onmessage', data, __requestId);
+  //   let i = __requestId
+  //   if (typeof i === 'object') i = __requestId.__id__
+  //   if (data.__requestId) {
+  //     if (__requestId && data.__requestId == i && __resolve) {
+  //       __resolve(data.payload)
+  //       clearTimeout(req)
+  //       __requestId = undefined
+  //     }
+  //   } else store.dispatch({
+  //     type: data.type,
+  //     payload: normalize(data.payload),
+  //     query: data.query,
+  //     store,
+  //   })
+  // }
 
   socket.onmessage = e => {
     let data = JSON.parse(e.data)
-    // console.log('qaz', data, __requestId);
-    let i = __requestId
-    if (typeof i === 'object') i = __requestId.__id__
-    if (__requestId && data.__requestId == i && __resolve) {
-      __resolve(data.payload)
-      clearTimeout(__requestId)
-      __requestId = undefined
-    } else dispatch({
-      type: data.type,
-      payload: normalize(data.payload)
-    })
+    console.log('onmessage:', data, 'reqs len:', reqs.length);
+
+    if (data.__requestId) {
+      let idx = reqs.findIndex(item => {
+        let { id } = item
+        if (typeof id === 'object') id = id.__id__
+        return data.__requestId === id
+      })
+      if (idx >= 0) {
+        let req = reqs[idx]
+        req.resolve(data.payload)
+        clearTimeout(req.id)
+        reqs.splice(idx, 1)
+      }
+      console.log('reqs len after:', reqs.length);
+
+    } else if (data.type) {
+      store.dispatch({
+        type: data.type,
+        payload: normalize(data.payload),
+        query: data.query,
+        store,
+      })
+    }
   }
 
   socket.onclose = () => console.info('socket closed!')
   // this.socket.onerror = err => {
   //   console.error(new Date().toLocaleString() + ', socket error!')
   // }
-//       this.close = this.socket.close
-//       this.socket.onopen = e => {
-//         console.log(performance.now() - time_start)
-//       }
+  //       this.close = this.socket.close
+  //       this.socket.onopen = e => {
+  //         console.log(performance.now() - time_start)
+  //       }
 }
 
 
@@ -54,12 +93,15 @@ const connect = () => {
 const __api = data => {
   // console.log('setup data.cmd', data.cmd);
   // let e = Observable.fromEvent(socket, 'message')
+  let id, 
+      sur    // surveillance
   let e = Observable.fromPromise(new Promise((resolve, reject) => {
     __resolve = resolve
-    __requestId = setTimeout(() => {
-      reject(new Error("WebSocket timeout!"));
+    id = setTimeout(() => {
+      reject(new Error("WebSocket timeout! data.cmd: " + data.cmd));
     }, 5000);
-
+    // __requestId = id
+    sur = { id, resolve, reject }
   }))
     .map(r => {
       // console.log('observable data.cmd', data.cmd, r);
@@ -82,18 +124,26 @@ const __api = data => {
       throw new Error('Invalid command')
     })
 
-  if (typeof __requestId === 'object') { // for node.js env
-    __requestId.__id__ = Date.now()
-    data.__requestId = __requestId.__id__
-  } else data.__requestId = __requestId
+  // if (typeof __requestId === 'object') { // for node.js env
+  //   __requestId.__id__ = Date.now()
+  //   data.__requestId = __requestId.__id__
+  // } else data.__requestId = __requestId
+  if (typeof id === 'object') { // for node.js env
+    id.__id__ = shortid.gen()
+    data.__requestId = id.__id__
+  } else data.__requestId = id
+
   data.userId = __config.userId
   // console.log('stringify data', data);
-  send_or_reconnect(data)
+  send_or_reconnect(data, sur)
   return e
 }
 
-const send_or_reconnect = msg => {
-  const send = () => socket.send(JSON.stringify(msg))
+const send_or_reconnect = (msg, sur) => {
+  const send = () => {
+    reqs.push(sur)
+    socket.send(JSON.stringify(msg))
+  }
   if (socket && socket.readyState === WebSocket.OPEN) {
     send()
   } else {
